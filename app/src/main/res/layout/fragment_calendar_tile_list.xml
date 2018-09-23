@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/calendar_tile_fragment_padding"
+    android:paddingStart="@dimen/calendar_tile_fragment_padding"
+    android:paddingEnd="@dimen/calendar_tile_fragment_padding"
+    android:paddingBottom="@dimen/calender_tiles_bottom_padding"
+    >
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/tile_fragment_recent_title"
+      android:textSize="@dimen/tiles_title_size"
+      android:paddingBottom="@dimen/standard_line_gap"/>
+
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/rv_calendar_tiles"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+
+      />
+
+  <android.support.constraint.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/icon_size"
+      android:background="@color/tile_placeholder_background"
+      >
+
+    <TextView
+        android:id="@+id/tv_no_calendars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_calendars"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/empty_state_text_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45"/>
+
+    <TextView
+        android:id="@+id/tv_no_calendars_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/no_calendars_sub"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/empty_state_sub_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_no_calendars"/>
+
+  </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

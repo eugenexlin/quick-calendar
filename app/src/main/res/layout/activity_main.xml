@@ -5,15 +5,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".views.MainActivity">
 
-  <TextView
+  <android.support.design.widget.FloatingActionButton
+      android:id="@+id/fab_create_new"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Hello World!"
+      android:layout_marginBottom="24dp"
+      android:layout_marginEnd="24dp"
+      android:background="@color/secondaryColor"
+      android:textColor="@color/secondaryTextColor"
+      android:src="@drawable/ic_add_black_24dp"
+      android:tint="@color/secondaryTextColor"
+      android:elevation="@dimen/fab_elevation"
+      android:stateListAnimator="@animator/fab_state_list"
+      android:clickable="true"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintEnd_toEndOf="parent"/>
+
+  <fragment
+      android:id="@+id/f_recent_calendars"
+      android:name="com.djdenpa.quickcalendar.views.fragments.CalendarTileListFragment"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:layout="@layout/fragment_calendar_tile_list"/>
+
+  <!-- because the message in the empty state might  -->
+  <fragment
+      android:id="@+id/f_recent_shared_calendars"
+      android:name="com.djdenpa.quickcalendar.views.fragments.CalendarTileListFragment"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/f_recent_calendars"
+      tools:layout="@layout/fragment_calendar_tile_list"/>
 
 </android.support.constraint.ConstraintLayout>

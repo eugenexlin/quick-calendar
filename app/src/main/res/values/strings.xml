@@ -1,3 +1,9 @@
 <resources>
-  <string name="app_name">QuickCalendar</string>
+  <string name="app_name">Quick Calendar</string>
+
+  <string name="tile_fragment_recent_title">Recent Calendars</string>
+  <string name="tile_fragment_recent_shared_title">Recent Shared Calendars</string>
+  <string name="no_calendars">There are no calendars to show.</string>
+  <string name="no_calendars_sub">Click the ( + ) to create a new calendar.</string>
+  <string name="no_shared_calendars_sub">Shared calendars you visited will appear in this list.</string>
 </resources>
