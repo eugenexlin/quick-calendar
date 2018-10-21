@@ -15,6 +15,9 @@
 
   <color name="tile_placeholder_foreground">#b0b0b0</color>
   <color name="tile_placeholder_background">#e0e0e0</color>
+  <color name="tile_text_color">#000000</color>
+
   <color name="empty_state_background">#f0f0f0</color>
+  <color name="gray_75_a_50">#80c0c0c0</color>
 
 </resources>

@@ -6,4 +6,5 @@
   <string name="no_calendars">There are no calendars to show.</string>
   <string name="no_calendars_sub">Click the ( + ) to create a new calendar.</string>
   <string name="no_shared_calendars_sub">Shared calendars you visited will appear in this list.</string>
+    <string name="calendar_tile_thumbnail">calendar tile thumbnail</string>
 </resources>

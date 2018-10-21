@@ -2,11 +2,12 @@ package com.djdenpa.quickcalendar.models;
 
 import java.util.LinkedList;
 
+// this is a single snapshot of possible event arrangements of one calendar.
 public class EventSet {
-  String name;
-  String creatorIdentity;
+  public String name;
+  public String creatorIdentity;
 
-  LinkedList<Event> events = new LinkedList<>();
+  public LinkedList<Event> events = new LinkedList<>();
 
 
 }

@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    System.out.println("fragment create");
 
     mRecentCalendarFragment = (CalendarTileListFragment)
             getSupportFragmentManager().findFragmentById(R.id.f_recent_calendars);
@@ -27,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     mRecentSharedCalendarFragment.setEmptyStateHelperText(
             getString(R.string.no_shared_calendars_sub));
 
+    mRecentCalendarFragment.bindTestData();
 
   }
 

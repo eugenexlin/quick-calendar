@@ -1,7 +1,7 @@
 package com.djdenpa.quickcalendar.models;
 
 public class Event {
-  long eventStartUTC;
-  int eventDuration;
-
+  public long eventStartUTC;
+  public long eventDurationMs;
+  public String name;
 }

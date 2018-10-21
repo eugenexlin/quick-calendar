@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <dimen name="tiles_title_size">36sp</dimen>
-  <dimen name="icon_size">240dp</dimen>
-  <dimen name="empty_state_width">480dp</dimen>
+  <dimen name="tile_icon_size">240dp</dimen>
+  <dimen name="tile_text_size">48dp</dimen>
+
+  <dimen name="empty_state_height">288dp</dimen>
 
   <dimen name="empty_state_text_size">24sp</dimen>
   <dimen name="empty_state_sub_text_size">18sp</dimen>

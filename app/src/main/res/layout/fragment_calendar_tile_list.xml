@@ -27,8 +27,9 @@
       />
 
   <android.support.constraint.ConstraintLayout
+      android:id="@+id/cl_empty_state"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/icon_size"
+      android:layout_height="@dimen/empty_state_height"
       android:background="@color/tile_placeholder_background"
       >
 

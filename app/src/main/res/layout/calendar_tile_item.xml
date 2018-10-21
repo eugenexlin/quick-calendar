@@ -2,14 +2,32 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/tile_icon_size"
+    android:layout_height="wrap_content"
+    >
 
   <ImageView
-      android:id="@+id/imageView"
-      android:layout_width="@dimen/icon_size"
-      android:layout_height="@dimen/icon_size"
-      android:tint="@color/tile_placeholder_foreground"
+      android:id="@+id/iv_calendar_tile_thumbnail"
+      android:layout_width="@dimen/tile_icon_size"
+      android:layout_height="@dimen/tile_icon_size"
       android:background="@color/tile_placeholder_background"
+      android:contentDescription="@string/calendar_tile_thumbnail"
+      android:tint="@color/tile_placeholder_foreground"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
       app:srcCompat="@drawable/ic_calendar"/>
+
+    <TextView
+        android:id="@+id/tv_calendar_tile_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textColor="@color/tile_text_color"
+        app:layout_constraintEnd_toEndOf="@+id/iv_calendar_tile_thumbnail"
+        app:layout_constraintStart_toStartOf="@+id/iv_calendar_tile_thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/iv_calendar_tile_thumbnail"
+        tools:text="My Calendar"/>
+
 </android.support.constraint.ConstraintLayout>

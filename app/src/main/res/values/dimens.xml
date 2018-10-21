@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <dimen name="tiles_title_size">28sp</dimen>
-  <dimen name="icon_size">160dp</dimen>
-  <dimen name="empty_state_width">320dp</dimen>
+  <dimen name="tile_icon_size">160dp</dimen>
+  <dimen name="tile_text_size">32dp</dimen>
+
+  <dimen name="empty_state_height">192dp</dimen>
+
   <dimen name="calendar_tile_fragment_padding">8dp</dimen>
   <dimen name="standard_line_gap">16dp</dimen>
   <dimen name="calender_tiles_bottom_padding">16dp</dimen>
+
   <dimen name="empty_state_text_size">16sp</dimen>
   <dimen name="empty_state_sub_text_size">12sp</dimen>
 
