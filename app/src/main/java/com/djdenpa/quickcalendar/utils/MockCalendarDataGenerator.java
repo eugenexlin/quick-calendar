@@ -39,6 +39,7 @@ public class MockCalendarDataGenerator {
     for (int i = 0; i < 1 + rand.nextInt(20); i++){
       CalendarInfo ci = new CalendarInfo();
       ci.name = "Test Calendar " + i;
+      ci.id = i;
       result.add(ci);
     }
     return result;

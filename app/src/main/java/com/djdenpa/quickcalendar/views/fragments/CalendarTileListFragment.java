@@ -1,11 +1,10 @@
 package com.djdenpa.quickcalendar.views.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +31,7 @@ public class CalendarTileListFragment extends Fragment {
   @BindView(R.id.cl_empty_state)
   ConstraintLayout clEmptyState;
 
-  private CalendarTileListItemAdapter mCalendarTilesAdapter = new CalendarTileListItemAdapter();
+  private CalendarTileListItemAdapter mCalendarTilesAdapter;
 
   // TODO: Rename parameter arguments, choose names that match
   // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,7 +83,13 @@ public class CalendarTileListFragment extends Fragment {
     // Inflate the layout for this fragment
     View view = inflater.inflate(R.layout.fragment_calendar_tile_list, container, false);
     unbinder = ButterKnife.bind(this, view);
+    mCalendarTilesAdapter = new CalendarTileListItemAdapter();
     rvCalendarTiles.setAdapter(mCalendarTilesAdapter);
+
+    final LinearLayoutManager layoutManager
+            = new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+    rvCalendarTiles.setLayoutManager(layoutManager);
 
     return view;
   }

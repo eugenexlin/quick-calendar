@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/tile_icon_size"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/tile_margin"
     >
 
   <ImageView
