@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.comparer.CalendarInfoComparator;
+import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.CalendarInfo;
 import com.squareup.picasso.Picasso;
 
@@ -32,13 +33,18 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
 
   @Override
   public void onBindViewHolder(@NonNull CalendarTileListItemViewHolder holder, int position) {
-    holder.tvName.setText("test");
+    CalendarInfo calendar = getItem(position);
+    holder.tvName.setText(calendar.name);
     Picasso.get().load(R.drawable.ic_calendar).into(holder.ivThumbnail);
   }
 
   @Override
   public int getItemCount() {
     return mCalendarData.size();
+  }
+
+  private CalendarInfo getItem(int position) {
+    return mCalendarData.get(position);
   }
 
   private CalendarInfoComparator calendarInfoComparator = new CalendarInfoComparator();

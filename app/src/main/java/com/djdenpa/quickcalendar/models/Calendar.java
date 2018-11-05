@@ -15,7 +15,9 @@ public class Calendar implements Parcelable {
   public LinkedList<Event> events = new LinkedList<>();
 
   public Calendar(){
-    
+    name = "";
+    lastAccess = new Date();
+    creatorIdentity = "";
   }
 
   protected Calendar(Parcel in) {
@@ -48,5 +50,19 @@ public class Calendar implements Parcelable {
     parcel.writeString(name);
     parcel.writeLong(lastAccess.getTime());
     parcel.writeString(creatorIdentity);
+  }
+
+  public Date getEarliestDateUTC(){
+    if (events.size() == 0){
+      return new Date();
+    }
+    long earliestStartUTC = events.get(0).eventStartUTC;
+    for (int i = 1; i < events.size(); i++) {
+      long startUTC = events.get(i).eventStartUTC;
+      if (startUTC < earliestStartUTC) {
+        startUTC = earliestStartUTC;
+      }
+    }
+    return new Date(earliestStartUTC);
   }
 }

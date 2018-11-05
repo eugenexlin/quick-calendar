@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:minHeight="@dimen/calendar_week_item_min_height"
+    android:orientation="vertical">
+
+  <android.support.constraint.ConstraintLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/cl_calendar_week"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/calendar_week_item_min_height">
+
+  </android.support.constraint.ConstraintLayout>
+
+  <ImageView
+      android:id="@+id/iv_horizontal_line"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/gray_75_a_50"
+      app:layout_constraintBottom_toBottomOf="parent"/>
+
+</LinearLayout>

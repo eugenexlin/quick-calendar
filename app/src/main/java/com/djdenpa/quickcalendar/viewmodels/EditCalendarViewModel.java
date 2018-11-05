@@ -21,6 +21,9 @@ public class EditCalendarViewModel extends ViewModel {
   }
   // todo init with id
 
+  public void setEntireCalendar(Calendar calendar){
+    activeCalendar.setValue(calendar);
+  }
 
   public LiveData<Calendar> getActiveCalendar(){
     if(activeCalendar == null){

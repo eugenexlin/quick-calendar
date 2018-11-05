@@ -22,7 +22,7 @@ public class MockCalendarDataGenerator {
   public long minEventMs = 1000*60*60;
   public long medianEventMs = 1000*60*60*24;
   public long maxEventMs = 1000*60*60*24*7;
-  public DistributionFormula eventMsDistribution;
+  public DistributionFormula eventMsDistribution = DistributionFormula.GAUSSIAN_3SD;
 
   public long minEventStartUTC = System.currentTimeMillis();
   public long maxEventStartUTC = System.currentTimeMillis() + maxEventMs;
@@ -49,7 +49,7 @@ public class MockCalendarDataGenerator {
     Calendar result = new Calendar();
 
     result.name = "Test Calendar";
-    result.creatorIdentity = "Test Momma";
+    result.creatorIdentity = "Test Mom";
 
     int eventCount = rand.nextInt(maxEventCount - minEventCount) + minEventCount;
 
