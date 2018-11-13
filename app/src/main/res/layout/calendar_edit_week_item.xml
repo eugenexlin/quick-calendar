@@ -1,91 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:minHeight="@dimen/calendar_week_item_min_height"
-    android:orientation="vertical">
 
-  <android.support.constraint.ConstraintLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:id="@+id/cl_calendar_week"
-      android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_calendar_week"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/calendar_week_item_min_height">
+
+  <android.support.constraint.Guideline
+      android:id="@+id/g_day_0"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.00"
+      />
+
+  <android.support.constraint.Guideline
+      android:id="@+id/g_day_1"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:minHeight="@dimen/calendar_week_item_min_height">
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.143"
+      />
+  <android.support.constraint.Guideline
+      android:id="@+id/g_day_2"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.286"
+      />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/g_day_0"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.00"
-        />
+  <android.support.constraint.Guideline
+      android:id="@+id/g_day_4"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.571"
+      />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/g_day_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.143"
-        />
-    <android.support.constraint.Guideline
-        android:id="@+id/g_day_2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.286"
-        />
+  <android.support.constraint.Guideline
+      android:id="@+id/g_day_3"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.429"
+      />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/g_day_4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.571"
-        />
+  <android.support.constraint.Guideline
+      android:id="@+id/g_day_5"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.714"
+      />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/g_day_3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.429"
-        />
+  <android.support.constraint.Guideline
+      android:id="@+id/g_day_6"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.857"
+      />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/g_day_5"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.714"
-        />
+  <android.support.constraint.Guideline
+      android:id="@+id/g_day_7"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="1.000"
+      />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/g_day_6"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.857"
-        />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/g_day_7"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="1.000"
-        />
-
-  </android.support.constraint.ConstraintLayout>
-
-  <ImageView
-      android:id="@+id/iv_horizontal_line"
-      android:layout_width="match_parent"
-      android:layout_height="1dp"
-      android:background="@color/gray_75_a_50"
-      app:layout_constraintBottom_toBottomOf="parent"/>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

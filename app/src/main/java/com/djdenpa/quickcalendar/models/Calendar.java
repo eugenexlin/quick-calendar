@@ -52,17 +52,17 @@ public class Calendar implements Parcelable {
     parcel.writeString(creatorIdentity);
   }
 
-  public Date getEarliestDateUTC(){
+  public long getEarliestMillisUTC(){
     if (events.size() == 0){
-      return new Date();
+      return new Date().getTime();
     }
     long earliestStartUTC = events.get(0).eventStartUTC;
     for (int i = 1; i < events.size(); i++) {
       long startUTC = events.get(i).eventStartUTC;
       if (startUTC < earliestStartUTC) {
-        startUTC = earliestStartUTC;
+        earliestStartUTC = startUTC;
       }
     }
-    return new Date(earliestStartUTC);
+    return earliestStartUTC;
   }
 }

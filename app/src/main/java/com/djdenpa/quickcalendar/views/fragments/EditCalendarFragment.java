@@ -12,12 +12,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
-import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarNameDialog;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -32,8 +33,14 @@ public class EditCalendarFragment extends Fragment
   TextView tvCalendarName;
   @BindView(R.id.rv_calendar_weeks)
   RecyclerView rvCalendarWeeks;
+  @BindView(R.id.tv_calendar_floating_tag)
+  TextView tvCalendarFloatingTag;
+
+  private int mCurrentYear = -1;
+  private int mCurrentMonth = -1;
 
   CalendarWeekAdapter mAdapter;
+  LinearLayoutManager mLayoutManager;
 
   private EditCalendarViewModel viewModel;
 
@@ -77,29 +84,47 @@ public class EditCalendarFragment extends Fragment
 
     tvCalendarName.setOnClickListener(v -> PromptChangeName());
 
-    final LinearLayoutManager layoutManager
+    mLayoutManager
             = new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false);
 
-    rvCalendarWeeks.setLayoutManager(layoutManager);
+    rvCalendarWeeks.setLayoutManager(mLayoutManager);
 
     mAdapter = new CalendarWeekAdapter(getContext());
     //fetch earliest event, it will be base scroll
-    Date startDate = viewModel.getActiveCalendar().getValue().getEarliestDateUTC();
-    java.util.Calendar javaCal = java.util.Calendar.getInstance();
-    javaCal.setTime(startDate);
-    javaCal.set(java.util.Calendar.HOUR_OF_DAY, 0);
-    javaCal.set(java.util.Calendar.MINUTE, 0);
-    javaCal.set(java.util.Calendar.SECOND, 0);
-    javaCal.set(java.util.Calendar.MILLISECOND, 0);
-    javaCal.add(java.util.Calendar.DAY_OF_WEEK, -(javaCal.get(java.util.Calendar.DAY_OF_WEEK)-1));
-    mAdapter.setMidpointDate(javaCal.getTime());
+    mAdapter.setMidpointDateMillis(viewModel.getActiveCalendar().getValue().getEarliestMillisUTC());
 
     rvCalendarWeeks.setAdapter(mAdapter);
 
     rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION);
 
+    rvCalendarWeeks.addOnScrollListener(new RecyclerView.OnScrollListener() {
+      @Override
+      public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        updateCalendarFloatingTag();
+      }
+    });
+
+    updateCalendarFloatingTag();
 
     return rootView;
+  }
+
+  private void updateCalendarFloatingTag() {
+    int start = mLayoutManager.findFirstVisibleItemPosition();
+    int last = mLayoutManager.findLastVisibleItemPosition();
+    int position = (start + last)/2;
+
+    java.util.Calendar jCal = mAdapter.getMonthYear(position);
+    boolean hasChange = false;
+    hasChange |= (mCurrentYear != jCal.get(Calendar.YEAR));
+    hasChange |= (mCurrentMonth != jCal.get(Calendar.MONTH));
+    mCurrentYear = jCal.get(Calendar.YEAR);
+    mCurrentMonth = jCal.get(Calendar.MONTH);
+    SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
+    tvCalendarFloatingTag.setText(sdf.format(jCal.getTime()));
+    if (hasChange) {
+      mAdapter.setHighlightMonth(mCurrentMonth);
+    }
   }
 
   private void PromptChangeName(){
