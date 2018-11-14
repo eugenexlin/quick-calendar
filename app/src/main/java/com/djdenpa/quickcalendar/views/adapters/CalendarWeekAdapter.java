@@ -60,6 +60,21 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
   @BindView(R.id.g_day_7)
   Guideline gDay7;
 
+  @BindView(R.id.tv_day_0)
+  TextView tvDay0;
+  @BindView(R.id.tv_day_1)
+  TextView tvDay1;
+  @BindView(R.id.tv_day_2)
+  TextView tvDay2;
+  @BindView(R.id.tv_day_3)
+  TextView tvDay3;
+  @BindView(R.id.tv_day_4)
+  TextView tvDay4;
+  @BindView(R.id.tv_day_5)
+  TextView tvDay5;
+  @BindView(R.id.tv_day_6)
+  TextView tvDay6;
+
   // private HashSet<View> managedViews = new HashSet<>();
   private static final String MANAGED_VIEW_TAG = "MANAGED_VIEW_TAG";
 
@@ -110,20 +125,25 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
       int month = dayOfWeek.get(java.util.Calendar.MONTH);
       Guideline guideline = getGuideline(i);
 
-      TextView view = createTextViewHelper();
-      ((ManagedViewTag)view.getTag()).month = month;
+      TextView view;
+
+
+//      view = createTextViewHelper();
+//      parent.addView(view);
+//      constraintSet.clone(parent);
+//      constraintSet.connect(view.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 8);
+//      constraintSet.connect(view.getId(), ConstraintSet.START, guideline.getId(), ConstraintSet.END, 16);
+//      constraintSet.applyTo(parent);
+
+
+      view = getDayTextField(i);
+
+
       view.setText(String.valueOf(dateNumber));
-      if (month == mHighlightMonth) {
-        view.setTypeface(null, Typeface.BOLD);
+
+      if (i == 0) {
+        view.setText(String.valueOf(position));
       }
-      parent.addView(view);
-
-      constraintSet.clone(parent);
-
-      constraintSet.connect(view.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 8);
-      constraintSet.connect(view.getId(), ConstraintSet.START, guideline.getId(), ConstraintSet.END, 16);
-
-      constraintSet.applyTo(parent);
 
       // special check for if date is 1, so we can draw a line
       if (dateNumber == 1) {
@@ -160,7 +180,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     TextView view = new TextView(mContext);
     view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     view.setId(View.generateViewId());
-    view.setTag(new ManagedViewTag());
+    view.setTag(MANAGED_VIEW_TAG);
     return view;
   }
 
@@ -196,6 +216,26 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
         return gDay0;
     }
   }
+  private TextView getDayTextField(int position){
+    switch(position) {
+      case 0:
+        return tvDay0;
+      case 1:
+        return tvDay1;
+      case 2:
+        return tvDay2;
+      case 3:
+        return tvDay3;
+      case 4:
+        return tvDay4;
+      case 5:
+        return tvDay5;
+      case 6:
+        return tvDay6;
+      default:
+        return tvDay0;
+    }
+  }
 
   @Override
   public void onViewRecycled(@NonNull CalendarWeekViewHolder holder) {
@@ -203,7 +243,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     ConstraintLayout parent = holder.getParentLayout();
     for (int i = 0; i < parent.getChildCount(); i++) {
       View view = parent.getChildAt(i);
-      if (view.getTag() instanceof ManagedViewTag) {
+      if (view.getTag() == MANAGED_VIEW_TAG) {
         parent.removeView(view);
         i--;
       }

@@ -71,4 +71,69 @@
       app:layout_constraintGuide_percent="1.000"
       />
 
+  <TextView
+      android:id="@+id/tv_day_0"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:text=""
+      app:layout_constraintStart_toStartOf="@id/g_day_0"
+      app:layout_constraintTop_toTopOf="parent"/>
+  <TextView
+      android:id="@+id/tv_day_1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:text=""
+      app:layout_constraintStart_toStartOf="@id/g_day_1"
+      app:layout_constraintTop_toTopOf="parent"/>
+  <TextView
+      android:id="@+id/tv_day_2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:text=""
+      app:layout_constraintStart_toStartOf="@id/g_day_2"
+      app:layout_constraintTop_toTopOf="parent"/>
+  <TextView
+      android:id="@+id/tv_day_3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:text=""
+      app:layout_constraintStart_toStartOf="@id/g_day_3"
+      app:layout_constraintTop_toTopOf="parent"/>
+  <TextView
+      android:id="@+id/tv_day_4"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:text=""
+      app:layout_constraintStart_toStartOf="@id/g_day_4"
+      app:layout_constraintTop_toTopOf="parent"/>
+  <TextView
+      android:id="@+id/tv_day_5"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:text=""
+      app:layout_constraintStart_toStartOf="@id/g_day_5"
+      app:layout_constraintTop_toTopOf="parent"/>
+  <TextView
+      android:id="@+id/tv_day_6"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:text=""
+      app:layout_constraintStart_toStartOf="@id/g_day_6"
+      app:layout_constraintTop_toTopOf="parent"/>
+
+
 </android.support.constraint.ConstraintLayout>
