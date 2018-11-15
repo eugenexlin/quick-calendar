@@ -19,6 +19,21 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
   @BindView(R.id.cl_calendar_week)
   ConstraintLayout clCalendarWeeks;
 
+  @BindView(R.id.tv_day_0)
+  TextView tvDay0;
+  @BindView(R.id.tv_day_1)
+  TextView tvDay1;
+  @BindView(R.id.tv_day_2)
+  TextView tvDay2;
+  @BindView(R.id.tv_day_3)
+  TextView tvDay3;
+  @BindView(R.id.tv_day_4)
+  TextView tvDay4;
+  @BindView(R.id.tv_day_5)
+  TextView tvDay5;
+  @BindView(R.id.tv_day_6)
+  TextView tvDay6;
+
   Context mContext;
 
 
@@ -46,6 +61,34 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     constraintSet.connect(divider.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
 
     constraintSet.applyTo(clCalendarWeeks);
+  }
+
+  public void setDayTextField(int position, String date){
+    switch(position) {
+      case 0:
+        tvDay0.setText(date);
+        return;
+      case 1:
+        tvDay1.setText(date);
+        return;
+      case 2:
+        tvDay2.setText(date);
+        return;
+      case 3:
+        tvDay3.setText(date);
+        return;
+      case 4:
+        tvDay4.setText(date);
+        return;
+      case 5:
+        tvDay5.setText(date);
+        return;
+      case 6:
+        tvDay6.setText(date);
+        return;
+      default:
+        return;
+    }
   }
 
   public ConstraintLayout getParentLayout(){

@@ -82,7 +82,9 @@ public class EditCalendarFragment extends Fragment
 
     unbinder = ButterKnife.bind(this, rootView);
 
-    tvCalendarName.setOnClickListener(v -> PromptChangeName());
+    tvCalendarName.setOnClickListener(v -> {
+      PromptChangeName();
+    });
 
     mLayoutManager
             = new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false);
