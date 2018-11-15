@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+  <string name="day_of_week_header_0">S</string>
+  <string name="day_of_week_header_1">M</string>
+  <string name="day_of_week_header_2">T</string>
+  <string name="day_of_week_header_3">W</string>
+  <string name="day_of_week_header_4">T</string>
+  <string name="day_of_week_header_5">F</string>
+  <string name="day_of_week_header_6">S</string>
+
+</resources>

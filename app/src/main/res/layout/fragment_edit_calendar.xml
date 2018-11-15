@@ -14,29 +14,33 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-  <android.support.v7.widget.RecyclerView
-      android:id="@+id/rv_calendar_weeks"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      >
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_calendar_weeks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
 
-  </android.support.v7.widget.RecyclerView>
+    </android.support.v7.widget.RecyclerView>
 
-  <TextView
-      android:id="@+id/tv_calendar_floating_tag"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:background="@drawable/calendar_floating_tag"
-      android:paddingBottom="@dimen/calendar_floating_tag_padding_vertical"
-      android:paddingEnd="@dimen/calendar_floating_tag_padding_horizontal"
-      android:paddingStart="@dimen/calendar_floating_tag_padding_horizontal"
-      android:paddingTop="@dimen/calendar_floating_tag_padding_vertical"
-      android:textColor="@color/white"
-      android:layout_marginTop="@dimen/calendar_floating_tag_margin_top"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      />
+    <include layout="@layout/days_of_week_header" />
+
+    <TextView
+        android:id="@+id/tv_calendar_floating_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/calendar_floating_tag"
+        android:paddingBottom="@dimen/calendar_floating_tag_padding_vertical"
+        android:paddingEnd="@dimen/calendar_floating_tag_padding_horizontal"
+        android:paddingStart="@dimen/calendar_floating_tag_padding_horizontal"
+        android:paddingTop="@dimen/calendar_floating_tag_padding_vertical"
+        android:textColor="@color/white"
+        android:textSize="@dimen/calendar_floating_tag_text_size"
+        android:layout_marginTop="@dimen/calendar_floating_tag_margin_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
 
   </android.support.constraint.ConstraintLayout>
 

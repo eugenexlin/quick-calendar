@@ -43,23 +43,6 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
   private Context mContext;
 
-  @BindView(R.id.g_day_0)
-  Guideline gDay0;
-  @BindView(R.id.g_day_1)
-  Guideline gDay1;
-  @BindView(R.id.g_day_2)
-  Guideline gDay2;
-  @BindView(R.id.g_day_3)
-  Guideline gDay3;
-  @BindView(R.id.g_day_4)
-  Guideline gDay4;
-  @BindView(R.id.g_day_5)
-  Guideline gDay5;
-  @BindView(R.id.g_day_6)
-  Guideline gDay6;
-  @BindView(R.id.g_day_7)
-  Guideline gDay7;
-
   // private HashSet<View> managedViews = new HashSet<>();
   private static final String MANAGED_VIEW_TAG = "MANAGED_VIEW_TAG";
 
@@ -77,8 +60,6 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     Context context = parent.getContext();
     LayoutInflater inflater = LayoutInflater.from(context);
     View view = inflater.inflate(R.layout.calendar_edit_week_item, parent, false);
-
-    ButterKnife.bind(this, view);
 
     return new CalendarWeekViewHolder(view, context);
   }
@@ -108,34 +89,23 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
       dayOfWeek.add(java.util.Calendar.DAY_OF_YEAR, i);
       int dateNumber = dayOfWeek.get(java.util.Calendar.DATE);
       int month = dayOfWeek.get(java.util.Calendar.MONTH);
-      Guideline guideline = getGuideline(i);
 
-      holder.setDayTextField(i, String.valueOf(dateNumber));
-
-      TextView view;
-
-
-//      view = createTextViewHelper();
-//      parent.addView(view);
-//      constraintSet.clone(parent);
-//      constraintSet.connect(view.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 8);
-//      constraintSet.connect(view.getId(), ConstraintSet.START, guideline.getId(), ConstraintSet.END, 16);
-//      constraintSet.applyTo(parent);
-
-
-//      view = getDayTextField(i);
-
-//      System.out.println(dateNumber);
-//      view.setText(String.valueOf(dateNumber));
-//
-//      if (i == 0) {
-//        view.setText(String.valueOf(position));
-//      }
+      TextView view = holder.getDayTextField(i);
+      view.setText(String.valueOf(dateNumber));
+      if (month == mHighlightMonth) {
+        view.setTextColor(mContext.getColor(R.color.darker_gray));
+        view.setTypeface(null, Typeface.BOLD);
+      }else{
+        view.setTextColor(mContext.getColor(R.color.lighter_gray));
+        view.setTypeface(null, Typeface.NORMAL);
+      }
 
       // special check for if date is 1, so we can draw a line
       if (dateNumber == 1) {
         ImageView divider = createVerticalDividerHelper();
         parent.addView(divider);
+
+        Guideline guideline = holder.getGuideline(i);
 
         constraintSet.clone(parent);
 
@@ -161,8 +131,6 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
   }
 
-
-
   private TextView createTextViewHelper() {
     TextView view = new TextView(mContext);
     view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -179,29 +147,6 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     view.setBackgroundColor(mContext.getColor(R.color.gray_75_a_50));
     view.setTag(MANAGED_VIEW_TAG);
     return view;
-  }
-
-  private Guideline getGuideline(int position){
-    switch(position) {
-      case 0:
-        return gDay0;
-      case 1:
-        return gDay1;
-      case 2:
-        return gDay2;
-      case 3:
-        return gDay3;
-      case 4:
-        return gDay4;
-      case 5:
-        return gDay5;
-      case 6:
-        return gDay6;
-      case 7:
-        return gDay7;
-      default:
-        return gDay0;
-    }
   }
 
   @Override
@@ -239,6 +184,6 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
   public void setHighlightMonth(int month) {
     mHighlightMonth = month;
-    
+    notifyDataSetChanged();
   }
 }

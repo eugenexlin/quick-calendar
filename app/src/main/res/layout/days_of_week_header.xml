@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cl_calendar_week"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/calendar_week_item_min_height">
+  <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/day_of_week_header_gradient_height"
+      app:layout_constraintTop_toTopOf="parent"
+      android:layout_marginTop="@dimen/day_of_week_header_gradient_offset"
+      android:src="@drawable/days_of_week_header_background"
+      />
+
+  <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/day_of_week_header_gradient_offset"
+      app:layout_constraintTop_toTopOf="parent"
+      android:src="@color/white"
+      />
 
   <android.support.constraint.Guideline
       android:id="@+id/g_day_0"
@@ -76,7 +88,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:text=""
+      android:layout_marginTop="@dimen/day_of_week_header_offset"
+      android:text="@string/day_of_week_header_0"
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_0"
       app:layout_constraintTop_toTopOf="parent"/>
@@ -85,7 +98,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:text=""
+      android:layout_marginTop="@dimen/day_of_week_header_offset"
+      android:text="@string/day_of_week_header_1"
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_1"
       app:layout_constraintTop_toTopOf="parent"/>
@@ -94,7 +108,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:text=""
+      android:layout_marginTop="@dimen/day_of_week_header_offset"
+      android:text="@string/day_of_week_header_2"
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_2"
       app:layout_constraintTop_toTopOf="parent"/>
@@ -103,7 +118,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:text=""
+      android:layout_marginTop="@dimen/day_of_week_header_offset"
+      android:text="@string/day_of_week_header_3"
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_3"
       app:layout_constraintTop_toTopOf="parent"/>
@@ -112,7 +128,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:text=""
+      android:layout_marginTop="@dimen/day_of_week_header_offset"
+      android:text="@string/day_of_week_header_4"
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_4"
       app:layout_constraintTop_toTopOf="parent"/>
@@ -121,7 +138,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:text=""
+      android:layout_marginTop="@dimen/day_of_week_header_offset"
+      android:text="@string/day_of_week_header_5"
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_5"
       app:layout_constraintTop_toTopOf="parent"/>
@@ -130,10 +148,10 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:text=""
+      android:layout_marginTop="@dimen/day_of_week_header_offset"
+      android:text="@string/day_of_week_header_6"
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_6"
       app:layout_constraintTop_toTopOf="parent"/>
 
-
-</android.support.constraint.ConstraintLayout>
+</merge>

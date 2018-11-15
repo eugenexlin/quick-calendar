@@ -11,6 +11,7 @@
   <dimen name="calendar_floating_tag_padding_horizontal">8dp</dimen>
   <dimen name="calendar_floating_tag_padding_vertical">2dp</dimen>
   <dimen name="calendar_floating_tag_margin_top">8dp</dimen>
+  <dimen name="calendar_floating_tag_text_size">18sp</dimen>
 
   <dimen name="empty_state_height">192dp</dimen>
 
@@ -26,6 +27,13 @@
   <dimen name="calendar_title_min_width">150dp</dimen>
   <dimen name="toolbar_text_size">18sp</dimen>
   <dimen name="scroll_padding_for_fab">128dp</dimen>
+
   <dimen name="calendar_week_item_min_height">100dp</dimen>
+  <dimen name="calendar_date_text_size">16sp</dimen>
+
+  <dimen name="day_of_week_header_gradient_height">16dp</dimen>
+  <dimen name="day_of_week_header_offset">42dp</dimen>
+  <dimen name="day_of_week_header_gradient_offset">72dp</dimen>
+
 
 </resources>
