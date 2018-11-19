@@ -1,6 +1,7 @@
 package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.constraint.Guideline;
@@ -163,4 +164,16 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     return clCalendarWeeks;
   }
 
+  public void resynchronizeHighlightMonth(int mCurrentMonth) {
+    for (int i = 0; i <=6; i++) {
+      TextView tv = getDayTextField(i);
+      if ((int)tv.getTag(R.id.tag_tv_month_key) == mCurrentMonth){
+        tv.setTextColor(mContext.getColor(R.color.darker_gray));
+        tv.setTypeface(null, Typeface.BOLD);
+      }else{
+        tv.setTextColor(mContext.getColor(R.color.lighter_gray));
+        tv.setTypeface(null, Typeface.NORMAL);
+      }
+    }
+  }
 }

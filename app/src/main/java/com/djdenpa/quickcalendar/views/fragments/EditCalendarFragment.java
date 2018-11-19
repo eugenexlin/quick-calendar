@@ -15,6 +15,7 @@ import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter;
+import com.djdenpa.quickcalendar.views.adapters.CalendarWeekViewHolder;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarNameDialog;
 import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListDialog;
 
@@ -95,6 +96,7 @@ public class EditCalendarFragment extends Fragment
     rvCalendarWeeks.setLayoutManager(mLayoutManager);
 
     mAdapter = new CalendarWeekAdapter(getContext());
+    mAdapter.setHasStableIds(true);
     //fetch earliest event, it will be base scroll
     long earliestEventMillis = viewModel.getActiveCalendar().getValue().getEarliestMillisUTC();
     mAdapter.setMidpointDateMillis(earliestEventMillis);
@@ -145,9 +147,20 @@ public class EditCalendarFragment extends Fragment
     hasChange |= (mCurrentMonth != jCal.get(Calendar.MONTH));
     mCurrentYear = jCal.get(Calendar.YEAR);
     mCurrentMonth = jCal.get(Calendar.MONTH);
-    SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.month_year_format_string));
-    tvCalendarFloatingTag.setText(sdf.format(jCal.getTime()));
     if (hasChange) {
+      SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.month_year_format_string));
+      tvCalendarFloatingTag.setText(sdf.format(jCal.getTime()));
+      System.out.println("CHANGE MONTH");
+      for (int i = 0; i < rvCalendarWeeks.getChildCount(); i++) {
+        CalendarWeekViewHolder holder = (CalendarWeekViewHolder)rvCalendarWeeks.findViewHolderForLayoutPosition(i);
+        if (holder != null) {
+          System.out.println("NOTNULL");
+          holder.resynchronizeHighlightMonth(mCurrentMonth);
+        }else{
+
+          System.out.println("UNLL");
+        }
+      }
       mAdapter.setHighlightMonth(mCurrentMonth);
     }
   }

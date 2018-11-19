@@ -3,6 +3,7 @@ package com.djdenpa.quickcalendar.views.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -20,8 +21,6 @@ import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.EventCollisionChecker;
 import com.djdenpa.quickcalendar.utils.EventCollisionInfo;
-
-import java.util.Random;
 
 /*
  I want something that scrolls forever, but also take advantage of the
@@ -60,6 +59,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
   private int mHighlightMonth;
 
   private Context mContext;
+  private LayoutInflater mLayoutInflater;
 
   // private HashSet<View> managedViews = new HashSet<>();
   private static final String MANAGED_VIEW_TAG = "MANAGED_VIEW_TAG";
@@ -70,6 +70,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
   public CalendarWeekAdapter(Context context){
     mContext = context;
+    mLayoutInflater = LayoutInflater.from(context);
     SharedPreferences sharedPref = mContext.getSharedPreferences(
             mContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     mEventGranularityFactor = sharedPref.getInt(mContext.getString(R.string.preference_calendar_week_granularity), 4);
@@ -80,8 +81,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
   @Override
   public CalendarWeekViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     Context context = parent.getContext();
-    LayoutInflater inflater = LayoutInflater.from(context);
-    View view = inflater.inflate(R.layout.calendar_edit_week_item, parent, false);
+    View view = mLayoutInflater.inflate(R.layout.calendar_edit_week_item, parent, false);
 
     return new CalendarWeekViewHolder(view, context);
   }
@@ -131,6 +131,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
       TextView view = holder.getDayTextField(i);
       view.setText(String.valueOf(dateNumber));
+      view.setTag(R.id.tag_tv_month_key, month);
       if (month == mHighlightMonth) {
         view.setTextColor(mContext.getColor(R.color.darker_gray));
         view.setTypeface(null, Typeface.BOLD);
@@ -194,34 +195,38 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
         int offsetTop = (EVENT_BAR_HEIGHT + EVENT_BAR_MARGIN) * eventInfo.layer;
 
-        ImageView eventBar = createImageViewHelper();
-        Random rnd = new Random();
-        // int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-        eventBar.setBackgroundColor(Color.GREEN);
+        ConstraintLayout eventBlock = createEventBlockHelper(holder, event);
+        eventBlock.setBackgroundColor(mContext.getColor(R.color.primaryColor));
 
-        parent.addView(eventBar);
+        parent.addView(eventBlock);
 
         constraintSet.clone(parent);
 
-        constraintSet.connect(eventBar.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 60 + offsetTop);
-        constraintSet.connect(eventBar.getId(), ConstraintSet.START, holder.getHighResGuideline(beginPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 2);
-        constraintSet.connect(eventBar.getId(), ConstraintSet.END, holder.getHighResGuideline(endPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 3);
+        constraintSet.connect(eventBlock.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 60 + offsetTop);
+        constraintSet.connect(eventBlock.getId(), ConstraintSet.START, holder.getHighResGuideline(beginPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 2);
+        constraintSet.connect(eventBlock.getId(), ConstraintSet.END, holder.getHighResGuideline(endPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 3);
 
         constraintSet.applyTo(parent);
 
       }
-
     }
 
+    holder.resynchronizeHighlightMonth(mHighlightMonth);
   }
 
-  private ImageView createImageViewHelper() {
-    ImageView view = new ImageView(mContext);
-    // width defined by constraint.
-    view.setLayoutParams(new ViewGroup.LayoutParams(0, EVENT_BAR_HEIGHT));
-    view.setId(View.generateViewId());
-    view.setTag(MANAGED_VIEW_TAG);
-    return view;
+  private ConstraintLayout createEventBlockHelper(@NonNull CalendarWeekViewHolder holder, Event event) {
+
+    ConstraintLayout rootBlock = (ConstraintLayout) mLayoutInflater.inflate(R.layout.calendar_event_item, holder.getParentLayout(),false );
+    ImageView eventBlock = rootBlock.findViewById(R.id.iv_calendar_event_block);
+    eventBlock.setColorFilter(mContext.getColor(R.color.primaryLightColor), PorterDuff.Mode.MULTIPLY);
+    TextView eventName = rootBlock.findViewById(R.id.tv_calendar_event_name);
+    eventName.setText(event.name);
+    rootBlock.setTag(MANAGED_VIEW_TAG);
+    ViewGroup.LayoutParams params = rootBlock.getLayoutParams();
+    params.height = EVENT_BAR_HEIGHT;
+    rootBlock.setLayoutParams(params);
+    rootBlock.setId(View.generateViewId());
+    return rootBlock;
   }
 
   private ImageView createVerticalDividerHelper() {
@@ -269,6 +274,5 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
   public void setHighlightMonth(int month) {
     mHighlightMonth = month;
-    notifyDataSetChanged();
   }
 }

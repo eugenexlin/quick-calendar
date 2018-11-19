@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+  <solid android:color="@color/white"/>
+  <corners
+      android:bottomRightRadius="@dimen/calendar_event_block_radius"
+      android:bottomLeftRadius="@dimen/calendar_event_block_radius"
+      android:topLeftRadius="@dimen/calendar_event_block_radius"
+      android:topRightRadius="@dimen/calendar_event_block_radius"/>
+</shape>
