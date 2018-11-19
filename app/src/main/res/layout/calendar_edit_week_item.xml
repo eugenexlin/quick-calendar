@@ -6,6 +6,7 @@
     android:id="@+id/cl_calendar_week"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/calendar_week_item_vertical_padding"
     android:minHeight="@dimen/calendar_week_item_min_height">
 
   <android.support.constraint.Guideline
@@ -134,6 +135,5 @@
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_6"
       app:layout_constraintTop_toTopOf="parent"/>
-
 
 </android.support.constraint.ConstraintLayout>

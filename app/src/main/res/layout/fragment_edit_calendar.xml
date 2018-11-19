@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/primaryBgColor"
     android:orientation="vertical">
 
   <android.support.constraint.ConstraintLayout
@@ -18,6 +19,7 @@
         android:id="@+id/rv_calendar_weeks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/day_of_week_header_gradient_offset"
         >
 
     </android.support.v7.widget.RecyclerView>
@@ -28,15 +30,14 @@
         android:id="@+id/tv_calendar_floating_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/calendar_floating_tag"
-        android:paddingBottom="@dimen/calendar_floating_tag_padding_vertical"
-        android:paddingEnd="@dimen/calendar_floating_tag_padding_horizontal"
-        android:paddingStart="@dimen/calendar_floating_tag_padding_horizontal"
-        android:paddingTop="@dimen/calendar_floating_tag_padding_vertical"
+        android:background="@drawable/calendar_month_tag"
+        android:paddingStart="@dimen/calendar_month_tag_padding_start"
+        android:paddingEnd="@dimen/calendar_month_tag_padding_end"
+        android:paddingBottom="@dimen/calendar_month_tag_padding_bottom"
         android:textColor="@color/white"
         android:textSize="@dimen/calendar_floating_tag_text_size"
-        android:layout_marginTop="@dimen/calendar_floating_tag_margin_top"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:lineSpacingMultiplier="0.6"
+        android:elevation="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />

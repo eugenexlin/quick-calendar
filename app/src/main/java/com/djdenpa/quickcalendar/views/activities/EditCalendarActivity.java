@@ -4,15 +4,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.djdenpa.quickcalendar.R;
-import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class EditCalendarActivity extends AppCompatActivity {
 
@@ -27,6 +25,25 @@ public class EditCalendarActivity extends AppCompatActivity {
     setSupportActionBar(toolbar);
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu_calendar_edit, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+
+    if (id == R.id.action_change_granularity) {
+      mEditCalendarFragment.PromptChangeGranularityFactor();
+      return true;
+    }
+
+    return super.onOptionsItemSelected(item);
   }
 
 

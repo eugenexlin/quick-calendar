@@ -14,6 +14,8 @@ public class EditCalendarViewModel extends ViewModel {
 
   private Application mApplication;
 
+  public boolean isFirstEntry = true;
+
   public void init() {
     activeCalendar = new MutableLiveData<>();
     Calendar calendar = new Calendar();

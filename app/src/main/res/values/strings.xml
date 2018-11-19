@@ -20,7 +20,23 @@
   <string name="day_of_week_header_4">T</string>
   <string name="day_of_week_header_5">F</string>
   <string name="day_of_week_header_6">S</string>
+  <string name="month_year_format_string">MMMM yyyy</string>
+
+  <string name="preference_file_key">djdenpa_quick_calendar_preference_file_key</string>
+  <string name="preference_calendar_week_granularity">calendar_week_granularity</string>
 
 
+  <string name="menu_change_granularity">Change Event Granularity</string>
+
+
+  <string-array name="week_granularity">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>6</item>
+    <item>12</item>
+    <item>24</item>
+  </string-array>
 
 </resources>

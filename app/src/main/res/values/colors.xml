@@ -9,6 +9,8 @@
   <color name="primaryTextColor">#ffffff</color>
   <color name="secondaryTextColor">#ffffff</color>
 
+  <color name="primaryBgColor">#fcfcfc</color>
+
   <color name="white">#FFFFFF</color>
   <color name="lighter_gray">#c0c0c0</color>
   <color name="light_gray">#a0a0a0</color>

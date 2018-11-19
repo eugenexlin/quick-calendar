@@ -1,6 +1,8 @@
 package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -16,13 +18,10 @@ import android.widget.TextView;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.Event;
-import com.djdenpa.quickcalendar.utils.CalendarDateUtils;
+import com.djdenpa.quickcalendar.utils.EventCollisionChecker;
+import com.djdenpa.quickcalendar.utils.EventCollisionInfo;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.Random;
 
 /*
  I want something that scrolls forever, but also take advantage of the
@@ -35,6 +34,25 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
   public static final int ITEM_COUNT = 5000;
   public static int START_POSITION = ITEM_COUNT/2;
+
+  private static final double MILLIS_PER_DAY = (1000 * 60 * 60 * 24);
+  public static final int EVENT_BAR_HEIGHT = 40;
+  public static final int EVENT_BAR_MARGIN = 5;
+
+  private int mEventGranularityFactor;
+
+  public int getEventGranularityFactor(){
+    return mEventGranularityFactor;
+  }
+  public void setEventGranularityFactor(int value){
+    mEventGranularityFactor = value;
+    SharedPreferences sharedPref = mContext.getSharedPreferences(
+            mContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPref.edit();
+    editor.putInt(mContext.getString(R.string.preference_calendar_week_granularity), value);
+    editor.commit();
+    notifyDataSetChanged();
+  }
 
   private java.util.Calendar mMidpointDate;
   private Calendar mCalendar;
@@ -52,6 +70,10 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
   public CalendarWeekAdapter(Context context){
     mContext = context;
+    SharedPreferences sharedPref = mContext.getSharedPreferences(
+            mContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+    mEventGranularityFactor = sharedPref.getInt(mContext.getString(R.string.preference_calendar_week_granularity), 4);
+
   }
 
   @NonNull
@@ -71,6 +93,23 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     javaCal.add(java.util.Calendar.WEEK_OF_YEAR, position - START_POSITION);
 
     return javaCal;
+  }
+
+  // returns a decimal that represents how close it is to the month integer
+  public double getAverageMonthValue(int startPos, int endPos) {
+
+    java.util.Calendar javaCal = java.util.Calendar.getInstance();
+    javaCal.setTime(mMidpointDate.getTime());
+    javaCal.add(java.util.Calendar.WEEK_OF_YEAR, startPos - START_POSITION);
+    int weeksDifference = endPos - startPos;
+    double sum = 0;
+    double count = weeksDifference * 7.0;
+    for (int i = 0; i < count; i++) {
+      javaCal.add(java.util.Calendar.DATE, 1);
+      sum += javaCal.get(java.util.Calendar.MONTH);
+    }
+
+    return sum/count;
   }
 
 
@@ -119,21 +158,67 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
 
     }
 
+    long weekStartMillis = javaCal.getTimeInMillis();
+    EventCollisionChecker oECC = new EventCollisionChecker();
     // bind the events
     for (Event event : mCalendar.events){
       // does event fall on this week
-      java.util.Calendar eventJavaCal = CalendarDateUtils.getCalendarFromUTCMillis(event.eventStartUTC);
-      eventJavaCal.setTime(new Date(System.currentTimeMillis()));
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-      eventJavaCal.add(java.util.Calendar.WEEK_OF_YEAR, position - START_POSITION);
+      // default to inverted left right position
+      // they must return to neutral for us to render the event.
+      long beginOffsetMillis = event.eventStartUTC - weekStartMillis;
+      long endOffsetMillis = beginOffsetMillis + event.eventDurationMs;
+      int beginPosition = (int) Math.floor(
+              (double)beginOffsetMillis/MILLIS_PER_DAY*mEventGranularityFactor);
+      int endPosition = (int) Math.ceil(
+              (double)endOffsetMillis/MILLIS_PER_DAY*mEventGranularityFactor);
+      //if out of bound, do not draw
+      if (beginPosition > 7*mEventGranularityFactor){
+        continue;
+      }
+      if (endPosition < 0){
+        continue;
+      }
+      // otherwise clip to the limits of this row.
+      if (beginPosition < 0){
+        beginPosition = 0;
+      }
+      if (endPosition > 7*mEventGranularityFactor){
+        endPosition = 7*mEventGranularityFactor;
+      }
+      // sanity check
+      if (beginPosition < endPosition) {
+        EventCollisionInfo eventInfo = new EventCollisionInfo();
+        eventInfo.beginPosition = beginPosition;
+        eventInfo.endPosition = endPosition;
+        oECC.findAvailableSlotAndInsert(eventInfo);
+
+        int offsetTop = (EVENT_BAR_HEIGHT + EVENT_BAR_MARGIN) * eventInfo.layer;
+
+        ImageView eventBar = createImageViewHelper();
+        Random rnd = new Random();
+        // int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+        eventBar.setBackgroundColor(Color.GREEN);
+
+        parent.addView(eventBar);
+
+        constraintSet.clone(parent);
+
+        constraintSet.connect(eventBar.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 60 + offsetTop);
+        constraintSet.connect(eventBar.getId(), ConstraintSet.START, holder.getHighResGuideline(beginPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 2);
+        constraintSet.connect(eventBar.getId(), ConstraintSet.END, holder.getHighResGuideline(endPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 3);
+
+        constraintSet.applyTo(parent);
+
+      }
 
     }
 
   }
 
-  private TextView createTextViewHelper() {
-    TextView view = new TextView(mContext);
-    view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+  private ImageView createImageViewHelper() {
+    ImageView view = new ImageView(mContext);
+    // width defined by constraint.
+    view.setLayoutParams(new ViewGroup.LayoutParams(0, EVENT_BAR_HEIGHT));
     view.setId(View.generateViewId());
     view.setTag(MANAGED_VIEW_TAG);
     return view;

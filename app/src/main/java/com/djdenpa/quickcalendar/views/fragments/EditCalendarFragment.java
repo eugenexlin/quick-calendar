@@ -16,17 +16,18 @@ import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarNameDialog;
+import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class EditCalendarFragment extends Fragment
-        implements EditCalendarNameDialog.EditCalendarNameListener {
+        implements EditCalendarNameDialog.EditCalendarNameListener,
+        GenericSingleSelectListDialog.GenericSpinnerDialogListener{
 
   private Unbinder unbinder;
   @BindView(R.id.tv_calendar_name)
@@ -42,6 +43,8 @@ public class EditCalendarFragment extends Fragment
   CalendarWeekAdapter mAdapter;
   LinearLayoutManager mLayoutManager;
 
+  // this is for throttling
+  private long previousRVScrollTime = System.currentTimeMillis();
   private EditCalendarViewModel viewModel;
 
   @Override
@@ -93,36 +96,56 @@ public class EditCalendarFragment extends Fragment
 
     mAdapter = new CalendarWeekAdapter(getContext());
     //fetch earliest event, it will be base scroll
-    mAdapter.setMidpointDateMillis(viewModel.getActiveCalendar().getValue().getEarliestMillisUTC());
+    long earliestEventMillis = viewModel.getActiveCalendar().getValue().getEarliestMillisUTC();
+    mAdapter.setMidpointDateMillis(earliestEventMillis);
+    java.util.Calendar earliestEventCal = java.util.Calendar.getInstance();
+    earliestEventCal.setTimeInMillis(earliestEventMillis);
+    updateCalendarFocusMonth(earliestEventCal);
 
     rvCalendarWeeks.setAdapter(mAdapter);
 
-    rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION);
+    if (viewModel.isFirstEntry) {
+      rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION );
+    }
 
     rvCalendarWeeks.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
       public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        updateCalendarFloatingTag();
+        if (Math.abs(previousRVScrollTime - System.currentTimeMillis()) > 300) {
+          previousRVScrollTime = System.currentTimeMillis();
+          checkCalendarFocusMonth();
+        }
       }
     });
 
-    updateCalendarFloatingTag();
+    viewModel.isFirstEntry = false;
 
     return rootView;
   }
 
-  private void updateCalendarFloatingTag() {
-    int start = mLayoutManager.findFirstVisibleItemPosition();
-    int last = mLayoutManager.findLastVisibleItemPosition();
-    int position = (start + last)/2;
 
-    java.util.Calendar jCal = mAdapter.getMonthYear(position);
+  // here we use a funny algorithm of if the number becomes
+  // a bit too far from the current month,
+  // set it to a new value
+  private void checkCalendarFocusMonth() {
+    int start = mLayoutManager.findFirstVisibleItemPosition();
+    int end = mLayoutManager.findLastVisibleItemPosition();
+    int midPosition = (start + end)/2;
+
+    if (tvCalendarFloatingTag.getText().length() == 0 ||
+        Math.abs(mAdapter.getAverageMonthValue(start, end) - (double)mCurrentMonth) > 0.7) {
+      java.util.Calendar jCal = mAdapter.getMonthYear(midPosition);
+      updateCalendarFocusMonth(jCal);
+    }
+  }
+
+  private void updateCalendarFocusMonth(java.util.Calendar jCal){
     boolean hasChange = false;
     hasChange |= (mCurrentYear != jCal.get(Calendar.YEAR));
     hasChange |= (mCurrentMonth != jCal.get(Calendar.MONTH));
     mCurrentYear = jCal.get(Calendar.YEAR);
     mCurrentMonth = jCal.get(Calendar.MONTH);
-    SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
+    SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.month_year_format_string));
     tvCalendarFloatingTag.setText(sdf.format(jCal.getTime()));
     if (hasChange) {
       mAdapter.setHighlightMonth(mCurrentMonth);
@@ -132,10 +155,29 @@ public class EditCalendarFragment extends Fragment
   private void PromptChangeName(){
     EditCalendarNameDialog dialog = new EditCalendarNameDialog();
     Bundle args = new Bundle();
-    args.putString(EditCalendarNameDialog.BUNDLE_CALENDAR_NAME, viewModel.getActiveCalendar().getValue().name);
+    args.putString(EditCalendarNameDialog.BUNDLE_CALENDAR_NAME,
+            viewModel.getActiveCalendar().getValue().name);
     dialog.setArguments(args);
     dialog.setTargetFragment(this, 0);
     dialog.show(getFragmentManager(), "EDIT_NAME");
+  }
+
+
+  public void PromptChangeGranularityFactor(){
+
+    GenericSingleSelectListDialog dialog = new GenericSingleSelectListDialog();
+    Bundle args = new Bundle();
+    args.putString(GenericSingleSelectListDialog.BUNDLE_STRING_CURRENT_VALUE,
+            String.valueOf(mAdapter.getEventGranularityFactor()));
+    args.putInt(GenericSingleSelectListDialog.BUNDLE_INT_STRING_TITLE,
+            R.string.menu_change_granularity);
+    args.putInt(GenericSingleSelectListDialog.BUNDLE_INT_ARRAY_ID,
+            R.array.week_granularity);
+    dialog.setArguments(args);
+    dialog.setTargetFragment(this, DIALOG_CODE_CHANGE_WEEK_GRANULARITY);
+
+    dialog.show(getFragmentManager(), "CHANGE_GRANULARITY");
+
   }
 
   @Override
@@ -145,6 +187,19 @@ public class EditCalendarFragment extends Fragment
   }
 
   public void checkCalendarName() {
+
+  }
+
+  private static final int DIALOG_CODE_CHANGE_WEEK_GRANULARITY = 0;
+
+  @Override
+  public void handleSpinnerDialog(int code, String value) {
+    switch(code){
+      case DIALOG_CODE_CHANGE_WEEK_GRANULARITY:
+        int numVal = Integer.parseInt(value);
+        mAdapter.setEventGranularityFactor(numVal);
+        return;
+    }
 
   }
 }

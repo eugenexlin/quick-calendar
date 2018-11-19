@@ -25,7 +25,7 @@ public class MockCalendarDataGenerator {
   public DistributionFormula eventMsDistribution = DistributionFormula.GAUSSIAN_3SD;
 
   public long minEventStartUTC = System.currentTimeMillis();
-  public long maxEventStartUTC = System.currentTimeMillis() + maxEventMs;
+  public long maxEventStartUTC = System.currentTimeMillis() + maxEventMs*10;
 
   public int minEventCount = 10;
   public int maxEventCount = 50;
@@ -97,6 +97,6 @@ public class MockCalendarDataGenerator {
         break;
     }
     double halfGaussian = Math.abs(rand.nextGaussian()) * multiplier;
-    return (long) (halfGaussian * distance + multiplier);
+    return (long) (halfGaussian * distance + start);
   }
 }
