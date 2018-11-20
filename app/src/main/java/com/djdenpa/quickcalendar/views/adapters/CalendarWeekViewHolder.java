@@ -2,6 +2,7 @@ package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.constraint.Guideline;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.djdenpa.quickcalendar.R;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,9 +57,17 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
   @BindView(R.id.tv_day_6)
   TextView tvDay6;
 
+//  @BindView(R.id.iv_week_divider)
+//  ImageView ivHorizontalDivider;
+  @BindView(R.id.iv_month_divider)
+  ImageView ivVerticalDivider;
+
   Context mContext;
 
   private HashMap<String, Guideline> mDynamicGuidelines = new HashMap<>();
+
+  // this list shall hold hidden constraint layouts that
+  private LinkedList<CalendarEventViewManager> mRecycledEventViews = new LinkedList<>();
 
 
   public CalendarWeekViewHolder(View itemView, Context context) {
@@ -66,25 +76,6 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     ButterKnife.bind(this, itemView);
 
     mContext = context;
-
-    //here create a horizontal divider that will be permanent for the view holder
-    //made here so line width is consistent with the other line
-    ImageView divider = new ImageView(mContext);
-    int lineThickness = (int) (mContext.getResources().getDimension(R.dimen.divider_line_thickness));
-    divider.setLayoutParams(new ViewGroup.LayoutParams(0, lineThickness));
-    divider.setId(View.generateViewId());
-    divider.setBackgroundColor(mContext.getColor(R.color.gray_75_a_50));
-    clCalendarWeeks.addView(divider);
-
-    ConstraintSet constraintSet = new ConstraintSet();
-    constraintSet.clone(clCalendarWeeks);
-
-    constraintSet.connect(divider.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
-
-    constraintSet.connect(divider.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
-    constraintSet.connect(divider.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
-
-    constraintSet.applyTo(clCalendarWeeks);
   }
 
   public Guideline getGuideline(int position){
@@ -108,6 +99,14 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
       default:
         return gDay0;
     }
+  }
+
+  public void setVerticalDividerPosition(int position) {
+    Guideline guideline = getGuideline(position);
+    ConstraintSet constraintSet = new ConstraintSet();
+    constraintSet.clone(clCalendarWeeks);
+    constraintSet.connect(ivVerticalDivider.getId(), ConstraintSet.END, guideline.getId(), ConstraintSet.START, 0);
+    constraintSet.applyTo(clCalendarWeeks);
   }
 
   public Guideline getHighResGuideline(int scaledPosition, int multiplier) {
@@ -138,6 +137,22 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
 
     return mDynamicGuidelines.get(key);
   }
+
+  // hide a view's visibility and
+  public void RecycleViewToPool(CalendarEventViewManager eventItem) {
+    eventItem.hide();
+    mRecycledEventViews.push(eventItem);
+
+  }
+
+  public CalendarEventViewManager getViewFromPoolOrCreate(Context context, @NonNull CalendarWeekViewHolder holder) {
+    if (mRecycledEventViews.size() > 0) {
+      CalendarEventViewManager result = mRecycledEventViews.poll();
+      return result;
+    }
+    return new CalendarEventViewManager(context, holder);
+  }
+
 
   public TextView getDayTextField(int position){
     switch(position) {

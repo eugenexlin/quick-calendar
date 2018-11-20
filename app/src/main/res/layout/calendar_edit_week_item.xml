@@ -6,7 +6,6 @@
     android:id="@+id/cl_calendar_week"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/calendar_week_item_vertical_padding"
     android:minHeight="@dimen/calendar_week_item_min_height">
 
   <android.support.constraint.Guideline
@@ -126,6 +125,7 @@
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_5"
       app:layout_constraintTop_toTopOf="parent"/>
+
   <TextView
       android:id="@+id/tv_day_6"
       android:layout_width="wrap_content"
@@ -135,5 +135,24 @@
       android:textSize="@dimen/calendar_date_text_size"
       app:layout_constraintStart_toStartOf="@id/g_day_6"
       app:layout_constraintTop_toTopOf="parent"/>
+
+  <ImageView
+      android:id="@+id/iv_week_divider"
+      android:layout_width="0dp"
+      android:layout_height="@dimen/divider_line_thickness"
+      android:src="@color/gray_75_a_50"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      />
+
+  <ImageView
+      android:id="@+id/iv_month_divider"
+      android:layout_width="@dimen/divider_line_thickness"
+      android:layout_height="0dp"
+      android:src="@color/gray_75_a_50"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      />
 
 </android.support.constraint.ConstraintLayout>

@@ -20,15 +20,15 @@ public class MockCalendarDataGenerator {
   // and then it uses distribution formula for that time range.
   // that way if we want a rare long event, it wont skew our distribution.
   public long minEventMs = 1000*60*60;
-  public long medianEventMs = 1000*60*60*24;
+  public long medianEventMs = 1000*60*60*12;
   public long maxEventMs = 1000*60*60*24*7;
   public DistributionFormula eventMsDistribution = DistributionFormula.GAUSSIAN_3SD;
 
   public long minEventStartUTC = System.currentTimeMillis();
-  public long maxEventStartUTC = System.currentTimeMillis() + maxEventMs*10;
+  public long maxEventStartUTC = System.currentTimeMillis() + maxEventMs*30;
 
   public int minEventCount = 10;
-  public int maxEventCount = 50;
+  public int maxEventCount = 200;
 
   public long roundToMs = 1000*60*30;
 

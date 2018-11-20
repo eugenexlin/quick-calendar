@@ -7,8 +7,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
@@ -96,7 +98,6 @@ public class EditCalendarFragment extends Fragment
     rvCalendarWeeks.setLayoutManager(mLayoutManager);
 
     mAdapter = new CalendarWeekAdapter(getContext());
-    mAdapter.setHasStableIds(true);
     //fetch earliest event, it will be base scroll
     long earliestEventMillis = viewModel.getActiveCalendar().getValue().getEarliestMillisUTC();
     mAdapter.setMidpointDateMillis(earliestEventMillis);
@@ -113,8 +114,9 @@ public class EditCalendarFragment extends Fragment
     rvCalendarWeeks.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
       public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        if (Math.abs(previousRVScrollTime - System.currentTimeMillis()) > 300) {
+        if (Math.abs(previousRVScrollTime - System.currentTimeMillis()) > 100) {
           previousRVScrollTime = System.currentTimeMillis();
+
           checkCalendarFocusMonth();
         }
       }
@@ -124,7 +126,6 @@ public class EditCalendarFragment extends Fragment
 
     return rootView;
   }
-
 
   // here we use a funny algorithm of if the number becomes
   // a bit too far from the current month,
@@ -150,17 +151,6 @@ public class EditCalendarFragment extends Fragment
     if (hasChange) {
       SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.month_year_format_string));
       tvCalendarFloatingTag.setText(sdf.format(jCal.getTime()));
-      System.out.println("CHANGE MONTH");
-      for (int i = 0; i < rvCalendarWeeks.getChildCount(); i++) {
-        CalendarWeekViewHolder holder = (CalendarWeekViewHolder)rvCalendarWeeks.findViewHolderForLayoutPosition(i);
-        if (holder != null) {
-          System.out.println("NOTNULL");
-          holder.resynchronizeHighlightMonth(mCurrentMonth);
-        }else{
-
-          System.out.println("UNLL");
-        }
-      }
       mAdapter.setHighlightMonth(mCurrentMonth);
     }
   }
@@ -196,11 +186,7 @@ public class EditCalendarFragment extends Fragment
   @Override
   public void setCalendarName(String name) {
     String cleanedName = name.trim();
-    viewModel.setCalendarName(name);
-  }
-
-  public void checkCalendarName() {
-
+    viewModel.setCalendarName(cleanedName);
   }
 
   private static final int DIALOG_CODE_CHANGE_WEEK_GRANULARITY = 0;
