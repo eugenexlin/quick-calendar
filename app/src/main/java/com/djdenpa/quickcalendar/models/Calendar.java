@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.HashMap;
 
 public class Calendar implements Parcelable {
   public int id;
@@ -12,7 +12,9 @@ public class Calendar implements Parcelable {
   public Date lastAccess;
   public String creatorIdentity;
 
-  public LinkedList<Event> events = new LinkedList<>();
+  private int nextEventSetId;
+  private Object nextEventSetIdLock = new Object();
+  private HashMap<Integer, EventSet> eventSetHash = new HashMap<>();
 
   public Calendar(){
     name = "";
@@ -52,17 +54,56 @@ public class Calendar implements Parcelable {
     parcel.writeString(creatorIdentity);
   }
 
-  public long getEarliestMillisUTC(){
-    if (events.size() == 0){
-      return new Date().getTime();
-    }
-    long earliestStartUTC = events.get(0).eventStartUTC;
-    for (int i = 1; i < events.size(); i++) {
-      long startUTC = events.get(i).eventStartUTC;
-      if (startUTC < earliestStartUTC) {
-        earliestStartUTC = startUTC;
+  public void saveEventSet(EventSet eventSet) {
+    // if they add an event with an id greater than the next event id,
+    // hek set our next id to greater than that one
+    if (eventSet.id > nextEventSetId) {
+      synchronized (nextEventSetIdLock){
+        nextEventSetId = eventSet.id + 1;
       }
     }
-    return earliestStartUTC;
+    // if no id, assign one.
+    if (eventSet.id == 0){
+      eventSet.id = claimNextId();
+    }
+    // now we see if this event id is already there. if so, save over it.
+    if (eventSetHash.containsKey(eventSet.id )){
+      EventSet existingEventSet = eventSetHash.get(eventSet.id);
+      existingEventSet.copyFrom(eventSet);
+    } else {
+      eventSetHash.put(eventSet.id, eventSet);
+    }
   }
+
+  public int claimNextId() {
+    int result;
+    synchronized (nextEventSetIdLock){
+      result = nextEventSetId;
+      nextEventSetId+=1;
+    }
+    return result;
+  }
+
+
+  public EventSet getFirstEventSet(){
+    EventSet result = null;
+    //return the first that exists.
+    for (EventSet set : eventSetHash.values()){
+      result = set;
+      break;
+    }
+    if (result == null) {
+      result = new EventSet();
+      eventSetHash.put(1, result);
+    }
+    return result;
+  }
+
+  public EventSet getEventSetById(int id){
+    if (eventSetHash.containsKey(id)){
+      return eventSetHash.get(id);
+    }
+    return getFirstEventSet();
+  }
+
 }

@@ -42,6 +42,10 @@ public class EditCalendarActivity extends AppCompatActivity {
       mEditCalendarFragment.PromptChangeGranularityFactor();
       return true;
     }
+    if (id == R.id.action_add_event) {
+      mEditCalendarFragment.PromptChangeGranularityFactor();
+      return true;
+    }
 
     return super.onOptionsItemSelected(item);
   }

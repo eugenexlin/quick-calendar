@@ -27,6 +27,9 @@
 
 
   <string name="menu_change_granularity">Change Event Granularity</string>
+  <string name="menu_add_event">Add Event</string>
+
+  <string name="edit_event_event_name_label">Event Name</string>
 
 
   <string-array name="week_granularity">

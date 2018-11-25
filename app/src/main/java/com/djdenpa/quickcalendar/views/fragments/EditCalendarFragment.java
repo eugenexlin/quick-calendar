@@ -14,10 +14,12 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
+import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter;
 import com.djdenpa.quickcalendar.views.adapters.CalendarWeekViewHolder;
+import com.djdenpa.quickcalendar.views.dialogs.EditCalendarEventDialog;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarNameDialog;
 import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListDialog;
 
@@ -30,7 +32,8 @@ import butterknife.Unbinder;
 
 public class EditCalendarFragment extends Fragment
         implements EditCalendarNameDialog.EditCalendarNameListener,
-        GenericSingleSelectListDialog.GenericSpinnerDialogListener{
+        GenericSingleSelectListDialog.GenericSpinnerDialogListener,
+        EditCalendarEventDialog.EditCalendarNameListener {
 
   private Unbinder unbinder;
   @BindView(R.id.tv_calendar_name)
@@ -74,7 +77,7 @@ public class EditCalendarFragment extends Fragment
       } else {
         tvCalendarName.setText(calendar.name);
       }
-      mAdapter.setData(calendar);
+      mAdapter.setData(viewModel.getActiveEventSet());
     });
   }
 
@@ -99,7 +102,7 @@ public class EditCalendarFragment extends Fragment
 
     mAdapter = new CalendarWeekAdapter(getContext());
     //fetch earliest event, it will be base scroll
-    long earliestEventMillis = viewModel.getActiveCalendar().getValue().getEarliestMillisUTC();
+    long earliestEventMillis = viewModel.getActiveCalendar().getValue().getFirstEventSet().getEarliestMillisUTC();
     mAdapter.setMidpointDateMillis(earliestEventMillis);
     java.util.Calendar earliestEventCal = java.util.Calendar.getInstance();
     earliestEventCal.setTimeInMillis(earliestEventMillis);
@@ -183,6 +186,21 @@ public class EditCalendarFragment extends Fragment
 
   }
 
+  public void PromptEditEvent(Event event){
+
+    EditCalendarEventDialog dialog = new EditCalendarEventDialog();
+    Bundle args = new Bundle();
+    if (event != null){
+      args.putParcelable(EditCalendarEventDialog.BUNDLE_CALENDAR_EVENT,
+              event);
+      dialog.setArguments(args);
+    }
+    dialog.setTargetFragment(this, DIALOG_CODE_CHANGE_WEEK_GRANULARITY);
+
+    dialog.show(getFragmentManager(), "CHANGE_GRANULARITY");
+
+  }
+
   @Override
   public void setCalendarName(String name) {
     String cleanedName = name.trim();
@@ -199,6 +217,11 @@ public class EditCalendarFragment extends Fragment
         mAdapter.setEventGranularityFactor(numVal);
         return;
     }
+
+  }
+
+  @Override
+  public void saveEve nt(Event event) {
 
   }
 }

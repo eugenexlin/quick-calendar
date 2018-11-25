@@ -8,9 +8,11 @@ import android.support.annotation.NonNull;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Calendar;
+import com.djdenpa.quickcalendar.models.EventSet;
 
 public class EditCalendarViewModel extends ViewModel {
   public MutableLiveData<Calendar> activeCalendar;
+  public int activeEventSetId;
 
   private Application mApplication;
 
@@ -32,6 +34,13 @@ public class EditCalendarViewModel extends ViewModel {
       init();
     }
     return activeCalendar;
+  }
+
+  public EventSet getActiveEventSet(){
+    Calendar calendar = activeCalendar.getValue();
+    EventSet eventSet = calendar.getEventSetById(activeEventSetId);
+    activeEventSetId = eventSet.id;
+    return eventSet;
   }
 
   public void setCalendarName(String name){

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.Event;
+import com.djdenpa.quickcalendar.models.EventSet;
 import com.djdenpa.quickcalendar.utils.EventCollisionChecker;
 import com.djdenpa.quickcalendar.utils.EventCollisionInfo;
 
@@ -57,7 +58,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
   }
 
   private java.util.Calendar mMidpointDate;
-  private Calendar mCalendar;
+  private EventSet mEventSet;
 
   private int mHighlightMonth;
 
@@ -145,7 +146,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     long weekStartMillis = javaCal.getTimeInMillis();
     EventCollisionChecker oECC = new EventCollisionChecker();
     // bind the events
-    for (Event event : mCalendar.events){
+    for (Event event : mEventSet.getAllEvents()){
       // does event fall on this week
       // default to inverted left right position
       // they must return to neutral for us to render the event.
@@ -214,8 +215,8 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     }
   }
 
-  public void setData(Calendar calendar){
-    mCalendar = calendar;
+  public void setData(EventSet eventSet){
+    mEventSet = eventSet;
   }
 
   public void setMidpointDateMillis(long millis){

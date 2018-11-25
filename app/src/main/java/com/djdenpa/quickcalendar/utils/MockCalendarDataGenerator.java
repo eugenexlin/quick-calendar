@@ -3,6 +3,7 @@ package com.djdenpa.quickcalendar.utils;
 import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.CalendarInfo;
 import com.djdenpa.quickcalendar.models.Event;
+import com.djdenpa.quickcalendar.models.EventSet;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -30,6 +31,9 @@ public class MockCalendarDataGenerator {
   public int minEventCount = 10;
   public int maxEventCount = 200;
 
+  public int minEventSetCount = 1;
+  public int maxEventSetCount = 5;
+
   public long roundToMs = 1000*60*30;
 
   public Random rand = new Random();
@@ -48,20 +52,31 @@ public class MockCalendarDataGenerator {
   public Calendar getMockCalendar(){
     Calendar result = new Calendar();
 
-    result.name = "Test Calendar";
+    result.name = "Test Calendar " + rand.nextInt(99999);
     result.creatorIdentity = "Test Mom";
 
+    int eventCount = rand.nextInt(maxEventSetCount - minEventSetCount) + minEventSetCount;
+
+    for (int i = 0; i < eventCount; i++){
+      result.saveEventSet(getMockEventSet());
+    }
+    return result;
+  }
+  public EventSet getMockEventSet(){
+    EventSet result = new EventSet();
+
+    result.name = "Test Set + " + rand.nextInt(99999);
     int eventCount = rand.nextInt(maxEventCount - minEventCount) + minEventCount;
 
     for (int i = 0; i < eventCount; i++){
-      result.events.add(getMockEvent());
+      result.saveEvent(getMockEvent());
     }
     return result;
   }
 
   public Event getMockEvent(){
     Event result = new Event();
-    result.name = "event";
+    result.name = "event" + rand.nextInt(99999);;
     result.eventStartUTC = (long) (rand.nextDouble()*(maxEventStartUTC - minEventStartUTC) + minEventStartUTC);
     result.eventDurationMs = getMockDuration();
     return result;
