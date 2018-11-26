@@ -31,6 +31,8 @@ public class GenericSingleSelectListDialog extends DialogFragment {
   private int mArrayResource;
   private Spinner mSpinner;
 
+  public GenericSingleSelectListTextMapper mapper = null;
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -54,12 +56,26 @@ public class GenericSingleSelectListDialog extends DialogFragment {
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-    String title = getResources().getString(mTitleResource) + " (current: " + mCurrentValue + ")";
-    builder.setTitle(title)
-            .setItems(mArrayResource, (dialog, which) -> {
-              String value = getResources().getStringArray(mArrayResource)[which];
-              mListener.handleSpinnerDialog(getTargetRequestCode(), value);
-            });
+    if (mapper == null) {
+      String title = getResources().getString(mTitleResource) + " (current: " + mCurrentValue + ")";
+      builder.setTitle(title)
+              .setItems(mArrayResource, (dialog, which) -> {
+                String value = getResources().getStringArray(mArrayResource)[which];
+                mListener.handleSpinnerDialog(getTargetRequestCode(), value);
+              });
+    }else{
+      String title = getResources().getString(mTitleResource) + " (current: " + mapper.mapValueToText(mCurrentValue) + ")";
+      String[] items = getResources().getStringArray(mArrayResource);
+      String[] mappedItems = new String[items.length];
+      for (int i = 0; i < items.length; i++) {
+        mappedItems[i] = mapper.mapValueToText(items[i]);
+      }
+      builder.setTitle(title)
+              .setItems(mappedItems, (dialog, which) -> {
+                String value = getResources().getStringArray(mArrayResource)[which];
+                mListener.handleSpinnerDialog(getTargetRequestCode(), value);
+              });
+    }
     return builder.create();
   }
 }

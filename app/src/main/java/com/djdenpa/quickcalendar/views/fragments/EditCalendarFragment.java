@@ -3,25 +3,25 @@ package com.djdenpa.quickcalendar.views.fragments;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
+import com.djdenpa.quickcalendar.models.DisplayMode;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter;
-import com.djdenpa.quickcalendar.views.adapters.CalendarWeekViewHolder;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarEventDialog;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarNameDialog;
 import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListDialog;
+import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListTextMapper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,6 +42,9 @@ public class EditCalendarFragment extends Fragment
   RecyclerView rvCalendarWeeks;
   @BindView(R.id.tv_calendar_floating_tag)
   TextView tvCalendarFloatingTag;
+  @BindView(R.id.cl_calendar_week_header)
+  ConstraintLayout clCalendarWeekHeader;
+
 
   private int mCurrentYear = -1;
   private int mCurrentMonth = -1;
@@ -125,9 +128,24 @@ public class EditCalendarFragment extends Fragment
       }
     });
 
+    if (mAdapter.getDisplayMode() == DisplayMode.ROW_PER_WEEK) {
+      clCalendarWeekHeader.setVisibility(View.VISIBLE);
+    } else {
+      clCalendarWeekHeader.setVisibility(View.GONE);
+    }
+
+    setWeekHeaderVisibilityBasedOnMode();
     viewModel.isFirstEntry = false;
 
     return rootView;
+  }
+
+  private void setWeekHeaderVisibilityBasedOnMode(){
+    if (mAdapter.getDisplayMode() == DisplayMode.ROW_PER_WEEK) {
+      clCalendarWeekHeader.setVisibility(View.VISIBLE);
+    } else {
+      clCalendarWeekHeader.setVisibility(View.GONE);
+    }
   }
 
   // here we use a funny algorithm of if the number becomes
@@ -140,7 +158,7 @@ public class EditCalendarFragment extends Fragment
 
     if (tvCalendarFloatingTag.getText().length() == 0 ||
         Math.abs(mAdapter.getAverageMonthValue(start, end) - (double)mCurrentMonth) > 0.7) {
-      java.util.Calendar jCal = mAdapter.getMonthYear(midPosition);
+      java.util.Calendar jCal = mAdapter.getItemBaseDate(midPosition);
       updateCalendarFocusMonth(jCal);
     }
   }
@@ -168,7 +186,6 @@ public class EditCalendarFragment extends Fragment
     dialog.show(getFragmentManager(), "EDIT_NAME");
   }
 
-
   public void PromptChangeGranularityFactor(){
 
     GenericSingleSelectListDialog dialog = new GenericSingleSelectListDialog();
@@ -185,6 +202,36 @@ public class EditCalendarFragment extends Fragment
     dialog.show(getFragmentManager(), "CHANGE_GRANULARITY");
 
   }
+
+  public void PromptChangeView(){
+
+    GenericSingleSelectListDialog dialog = new GenericSingleSelectListDialog();
+    Bundle args = new Bundle();
+    args.putString(GenericSingleSelectListDialog.BUNDLE_STRING_CURRENT_VALUE,
+            String.valueOf(DisplayMode.toInt(mAdapter.getDisplayMode())));
+    args.putInt(GenericSingleSelectListDialog.BUNDLE_INT_STRING_TITLE,
+            R.string.menu_change_view);
+    args.putInt(GenericSingleSelectListDialog.BUNDLE_INT_ARRAY_ID,
+            R.array.calendar_modes);
+    dialog.setArguments(args);
+    dialog.setTargetFragment(this, DIALOG_CODE_CHANGE_DISPLAY_MODE);
+
+    dialog.mapper = new GenericSingleSelectListTextMapper();
+    dialog.mapper.mMapperItems.add(
+            new GenericSingleSelectListTextMapper.MapperItem(
+                    String.valueOf(DisplayMode.toInt(DisplayMode.ROW_PER_WEEK)),
+                    getString(R.string.calendar_modes_row_per_week))
+    );
+    dialog.mapper.mMapperItems.add(
+            new GenericSingleSelectListTextMapper.MapperItem(
+                    String.valueOf(DisplayMode.toInt(DisplayMode.ROW_PER_DAY)),
+                    getString(R.string.calendar_modes_row_per_day))
+    );
+
+    dialog.show(getFragmentManager(), "CHANGE_GRANULARITY");
+
+  }
+
 
   public void PromptEditEvent(Event event){
 
@@ -208,20 +255,36 @@ public class EditCalendarFragment extends Fragment
   }
 
   private static final int DIALOG_CODE_CHANGE_WEEK_GRANULARITY = 0;
+  private static final int DIALOG_CODE_CHANGE_DISPLAY_MODE = 1;
 
   @Override
   public void handleSpinnerDialog(int code, String value) {
+    int numVal;
     switch(code){
       case DIALOG_CODE_CHANGE_WEEK_GRANULARITY:
-        int numVal = Integer.parseInt(value);
+        numVal = Integer.parseInt(value);
         mAdapter.setEventGranularityFactor(numVal);
+        return;
+      case DIALOG_CODE_CHANGE_DISPLAY_MODE:
+        numVal = Integer.parseInt(value);
+
+        java.util.Calendar saveDate = mAdapter.getItemBaseDate(mLayoutManager.findFirstCompletelyVisibleItemPosition());
+
+        DisplayMode mode = DisplayMode.fromInt(numVal);
+        mAdapter.setDisplayMode(mode);
+
+        setWeekHeaderVisibilityBasedOnMode();
+
+        int newPosition = mAdapter.getPositionOfDate(saveDate);
+        rvCalendarWeeks.scrollToPosition(newPosition);
+
         return;
     }
 
   }
 
   @Override
-  public void saveEve nt(Event event) {
+  public void saveEvent(Event event) {
 
   }
 }

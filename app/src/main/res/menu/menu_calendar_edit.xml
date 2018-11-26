@@ -4,13 +4,18 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".views.activities.EditCalendarActivity">
   <item
-      android:id="@+id/action_change_granularity"
+      android:id="@+id/action_change_calendar_view"
       android:orderInCategory="1"
-      android:title="@string/menu_change_granularity"
-      app:showAsAction="always"/>
+      android:title="@string/menu_change_view"
+      app:showAsAction="ifRoom"/>
   <item
       android:id="@+id/action_add_event"
-      android:orderInCategory="1"
+      android:orderInCategory="2"
       android:title="@string/menu_add_event"
-      app:showAsAction="always"/>
+      app:showAsAction="ifRoom"/>
+  <item
+      android:id="@+id/action_change_granularity"
+      android:orderInCategory="3"
+      android:title="@string/menu_change_granularity"
+      app:showAsAction="ifRoom"/>
 </menu>

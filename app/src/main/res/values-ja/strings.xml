@@ -11,6 +11,15 @@
   <string name="day_of_week_header_5">金</string>
   <string name="day_of_week_header_6">土</string>
 
+
+  <string name="day_mode_day_of_week_0">(日)</string>
+  <string name="day_mode_day_of_week_1">(月)</string>
+  <string name="day_mode_day_of_week_2">(火)</string>
+  <string name="day_mode_day_of_week_3">(水)</string>
+  <string name="day_mode_day_of_week_4">(木)</string>
+  <string name="day_mode_day_of_week_5">(金)</string>
+  <string name="day_mode_day_of_week_6">(土)</string>
+
   <string name="month_year_format_string">yyyy年MM月</string>
 
 </resources>

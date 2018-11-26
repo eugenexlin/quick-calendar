@@ -22,12 +22,23 @@
   <string name="day_of_week_header_6">S</string>
   <string name="month_year_format_string">MMMM yyyy</string>
 
+  <string name="day_mode_day_of_week_0">(Sun)</string>
+  <string name="day_mode_day_of_week_1">(Mon)</string>
+  <string name="day_mode_day_of_week_2">(Tue)</string>
+  <string name="day_mode_day_of_week_3">(Wed)</string>
+  <string name="day_mode_day_of_week_4">(Thu)</string>
+  <string name="day_mode_day_of_week_5">(Fri)</string>
+  <string name="day_mode_day_of_week_6">(Sat)</string>
+
   <string name="preference_file_key">djdenpa_quick_calendar_preference_file_key</string>
   <string name="preference_calendar_week_granularity">calendar_week_granularity</string>
+  <string name="preference_calendar_day_granularity">calendar_day_granularity</string>
+  <string name="preference_calendar_display_mode">calendar_display_mode</string>
 
 
   <string name="menu_change_granularity">Change Event Granularity</string>
   <string name="menu_add_event">Add Event</string>
+  <string name="menu_change_view">Change View</string>
 
   <string name="edit_event_event_name_label">Event Name</string>
 
@@ -41,5 +52,13 @@
     <item>12</item>
     <item>24</item>
   </string-array>
+
+  <string-array name="calendar_modes">
+    <item>0</item>
+    <item>1</item>
+  </string-array>
+  <string name="calendar_modes_row_per_week">Weeks</string>
+  <string name="calendar_modes_row_per_day">Days</string>
+
 
 </resources>

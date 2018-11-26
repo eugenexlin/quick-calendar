@@ -109,7 +109,7 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     constraintSet.applyTo(clCalendarWeeks);
   }
 
-  public Guideline getHighResGuideline(int scaledPosition, int multiplier) {
+  public Guideline getHighResWeekGuideline(int scaledPosition, int multiplier) {
     // first check if it divides well
     double simplifiedPosition = (double) scaledPosition / (double) multiplier;
     //close enough to an integer.
@@ -136,6 +136,10 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     }
 
     return mDynamicGuidelines.get(key);
+  }
+
+  public Guideline getHighResDayGuideline(int position, int multiplier) {
+    return getHighResWeekGuideline(position*7, multiplier);
   }
 
   // hide a view's visibility and
@@ -180,8 +184,11 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
   }
 
   public void resynchronizeHighlightMonth(int mCurrentMonth) {
-    for (int i = 0; i <=6; i++) {
+    for (int i = 0; i < 7; i++) {
       TextView tv = getDayTextField(i);
+      if (tv.getTag(R.id.tag_tv_month_key) == null){
+        continue;
+      }
       if ((int)tv.getTag(R.id.tag_tv_month_key) == mCurrentMonth){
         tv.setTextColor(mContext.getColor(R.color.darker_gray));
         tv.setTypeface(null, Typeface.BOLD);
