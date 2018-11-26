@@ -74,11 +74,20 @@ public class MockCalendarDataGenerator {
     return result;
   }
 
+  public String getRandomColor(){
+    String red = String.format("%02x", 0x66 + rand.nextInt(0x88 + 1));
+    String green = String.format("%02x", 0x66 + rand.nextInt(0x88 + 1));
+    String blue = String.format("%02x", 0x66 + rand.nextInt(0x88 + 1));
+    return "#"+red+green+blue;
+  }
+
+
   public Event getMockEvent(){
     Event result = new Event();
     result.name = "event" + rand.nextInt(99999);;
     result.eventStartUTC = (long) (rand.nextDouble()*(maxEventStartUTC - minEventStartUTC) + minEventStartUTC);
     result.eventDurationMs = getMockDuration();
+    result.color = getRandomColor();
     return result;
   }
 

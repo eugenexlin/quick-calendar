@@ -60,12 +60,13 @@ public class EditCalendarFragment extends Fragment
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    viewModel = ViewModelProviders.of(this.getActivity()).get(EditCalendarViewModel.class);
-    viewModel.init();
-
+    viewModel = ViewModelProviders.of(getActivity()).get(EditCalendarViewModel.class);
     // test data
-    viewModel.setEntireCalendar(
-            new MockCalendarDataGenerator().getMockCalendar());
+    if (viewModel.isFirstEntry) {
+      viewModel.init();
+      viewModel.setEntireCalendar(
+              new MockCalendarDataGenerator().getMockCalendar());
+    }
 
     try{
       if (viewModel.getActiveCalendar().getValue().name.length() == 0){
@@ -157,7 +158,7 @@ public class EditCalendarFragment extends Fragment
     int midPosition = (start + end)/2;
 
     if (tvCalendarFloatingTag.getText().length() == 0 ||
-        Math.abs(mAdapter.getAverageMonthValue(start, end) - (double)mCurrentMonth) > 0.7) {
+        Math.abs(mAdapter.getAverageMonthValue(start, end) - (double)mCurrentMonth) > 0.60) {
       java.util.Calendar jCal = mAdapter.getItemBaseDate(midPosition);
       updateCalendarFocusMonth(jCal);
     }

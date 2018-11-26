@@ -21,5 +21,6 @@
   <string name="day_mode_day_of_week_6">(土)</string>
 
   <string name="month_year_format_string">yyyy年MM月</string>
+  <string name="day_mode_date_string_format">%1s日 %2s</string>
 
 </resources>

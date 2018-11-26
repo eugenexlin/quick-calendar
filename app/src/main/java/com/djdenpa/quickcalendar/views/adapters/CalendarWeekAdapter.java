@@ -92,7 +92,13 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     SharedPreferences sharedPref = mContext.getSharedPreferences(
             mContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     mDisplayMode = DisplayMode.fromInt(sharedPref.getInt(mContext.getString(R.string.preference_calendar_display_mode), 0));
-    mEventGranularityFactor = sharedPref.getInt(getGranularityPreferenceKey(), 4);
+    int defaultGranularity;
+    if (mDisplayMode == DisplayMode.ROW_PER_WEEK) {
+      defaultGranularity = 1;
+    } else {
+      defaultGranularity = 24;
+    }
+    mEventGranularityFactor = sharedPref.getInt(getGranularityPreferenceKey(), defaultGranularity);
   }
 
   LinkedList<CalendarWeekViewHolder> mAllViewHolders = new LinkedList<>();
@@ -123,12 +129,13 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
   // returns a decimal that represents how close it is to the month integer
   public double getAverageMonthValue(int startPos, int endPos) {
 
-    java.util.Calendar javaCal = java.util.Calendar.getInstance();
-    javaCal.setTime(mMidpointDate.getTime());
-    javaCal.add(java.util.Calendar.WEEK_OF_YEAR, startPos - START_POSITION);
-    int weeksDifference = endPos - startPos;
+    java.util.Calendar javaCal = getItemBaseDate(startPos);
+    int positionDiff = endPos - startPos;
     double sum = 0;
-    double count = weeksDifference * 7.0;
+    double count = positionDiff;
+    if (mDisplayMode == DisplayMode.ROW_PER_WEEK) {
+      count *= 7.0;
+    }
     for (int i = 0; i < count; i++) {
       javaCal.add(java.util.Calendar.DATE, 1);
       sum += javaCal.get(java.util.Calendar.MONTH);
@@ -166,7 +173,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     int month = baseDate.get(java.util.Calendar.MONTH);
 
     TextView view = holder.getDayTextField(0);
-    view.setText(String.valueOf(dateNumber) + " " + getDayModeDayOfWeek(dayOfWeek));
+    view.setText(String.format(mContext.getString(R.string.day_mode_date_string_format), String.valueOf(dateNumber), getDayModeDayOfWeek(dayOfWeek)));
     view.setTag(R.id.tag_tv_month_key, month);
 
     // clear out all texts except the first

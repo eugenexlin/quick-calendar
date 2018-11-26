@@ -22,6 +22,8 @@
   <string name="day_of_week_header_6">S</string>
   <string name="month_year_format_string">MMMM yyyy</string>
 
+  <string name="day_mode_date_string_format">%1s %2s</string>
+
   <string name="day_mode_day_of_week_0">(Sun)</string>
   <string name="day_mode_day_of_week_1">(Mon)</string>
   <string name="day_mode_day_of_week_2">(Tue)</string>

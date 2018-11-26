@@ -1,6 +1,7 @@
 package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -46,7 +47,8 @@ public class CalendarEventViewManager {
 
   public void setEventData(Event event) {
     clRoot.setVisibility(View.VISIBLE);
-    ivEventBlock.setColorFilter(mContext.getColor(R.color.primaryLightColor), PorterDuff.Mode.MULTIPLY);
+//    ivEventBlock.setColorFilter(mContext.getColor(R.color.primaryLightColor), PorterDuff.Mode.MULTIPLY);
+    ivEventBlock.setColorFilter(Color.parseColor(event.color), PorterDuff.Mode.MULTIPLY);
     tvEventName.setText(event.name);
 
   }

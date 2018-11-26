@@ -20,9 +20,11 @@
       android:id="@+id/tv_calendar_event_name"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:paddingStart="@dimen/event_text_padding"
+      android:paddingEnd="@dimen/event_text_padding"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-
+      android:textColor="@color/black"
       />
 
 </android.support.constraint.ConstraintLayout>
