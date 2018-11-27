@@ -42,8 +42,19 @@
   <string name="menu_add_event">Add Event</string>
   <string name="menu_change_view">Change View</string>
 
-  <string name="edit_event_event_name_label">Event Name</string>
+  <string name="edit_event_title">Edit Event</string>
+  <string name="add_event_title">Add New Event</string>
 
+  <string name="edit_event_event_name_label">Event Name</string>
+  <string name="edit_event_event_start_label">Begin Date</string>
+
+  <string name="year_label">Year</string>
+  <string name="month_label">Month</string>
+  <string name="date_label">Date</string>
+  <string name="time_label">Time</string>
+
+  <string name="hour_label">Hour</string>
+  <string name="minute_label">Minute</string>
 
   <string-array name="week_granularity">
     <item>1</item>
@@ -61,6 +72,7 @@
   </string-array>
   <string name="calendar_modes_row_per_week">Weeks</string>
   <string name="calendar_modes_row_per_day">Days</string>
+  <string name="colon">:</string>
 
 
 </resources>

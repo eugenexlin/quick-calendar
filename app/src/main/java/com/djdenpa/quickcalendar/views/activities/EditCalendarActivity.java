@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.djdenpa.quickcalendar.R;
+import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
 
@@ -43,7 +44,7 @@ public class EditCalendarActivity extends AppCompatActivity {
       return true;
     }
     if (id == R.id.action_add_event) {
-      mEditCalendarFragment.PromptChangeGranularityFactor();
+      mEditCalendarFragment.PromptEditEvent(new Event());
       return true;
     }
     if (id == R.id.action_change_calendar_view) {

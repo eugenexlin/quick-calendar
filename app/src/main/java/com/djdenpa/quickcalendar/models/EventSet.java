@@ -10,7 +10,8 @@ public class EventSet {
   public String name;
   public String creatorIdentity;
 
-  private int nextEventId;
+  // in this program, event id 0 means not yet defined
+  private int nextEventId = 1;
   private Object nextEventIdLock = new Object();
   //these two must hold the same data,
   private HashMap<Integer, Event> eventHash = new HashMap<>();
@@ -51,10 +52,16 @@ public class EventSet {
   }
 
   public long getEarliestMillisUTC(){
-    if (eventHash.size() == 0){
+    if (eventHash.size() <= 0){
       return new Date().getTime();
     }
-    long earliestStartUTC = eventHash.get(0).eventStartUTC;
+    Event first = eventHash.get(0);
+    long earliestStartUTC;
+    if (first == null){
+      earliestStartUTC = new Date().getTime();
+    } else {
+      earliestStartUTC = eventHash.get(0).eventStartUTC;
+    }
     for (Event event : eventHash.values()) {
       long startUTC = event.eventStartUTC;
       if (startUTC < earliestStartUTC) {
