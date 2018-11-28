@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.EventCollisionInfo;
+import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
 import static com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter.EVENT_BAR_HEIGHT;
 
@@ -45,11 +46,13 @@ public class CalendarEventViewManager {
     clRoot.setVisibility(View.GONE);
   }
 
-  public void setEventData(Event event) {
+  public void setEventData(Event event, EditCalendarFragment fragment) {
     clRoot.setVisibility(View.VISIBLE);
 //    ivEventBlock.setColorFilter(mContext.getColor(R.color.primaryLightColor), PorterDuff.Mode.MULTIPLY);
     ivEventBlock.setColorFilter(Color.parseColor(event.color), PorterDuff.Mode.MULTIPLY);
     tvEventName.setText(event.name);
+
+    clRoot.setOnClickListener(v -> fragment.PromptEditEvent(event));
 
   }
 

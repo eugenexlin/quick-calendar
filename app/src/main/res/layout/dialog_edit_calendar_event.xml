@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/primaryBgColor"
         >
 
         <LinearLayout
@@ -31,6 +32,8 @@
                 />
             <EditText
                 android:id="@+id/et_event_name"
+                android:inputType="text"
+                android:maxLines="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -42,70 +45,35 @@
                 android:theme="@style/FieldLabel"
                 />
 
-            <TextView
+            <com.djdenpa.quickcalendar.views.components.QuickDatePicker
+                android:id="@+id/qdp_begin_date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/date_label"
-                />
-            <LinearLayout
-                android:id="@+id/ll_start_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <EditText
-                    android:id="@+id/et_event_start_year"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/year_label"
-                    />
-                <EditText
-                    android:id="@+id/et_event_start_month"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/month_label"
-                    />
-                <EditText
-                    android:id="@+id/et_event_start_day"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/date_label"
-                    />
-            </LinearLayout>
+                android:layout_height="wrap_content">
 
+            </com.djdenpa.quickcalendar.views.components.QuickDatePicker>
+
+
+            <!---->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/time_label"
+                android:text="@string/edit_event_event_end_label"
+                android:theme="@style/FieldLabel"
                 />
-            <LinearLayout
-                android:id="@+id/ll_start_time"
+
+            <com.djdenpa.quickcalendar.views.components.QuickDatePicker
+                android:id="@+id/qdp_end_date"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </com.djdenpa.quickcalendar.views.components.QuickDatePicker>
+
+            <Button
+                android:id="@+id/b_set_by_duration"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <EditText
-                    android:id="@+id/et_event_start_hour"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/year_label"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/colon"/>
-                <EditText
-                    android:id="@+id/et_event_start_minute"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/minute_label"
-                    />
-            </LinearLayout>
+                android:text="SET BY DURATION"/>
+
 
         </LinearLayout>
 

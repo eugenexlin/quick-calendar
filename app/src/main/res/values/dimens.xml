@@ -43,6 +43,9 @@
   <dimen name="calendar_week_item_min_height">100dp</dimen>
   <dimen name="calendar_week_item_vertical_padding">8dp</dimen>
   <dimen name="calendar_date_text_size">16sp</dimen>
+  <dimen name="edit_text_size">16sp</dimen>
+  <dimen name="spinner_item_padding_h">8dp</dimen>
+  <dimen name="spinner_item_padding_v">4dp</dimen>
 
 
 </resources>

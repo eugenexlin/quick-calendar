@@ -104,7 +104,7 @@ public class EditCalendarFragment extends Fragment
 
     rvCalendarWeeks.setLayoutManager(mLayoutManager);
 
-    mAdapter = new CalendarWeekAdapter(getContext());
+    mAdapter = new CalendarWeekAdapter(this);
     //fetch earliest event, it will be base scroll
     long earliestEventMillis = viewModel.getActiveCalendar().getValue().getFirstEventSet().getEarliestMillisUTC();
     mAdapter.setMidpointDateMillis(earliestEventMillis);
@@ -229,7 +229,7 @@ public class EditCalendarFragment extends Fragment
                     getString(R.string.calendar_modes_row_per_day))
     );
 
-    dialog.show(getFragmentManager(), "CHANGE_GRANULARITY");
+    dialog.show(getFragmentManager(), "CHANGE_VIEW");
 
   }
 
@@ -245,7 +245,7 @@ public class EditCalendarFragment extends Fragment
     }
     dialog.setTargetFragment(this, DIALOG_CODE_CHANGE_WEEK_GRANULARITY);
 
-    dialog.show(getFragmentManager(), "CHANGE_GRANULARITY");
+    dialog.show(getFragmentManager(), "EDIT_EVENT");
 
   }
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/tv_item"
+          android:minEms="4"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:paddingTop="@dimen/spinner_item_padding_v"
+          android:paddingBottom="@dimen/spinner_item_padding_v"
+          android:paddingStart="@dimen/spinner_item_padding_h"
+          android:paddingEnd="@dimen/spinner_item_padding_h"
+          android:textIsSelectable="false"/>

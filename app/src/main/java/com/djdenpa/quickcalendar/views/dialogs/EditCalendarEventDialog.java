@@ -3,22 +3,20 @@ package com.djdenpa.quickcalendar.views.dialogs;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Event;
+import com.djdenpa.quickcalendar.views.components.QuickDatePicker;
+
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,12 +33,13 @@ public class EditCalendarEventDialog extends DialogFragment {
   Event mEvent;
   @BindView(R.id.et_event_name)
   EditText etEventName;
-  @BindView(R.id.et_event_start_year)
-  TextView etStartYear;
-  @BindView(R.id.et_event_start_month)
-  TextView etStartMonth;
-  @BindView(R.id.et_event_start_day)
-  TextView etStartDay;
+
+  @BindView(R.id.qdp_begin_date)
+  QuickDatePicker qdpBeginDate;
+  @BindView(R.id.qdp_end_date)
+  QuickDatePicker qdpEndDate;
+  @BindView(R.id.b_set_by_duration)
+  Button bSetByDuration;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +65,14 @@ public class EditCalendarEventDialog extends DialogFragment {
     ButterKnife.bind(this, rootView);
 
     etEventName.setText(mEvent.name);
+    java.util.Calendar beginCal = Calendar.getInstance();
+    beginCal.setTimeInMillis(mEvent.eventStartUTC);
+    qdpBeginDate.setValue(beginCal);
+    java.util.Calendar endCal = Calendar.getInstance();
+    endCal.setTimeInMillis(mEvent.eventStartUTC + mEvent.eventDurationMs);
+    qdpEndDate.setValue(endCal);
+
+    bSetByDuration.setOnClickListener(v -> qdpBeginDate.getValue());
 
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
             .setView(rootView)

@@ -18,6 +18,7 @@ import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.models.EventSet;
 import com.djdenpa.quickcalendar.utils.EventCollisionChecker;
 import com.djdenpa.quickcalendar.utils.EventCollisionInfo;
+import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -84,11 +85,13 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
   private int mHighlightMonth;
 
   private Context mContext;
+  private EditCalendarFragment mFragment;
   private LayoutInflater mLayoutInflater;
 
-  public CalendarWeekAdapter(Context context){
-    mContext = context;
-    mLayoutInflater = LayoutInflater.from(context);
+  public CalendarWeekAdapter(EditCalendarFragment fragment){
+    mFragment = fragment;
+    mContext = fragment.getContext();
+    mLayoutInflater = LayoutInflater.from(mContext);
     SharedPreferences sharedPref = mContext.getSharedPreferences(
             mContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     mDisplayMode = DisplayMode.fromInt(sharedPref.getInt(mContext.getString(R.string.preference_calendar_display_mode), 0));
@@ -219,7 +222,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
         oECC.findAvailableSlotAndInsert(eventInfo);
 
         CalendarEventViewManager eventItem = holder.getViewFromPoolOrCreate(mContext, holder);
-        eventItem.setEventData(event);
+        eventItem.setEventData(event, mFragment);
         constraintSet.clone(parent);
 
         int offsetTop = (EVENT_BAR_HEIGHT + EVENT_BAR_MARGIN) * eventInfo.layer;
@@ -296,7 +299,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
         oECC.findAvailableSlotAndInsert(eventInfo);
 
         CalendarEventViewManager eventItem = holder.getViewFromPoolOrCreate(mContext, holder);
-        eventItem.setEventData(event);
+        eventItem.setEventData(event, mFragment);
         constraintSet.clone(parent);
 
         int offsetTop = (EVENT_BAR_HEIGHT + EVENT_BAR_MARGIN) * eventInfo.layer;
