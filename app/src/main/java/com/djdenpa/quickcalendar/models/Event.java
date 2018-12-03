@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 public class Event implements Parcelable {
   public long eventStartUTC;
   public long eventDurationMs;
@@ -15,6 +17,14 @@ public class Event implements Parcelable {
   public String color;
 
   public Event(){
+    java.util.Calendar javaCal = java.util.Calendar.getInstance();
+    javaCal.setTimeInMillis(new Date().getTime());
+    javaCal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+    javaCal.set(java.util.Calendar.MINUTE, 0);
+    javaCal.set(java.util.Calendar.SECOND, 0);
+    javaCal.set(java.util.Calendar.MILLISECOND, 0);
+    eventStartUTC = javaCal.getTime().getTime();
+    eventDurationMs = 1000;
   }
 
   protected Event(Parcel in) {

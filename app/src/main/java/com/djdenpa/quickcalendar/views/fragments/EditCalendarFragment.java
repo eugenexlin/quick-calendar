@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +20,7 @@ import com.djdenpa.quickcalendar.models.DisplayMode;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
+import com.djdenpa.quickcalendar.views.activities.EditCalendarActivity;
 import com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarEventDialog;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarNameDialog;
@@ -45,6 +49,8 @@ public class EditCalendarFragment extends Fragment
   @BindView(R.id.cl_calendar_week_header)
   ConstraintLayout clCalendarWeekHeader;
 
+  // this is for opening dialog
+  private AppCompatActivity mActivity;
 
   private int mCurrentYear = -1;
   private int mCurrentMonth = -1;
@@ -55,6 +61,8 @@ public class EditCalendarFragment extends Fragment
   // this is for throttling
   private long previousRVScrollTime = System.currentTimeMillis();
   private EditCalendarViewModel viewModel;
+
+  boolean mIsLargeLayout;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +91,12 @@ public class EditCalendarFragment extends Fragment
       }
       mAdapter.setData(viewModel.getActiveEventSet());
     });
+
+    mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
+  }
+
+  public void setActivity(EditCalendarActivity activity) {
+    mActivity = activity;
   }
 
   @Override
@@ -245,8 +259,20 @@ public class EditCalendarFragment extends Fragment
     }
     dialog.setTargetFragment(this, DIALOG_CODE_CHANGE_WEEK_GRANULARITY);
 
-    dialog.show(getFragmentManager(), "EDIT_EVENT");
+    FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
 
+    if (mIsLargeLayout) {
+      dialog.show(fragmentManager, "EDIT_EVENT");
+    } else {
+      // The device is smaller, so show the fragment fullscreen
+      FragmentTransaction transaction = fragmentManager.beginTransaction();
+      // For a little polish, specify a transition animation
+      transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+      // To make it fullscreen, use the 'content' root view as the container
+      // for the fragment, which is always the root view for the activity
+      transaction.replace(android.R.id.content, dialog, "EDIT_EVENT")
+              .addToBackStack("EDIT_EVENT").commit();
+    }
   }
 
   @Override
@@ -286,6 +312,7 @@ public class EditCalendarFragment extends Fragment
 
   @Override
   public void saveEvent(Event event) {
-
+    viewModel.getActiveEventSet().saveEvent(event);
+    mAdapter.notifyDataSetChanged();
   }
 }

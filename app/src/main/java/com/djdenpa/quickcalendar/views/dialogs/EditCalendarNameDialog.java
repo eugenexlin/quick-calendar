@@ -28,6 +28,7 @@ public class EditCalendarNameDialog extends DialogFragment {
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
     mCalenderName = getArguments().getString(BUNDLE_CALENDAR_NAME);
     if (mCalenderName == null) {
       mCalenderName = "";

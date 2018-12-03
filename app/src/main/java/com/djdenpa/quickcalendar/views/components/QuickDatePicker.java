@@ -118,7 +118,7 @@ public class QuickDatePicker extends FrameLayout {
       month = 12;
     }
     // month is zero index here..
-    Calendar calTestDays = new GregorianCalendar(year, month-1, 1);
+    Calendar calTestDays = new GregorianCalendar(year, getCalendarMonth(month), 1);
     int daysInMonth = calTestDays.getActualMaximum(Calendar.DAY_OF_MONTH);
     if (day < 1) {
       day = 1;
@@ -140,12 +140,43 @@ public class QuickDatePicker extends FrameLayout {
     minute = minute % 60;
 
     Calendar result = Calendar.getInstance();
-    result.set(year, month, day, hour, minute);
+    result.set(year, getCalendarMonth(month), day, hour, minute);
 
     // save the validated values into edit texts
     setValue(result);
 
     return result;
+  }
+
+  private int getCalendarMonth(int oneIndexedNumber) {
+    switch (oneIndexedNumber) {
+      case 1:
+        return Calendar.JANUARY;
+      case 2:
+        return Calendar.FEBRUARY;
+      case 3:
+        return Calendar.MARCH;
+      case 4:
+        return Calendar.APRIL;
+      case 5:
+        return Calendar.MAY;
+      case 6:
+        return Calendar.JUNE;
+      case 7:
+        return Calendar.JULY;
+      case 8:
+        return Calendar.AUGUST;
+      case 9:
+        return Calendar.SEPTEMBER;
+      case 10:
+        return Calendar.OCTOBER;
+      case 11:
+        return Calendar.NOVEMBER;
+      case 12:
+        return Calendar.DECEMBER;
+      default:
+        return Calendar.JANUARY;
+    }
   }
 
   public void setValue(Calendar calendar) {

@@ -21,4 +21,16 @@
 
   </style>
 
+  <style name="full_screen_dialog" parent="Theme.AppCompat.Dialog">
+    <item name="android:windowNoTitle">true</item>
+
+    <!-- Set this to true if you want Full Screen without status bar -->
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowIsFloating">false</item>
+
+    <!-- Additionally if you want animations when dialog opening -->
+    <!--<item name="android:windowEnterAnimation">@anim/slide_up</item>-->
+    <!--<item name="android:windowExitAnimation">@anim/slide_down</item>-->
+  </style>
+
 </resources>

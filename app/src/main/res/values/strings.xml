@@ -78,6 +78,7 @@
   <string name="after_month">/</string>
   <string name="after_day"/>
   <string name="format_2_digit">%1$02d</string>
+  <string name="menu_save">Save</string>
 
   <string-array name="am_pm">
     <item>AM</item>

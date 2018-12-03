@@ -49,7 +49,14 @@ public class CalendarEventViewManager {
   public void setEventData(Event event, EditCalendarFragment fragment) {
     clRoot.setVisibility(View.VISIBLE);
 //    ivEventBlock.setColorFilter(mContext.getColor(R.color.primaryLightColor), PorterDuff.Mode.MULTIPLY);
-    ivEventBlock.setColorFilter(Color.parseColor(event.color), PorterDuff.Mode.MULTIPLY);
+    int color;
+    try {
+      color = Color.parseColor(event.color);
+    } catch (Exception ex) {
+      // invalid color...
+      color = mContext.getColor(R.color.primaryLightColor);
+    }
+    ivEventBlock.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
     tvEventName.setText(event.name);
 
     clRoot.setOnClickListener(v -> fragment.PromptEditEvent(event));

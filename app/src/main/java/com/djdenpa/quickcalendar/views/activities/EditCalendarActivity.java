@@ -64,5 +64,7 @@ public class EditCalendarActivity extends AppCompatActivity {
     FragmentManager fm = getSupportFragmentManager();
     mEditCalendarFragment = (EditCalendarFragment) fm.findFragmentById(R.id.edit_calendar_fragment);
 
+    mEditCalendarFragment.setActivity(this);
+
   }
 }
