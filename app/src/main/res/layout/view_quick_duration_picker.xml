@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_start_date"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+
+  <EditText
+      android:id="@+id/et_duration"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/edit_text_size"
+      android:minEms="4"
+      android:maxLines="1"
+      android:selectAllOnFocus="true"
+      android:hint="@string/month_hint"
+      android:inputType="number"
+      android:imeOptions="actionDone"
+      android:nextFocusForward="@id/s_duration"
+      />
+
+  <Spinner
+      android:id="@+id/s_duration"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/edit_text_size"
+      />
+
+  <Button
+      android:id="@+id/b_set"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/outline_button_height"
+      android:background="@drawable/outline_button"
+      android:theme="@style/outlined_button"
+      android:layout_marginStart="@dimen/side_button_margin"
+      android:text="@string/set_button"
+      android:layout_marginBottom="8dp"
+      android:clickable="true"
+      android:focusable="true"
+      />
+
+</LinearLayout>

@@ -17,10 +17,18 @@
   <style name="FieldLabel">
     <item name="android:textColor">@color/primaryColor</item>
     <item name="android:textSize">18sp</item>
-    <item name="android:layout_marginTop">16dp</item>
+    <item name="android:paddingTop">24dp</item>
+    <item name="android:paddingBottom">12dp</item>
+  </style>
+
+  <style name="outlined_button">
+    <item name="android:textColor">@color/primaryColor</item>
+    <item name="android:paddingStart">@dimen/outline_button_style_horizontal</item>
+    <item name="android:paddingEnd">@dimen/outline_button_style_horizontal</item>
 
   </style>
 
+  outline_button
   <style name="full_screen_dialog" parent="Theme.AppCompat.Dialog">
     <item name="android:windowNoTitle">true</item>
 

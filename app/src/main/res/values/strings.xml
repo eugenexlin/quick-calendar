@@ -79,10 +79,19 @@
   <string name="after_day"/>
   <string name="format_2_digit">%1$02d</string>
   <string name="menu_save">Save</string>
+  <string name="set_by_duration">SET BY DURATION</string>
+  <string name="set_button">SET</string>
 
   <string-array name="am_pm">
     <item>AM</item>
     <item>PM</item>
+  </string-array>
+
+  <string-array name="duration_units">
+    <item>minutes</item>
+    <item>hours</item>
+    <item>days</item>
+    <item>weeks</item>
   </string-array>
 
 </resources>

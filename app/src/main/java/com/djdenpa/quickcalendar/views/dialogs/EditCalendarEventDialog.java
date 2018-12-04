@@ -1,21 +1,13 @@
 package com.djdenpa.quickcalendar.views.dialogs;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +18,28 @@ import android.widget.EditText;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.views.components.QuickDatePicker;
+import com.djdenpa.quickcalendar.views.components.QuickDurationPicker;
 
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EditCalendarEventDialog extends DialogFragment {
+public class EditCalendarEventDialog extends DialogFragment
+implements QuickDurationPicker.SaveDurationHandler {
+
+  @Override
+  public void saveDurationMillis(long millis) {
+    Calendar startTime = qdpBeginDate.getValue();
+    java.util.Calendar endCal = Calendar.getInstance();
+    endCal.setTimeInMillis(startTime.getTime().getTime() + millis);
+    qdpEndDate.setValue(endCal);
+
+    bSetByDuration.setVisibility(View.VISIBLE);
+    qdpEndDate.setVisibility(View.VISIBLE);
+    qdpDuration.setVisibility(View.INVISIBLE);
+  }
+
   public interface EditCalendarNameListener {
     void saveEvent(Event event);
   }
@@ -56,6 +63,10 @@ public class EditCalendarEventDialog extends DialogFragment {
   QuickDatePicker qdpBeginDate;
   @BindView(R.id.qdp_end_date)
   QuickDatePicker qdpEndDate;
+
+  @BindView(R.id.qdp_duration)
+  QuickDurationPicker qdpDuration;
+
   @BindView(R.id.b_set_by_duration)
   Button bSetByDuration;
 
@@ -83,6 +94,12 @@ public class EditCalendarEventDialog extends DialogFragment {
     ButterKnife.bind(this, view);
 
     etEventName.setText(mEvent.name);
+
+    // on first create, default on the event name
+    if (mEvent.id <= 0) {
+      etEventName.requestFocus();
+    }
+
     java.util.Calendar beginCal = Calendar.getInstance();
     beginCal.setTimeInMillis(mEvent.eventStartUTC);
     qdpBeginDate.setValue(beginCal);
@@ -90,7 +107,28 @@ public class EditCalendarEventDialog extends DialogFragment {
     endCal.setTimeInMillis(mEvent.eventStartUTC + mEvent.eventDurationMs);
     qdpEndDate.setValue(endCal);
 
-    bSetByDuration.setOnClickListener(v -> qdpBeginDate.getValue());
+    qdpDuration.setCallback(this);
+
+    bSetByDuration.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        //hide so we show the duration window
+        bSetByDuration.setVisibility(View.INVISIBLE);
+        qdpEndDate.setVisibility(View.INVISIBLE);
+        qdpDuration.setVisibility(View.VISIBLE);
+
+        qdpDuration.init();
+
+        long startTime = qdpBeginDate.getValue().getTime().getTime();
+        long endTime = qdpEndDate.getValue().getTime().getTime();
+        long duration = endTime - startTime;
+        qdpDuration.setDurationMillis(duration);
+
+        qdpDuration.focus();
+
+      }
+    });
 
     t_toolbar.setVisibility(View.VISIBLE);
     t_toolbar.inflateMenu(R.menu.menu_event_edit);

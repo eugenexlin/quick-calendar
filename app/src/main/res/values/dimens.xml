@@ -47,5 +47,9 @@
   <dimen name="spinner_item_padding_h">8dp</dimen>
   <dimen name="spinner_item_padding_v">4dp</dimen>
 
+  <dimen name="outline_button_style_horizontal">16dp</dimen>
+  <dimen name="side_button_margin">32dp</dimen>
+  <dimen name="outline_button_height">32dp</dimen>
+
 
 </resources>

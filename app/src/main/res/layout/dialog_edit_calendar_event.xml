@@ -75,25 +75,66 @@
 
 
             <!---->
-            <TextView
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/edit_event_event_end_label"
-                android:theme="@style/FieldLabel"
-                />
+                >
 
-            <com.djdenpa.quickcalendar.views.components.QuickDatePicker
-                android:id="@+id/qdp_end_date"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/edit_event_event_end_label"
+                    android:theme="@style/FieldLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+                <Button
+                    android:id="@+id/b_set_by_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/outline_button_height"
+                    android:background="@drawable/outline_button"
+                    android:theme="@style/outlined_button"
+                    android:layout_marginStart="@dimen/side_button_margin"
+                    android:text="@string/set_by_duration"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </com.djdenpa.quickcalendar.views.components.QuickDatePicker>
-
-            <Button
-                android:id="@+id/b_set_by_duration"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SET BY DURATION"/>
+                >
+
+                <com.djdenpa.quickcalendar.views.components.QuickDatePicker
+                    android:id="@+id/qdp_end_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    >
+
+                </com.djdenpa.quickcalendar.views.components.QuickDatePicker>
+
+                <com.djdenpa.quickcalendar.views.components.QuickDurationPicker
+                    android:id="@+id/qdp_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    >
+
+                </com.djdenpa.quickcalendar.views.components.QuickDurationPicker>
+
+            </android.support.constraint.ConstraintLayout>
+
 
 
         </LinearLayout>

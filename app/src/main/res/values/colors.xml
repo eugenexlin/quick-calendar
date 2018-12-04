@@ -9,6 +9,8 @@
   <color name="primaryTextColor">#ffffff</color>
   <color name="secondaryTextColor">#ffffff</color>
 
+  <color name="trans">#000000</color>
+
   <color name="primaryBgColor">#fcfcfc</color>
 
   <color name="white">#FFFFFF</color>
