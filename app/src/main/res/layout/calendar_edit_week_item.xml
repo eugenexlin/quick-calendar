@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_calendar_week"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/calendar_week_item_min_height">
+    android:minHeight="@dimen/calendar_week_item_min_height"
+
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
+
+  <ImageView
+      android:id="@+id/iv_cursor"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:src="@drawable/date_cursor"
+      android:tint="@color/secondaryLightColor"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      android:layout_marginTop="1dp"
+      android:layout_marginEnd="1dp"
+      />
 
   <android.support.constraint.Guideline
       android:id="@+id/g_day_0"
@@ -154,5 +170,6 @@
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintBottom_toBottomOf="parent"
       />
+
 
 </android.support.constraint.ConstraintLayout>

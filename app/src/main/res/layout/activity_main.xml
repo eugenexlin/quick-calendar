@@ -78,6 +78,7 @@
       android:elevation="@dimen/fab_elevation"
       android:stateListAnimator="@animator/fab_state_list"
       android:clickable="true"
+      android:focusable="true"
       />
 
 

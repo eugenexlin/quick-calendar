@@ -7,8 +7,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.constraint.Guideline;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -57,12 +57,31 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
   @BindView(R.id.tv_day_6)
   TextView tvDay6;
 
-//  @BindView(R.id.iv_week_divider)
-//  ImageView ivHorizontalDivider;
+  @BindView(R.id.iv_cursor)
+  ImageView ivCursor;
   @BindView(R.id.iv_month_divider)
   ImageView ivVerticalDivider;
 
   Context mContext;
+
+
+  TouchDateHandler mTouchHandler;
+  private int mCurrentPosition;
+
+  public void setCurrentPosition(int pos) {
+    mCurrentPosition = pos;
+  }
+
+  public interface TouchDateHandler {
+    // position = position in adapter
+    // index is column of calender 0 to 6
+    void handleTouchDate(int position, int index);
+  }
+
+  public void setTouchHandler(TouchDateHandler handler) {
+    mTouchHandler = handler;
+  }
+
 
   private HashMap<String, Guideline> mDynamicGuidelines = new HashMap<>();
 
@@ -74,6 +93,19 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     super(itemView);
 
     ButterKnife.bind(this, itemView);
+
+    clCalendarWeeks.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        switch(event.getAction()) {
+          case MotionEvent.ACTION_DOWN:
+            int index = (int) (event.getX()*7/clCalendarWeeks.getWidth());
+            mTouchHandler.handleTouchDate(mCurrentPosition, index);
+            break;
+        }
+        return false;
+      }
+    });
 
     mContext = context;
   }
@@ -154,7 +186,19 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
       CalendarEventViewManager result = mRecycledEventViews.poll();
       return result;
     }
-    return new CalendarEventViewManager(context, holder);
+    CalendarEventViewManager manager = new CalendarEventViewManager(context, holder);
+    manager.ivEventBlock.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        switch(event.getAction()) {
+          case MotionEvent.ACTION_DOWN:
+            mTouchHandler.handleTouchDate(-1, -1);
+            break;
+        }
+        return false;
+      }
+    });
+    return manager;
   }
 
 
@@ -198,4 +242,87 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
       }
     }
   }
+
+  // index of cursor, or -1 for entire week
+  private int mCursorIndex;
+  // enabled means the cursor is showing somewhere on this item
+  private boolean mCursorEnabled;
+
+  public void renderCursor(int position, int index){
+    if (!mCursorEnabled){
+      if (mCurrentPosition != position){
+        // nothing to do
+      } else {
+        //add cursor based on index
+        setCursor(index);
+      }
+    } else { // is enabled
+      if (mCurrentPosition != position){
+        clearCursor();
+      } else {
+        //add cursor based on index
+        setCursor(index);
+      }
+    }
+  }
+
+  private void setCursor(int index){
+    if (mCursorEnabled && mCursorIndex == index) {
+      return;
+    }
+    mCursorIndex = index;
+    mCursorEnabled = true;
+    if (index < 0) {
+      setCursorWhole();
+      return;
+    }
+    // cursor is showing, but we nee to hide, so HIDE
+    ConstraintSet constraintSet = new ConstraintSet();
+    constraintSet.clone(clCalendarWeeks);
+    constraintSet.connect(
+            ivCursor.getId(),
+            ConstraintSet.START,
+            getGuideline(index).getId(),
+            ConstraintSet.START, 0);
+    constraintSet.connect(
+            ivCursor.getId(),
+            ConstraintSet.END,
+            getGuideline(index+1).getId(),
+            ConstraintSet.START, 0);
+    constraintSet.applyTo(clCalendarWeeks);
+  }
+  private void setCursorWhole(){
+    // cursor is showing, but we nee to hide, so HIDE
+    ConstraintSet constraintSet = new ConstraintSet();
+    constraintSet.clone(clCalendarWeeks);
+    constraintSet.connect(
+            ivCursor.getId(),
+            ConstraintSet.START,
+            getGuideline(0).getId(),
+            ConstraintSet.START, 0);
+    constraintSet.connect(
+            ivCursor.getId(),
+            ConstraintSet.END,
+            getGuideline(7).getId(),
+            ConstraintSet.START, 0);
+    constraintSet.applyTo(clCalendarWeeks);
+  }
+  private void clearCursor(){
+    mCursorEnabled = false;
+    // cursor is showing, but we nee to hide, so HIDE
+    ConstraintSet constraintSet = new ConstraintSet();
+    constraintSet.clone(clCalendarWeeks);
+    constraintSet.connect(
+            ivCursor.getId(),
+            ConstraintSet.START,
+            getGuideline(0).getId(),
+            ConstraintSet.START, 0);
+    constraintSet.connect(
+            ivCursor.getId(),
+            ConstraintSet.END,
+            getGuideline(0).getId(),
+            ConstraintSet.START, 0);
+    constraintSet.applyTo(clCalendarWeeks);
+  }
+
 }

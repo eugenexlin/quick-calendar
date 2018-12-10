@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
@@ -37,7 +41,8 @@ import butterknife.Unbinder;
 public class EditCalendarFragment extends Fragment
         implements EditCalendarNameDialog.EditCalendarNameListener,
         GenericSingleSelectListDialog.GenericSpinnerDialogListener,
-        EditCalendarEventDialog.EditCalendarNameListener {
+        EditCalendarEventDialog.EditCalendarNameListener,
+        CalendarWeekAdapter.CursorStateHandler {
 
   private Unbinder unbinder;
   @BindView(R.id.tv_calendar_name)
@@ -48,6 +53,10 @@ public class EditCalendarFragment extends Fragment
   TextView tvCalendarFloatingTag;
   @BindView(R.id.cl_calendar_week_header)
   ConstraintLayout clCalendarWeekHeader;
+  @BindView(R.id.fab_add_event)
+  FloatingActionButton fabAddEvent;
+  @BindView(R.id.ll_calendar_header)
+  LinearLayout llHeader;
 
   // this is for opening dialog
   private AppCompatActivity mActivity;
@@ -119,6 +128,7 @@ public class EditCalendarFragment extends Fragment
     rvCalendarWeeks.setLayoutManager(mLayoutManager);
 
     mAdapter = new CalendarWeekAdapter(this);
+    mAdapter.setCursorStateHandler(this);
     //fetch earliest event, it will be base scroll
     long earliestEventMillis = viewModel.getActiveCalendar().getValue().getFirstEventSet().getEarliestMillisUTC();
     mAdapter.setMidpointDateMillis(earliestEventMillis);
@@ -127,6 +137,13 @@ public class EditCalendarFragment extends Fragment
     updateCalendarFocusMonth(earliestEventCal);
 
     rvCalendarWeeks.setAdapter(mAdapter);
+
+    llHeader.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        mAdapter.handleTouchDate(-1, -1);
+      }
+    });
 
     if (viewModel.isFirstEntry) {
       rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION );
@@ -314,5 +331,24 @@ public class EditCalendarFragment extends Fragment
   public void saveEvent(Event event) {
     viewModel.getActiveEventSet().saveEvent(event);
     mAdapter.notifyDataSetChanged();
+  }
+
+
+  public boolean isFABVisible = false;
+  @Override
+  public void onSetCursorVisibility(boolean isVisible) {
+    if (isVisible) {
+      if (!isFABVisible){
+        isFABVisible = true;
+        fabAddEvent.setVisibility(View.VISIBLE);
+        fabAddEvent.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.crispy_show));
+      }
+    }else{
+      if (isFABVisible){
+        isFABVisible = false;
+        fabAddEvent.setVisibility(View.INVISIBLE);
+        fabAddEvent.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.crispy_hide));
+      }
+    }
   }
 }

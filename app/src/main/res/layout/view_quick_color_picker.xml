@@ -7,6 +7,7 @@
     android:layout_height="wrap_content">
 
   <LinearLayout
+      android:id="@+id/ll_color"
       android:orientation="horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
@@ -33,7 +34,7 @@
   </LinearLayout>
 
   <LinearLayout
-      android:id="@+id/ll_color_picker"
+      android:id="@+id/ll_new_color"
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">

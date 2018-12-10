@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -32,7 +33,9 @@ import java.util.concurrent.TimeUnit;
  and starting at the mid point.
  and some re-syncing of offset method when straying too far from the midpoint
 * */
-public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHolder> {
+public class CalendarWeekAdapter
+        extends RecyclerView.Adapter<CalendarWeekViewHolder>
+        implements CalendarWeekViewHolder.TouchDateHandler {
 
   public static final int ITEM_COUNT = 1000000;
   private static final String DIVIDER_VIEW_TAG = "DIVIDER_VIEW_TAG";
@@ -43,6 +46,12 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
   public static final int EVENT_BAR_MARGIN = 5;
 
   private int mEventGranularityFactor;
+
+  // this is the cursor so if they want to visually select a date on the calendar,
+  // they can just poke it.
+  private java.util.Calendar mDateCursor;
+  private int mDateCursorPosition;
+  private int mDateCursorIndex;
 
   private DisplayMode mDisplayMode;
 
@@ -112,6 +121,7 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     Context context = parent.getContext();
     View view = mLayoutInflater.inflate(R.layout.calendar_edit_week_item, parent, false);
     CalendarWeekViewHolder holder = new CalendarWeekViewHolder(view, context);
+    holder.setTouchHandler(this);
     mAllViewHolders.add(holder);
     return holder;
   }
@@ -160,6 +170,8 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
         break;
     }
 
+    holder.setCurrentPosition(position);
+    holder.renderCursor(mDateCursorPosition, mDateCursorIndex);
     holder.resynchronizeHighlightMonth(mHighlightMonth);
   }
 
@@ -419,4 +431,65 @@ public class CalendarWeekAdapter extends RecyclerView.Adapter<CalendarWeekViewHo
     }
   }
 
+  @Override
+  public void handleTouchDate(int position, int index) {
+    if (position < 0) {
+      clearCursor();
+      return;
+    }
+
+    if (mDateCursorPosition == position && mDateCursorIndex == index) {
+      // no change. do nothing;
+      return;
+    }
+    mDateCursorPosition = position;
+    mDateCursorIndex = index;
+
+    Calendar date = getItemBaseDate(position);
+    switch (mDisplayMode){
+      case ROW_PER_WEEK:
+        //only add index days if it is in week item mode
+        date.add(Calendar.DAY_OF_MONTH, index);
+        break;
+      case ROW_PER_DAY:
+        break;
+    }
+
+    mDateCursor = date;
+    renderCursor();
+    mCursorStateHandler.onSetCursorVisibility(true);
+  }
+
+  public void clearCursor() {
+    mDateCursorPosition = -1;
+    renderCursor();
+    mCursorStateHandler.onSetCursorVisibility(false);
+  }
+
+  public void renderCursor() {
+    for (CalendarWeekViewHolder holder: mAllViewHolders) {
+      switch (mDisplayMode){
+        case ROW_PER_WEEK:
+          //only add index days if it is in week item mode
+          holder.renderCursor(mDateCursorPosition, mDateCursorIndex);
+          break;
+        case ROW_PER_DAY:
+          holder.renderCursor(mDateCursorPosition, -1);
+          break;
+      }
+
+    }
+  }
+
+
+  public CursorStateHandler mCursorStateHandler;
+  public interface CursorStateHandler {
+    void onSetCursorVisibility(boolean isVisible);
+  }
+  public void setCursorStateHandler(CursorStateHandler handler) {
+    mCursorStateHandler = handler;
+  }
+
+
 }
+

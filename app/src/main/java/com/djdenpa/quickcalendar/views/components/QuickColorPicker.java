@@ -8,9 +8,7 @@ import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -34,7 +32,9 @@ public class QuickColorPicker extends FrameLayout {
 
   String mCurrentColor;
 
-  @BindView(R.id.ll_color_picker)
+  @BindView(R.id.ll_color)
+  LinearLayout llColor;
+  @BindView(R.id.ll_new_color)
   LinearLayout llColorPicker;
 
   @BindView(R.id.iv_color)
@@ -125,11 +125,13 @@ public class QuickColorPicker extends FrameLayout {
   }
 
   public void showColorSelector(){
+    llColor.setVisibility(GONE);
     llColorPicker.setVisibility(VISIBLE);
     colorPicker.selectCenter();
     setNewColor(tryParseColor(mCurrentColor));
   }
   public void hideColorSelector(){
+    llColor.setVisibility(VISIBLE);
     llColorPicker.setVisibility(GONE);
   }
 
