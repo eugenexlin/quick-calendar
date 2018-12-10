@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+  <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_color"
+        android:layout_width="@dimen/color_circle_size"
+        android:layout_height="@dimen/color_circle_size"
+        android:layout_gravity="center"
+        android:src="@drawable/circle"
+        android:tint="@color/lighter_gray"
+        android:clickable="true"
+        android:focusable="true"
+        />
+    <EditText
+        android:id="@+id/et_color"
+        android:layout_marginStart="@dimen/color_picker_margin"
+        android:layout_width="@dimen/color_edit_text_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:inputType="text"
+        android:maxLines="1"
+        />
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/ll_color_picker"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <com.skydoves.colorpickerview.ColorPickerView
+        android:id="@+id/color_picker"
+        android:layout_width="@dimen/color_picker_size"
+        android:layout_height="@dimen/color_picker_size"
+        android:layout_margin="@dimen/color_picker_margin"
+        app:palette="@drawable/palette"
+        app:selector="@drawable/wheel" />
+
+    <com.skydoves.colorpickerview.sliders.BrightnessSlideBar
+        android:id="@+id/brightness_slide"
+        android:layout_width="@dimen/color_picker_size"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/color_picker_margin"
+        app:selector_BrightnessSlider="@drawable/wheel"
+        />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <ImageView
+          android:id="@+id/iv_new_color"
+          android:layout_width="@dimen/color_circle_size"
+          android:layout_height="@dimen/color_circle_size"
+          android:layout_gravity="center"
+          android:src="@drawable/circle"
+          android:tint="@color/lighter_gray"
+          android:clickable="true"
+          android:focusable="true"
+          />
+
+      <EditText
+          android:id="@+id/et_new_color"
+          android:layout_marginStart="@dimen/color_picker_margin"
+          android:layout_width="@dimen/color_edit_text_width"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:inputType="text"
+          android:maxLines="1"
+          />
+
+      <ImageButton
+          android:id="@+id/b_cancel"
+          android:layout_width="@dimen/circle_button_size"
+          android:layout_height="@dimen/circle_button_size"
+          android:background="@drawable/outline_button_circle"
+          android:tint="@color/deny"
+          android:layout_marginStart="@dimen/side_button_margin"
+          android:src="@drawable/ic_close_black_24dp"
+          android:layout_marginBottom="8dp"
+          android:clickable="true"
+          android:focusable="true"
+          />
+      <ImageButton
+          android:id="@+id/b_set"
+          android:layout_width="@dimen/circle_button_size"
+          android:layout_height="@dimen/circle_button_size"
+          android:background="@drawable/outline_button_circle"
+          android:tint="@color/confirm"
+          android:layout_marginStart="@dimen/side_button_margin"
+          android:src="@drawable/ic_check_black_24dp"
+          android:layout_marginBottom="8dp"
+          android:clickable="true"
+          android:focusable="true"
+          />
+    </LinearLayout>
+  </LinearLayout>
+
+</LinearLayout>

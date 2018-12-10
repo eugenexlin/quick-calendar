@@ -48,6 +48,8 @@
   <string name="edit_event_event_name_label">Event Name</string>
   <string name="edit_event_event_start_label">Begin Date</string>
   <string name="edit_event_event_end_label">End Date</string>
+  <string name="edit_event_event_color_label">Event Color</string>
+
 
   <string name="year_hint">YYYY</string>
   <string name="month_hint">MM</string>
@@ -81,6 +83,7 @@
   <string name="menu_save">Save</string>
   <string name="set_by_duration">SET BY DURATION</string>
   <string name="set_button">SET</string>
+  <string name="cancel_button">CANCEL</string>
 
   <string-array name="am_pm">
     <item>AM</item>

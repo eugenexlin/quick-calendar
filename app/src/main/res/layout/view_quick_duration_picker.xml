@@ -29,14 +29,26 @@
       android:textSize="@dimen/edit_text_size"
       />
 
-  <Button
-      android:id="@+id/b_set"
-      android:layout_width="wrap_content"
-      android:layout_height="@dimen/outline_button_height"
-      android:background="@drawable/outline_button"
-      android:theme="@style/outlined_button"
+  <ImageButton
+      android:id="@+id/b_cancel"
+      android:layout_width="@dimen/circle_button_size"
+      android:layout_height="@dimen/circle_button_size"
+      android:background="@drawable/outline_button_circle"
+      android:tint="@color/deny"
       android:layout_marginStart="@dimen/side_button_margin"
-      android:text="@string/set_button"
+      android:src="@drawable/ic_close_black_24dp"
+      android:layout_marginBottom="8dp"
+      android:clickable="true"
+      android:focusable="true"
+      />
+  <ImageButton
+      android:id="@+id/b_set"
+      android:layout_width="@dimen/circle_button_size"
+      android:layout_height="@dimen/circle_button_size"
+      android:background="@drawable/outline_button_circle"
+      android:tint="@color/confirm"
+      android:layout_marginStart="@dimen/side_button_margin"
+      android:src="@drawable/ic_check_black_24dp"
       android:layout_marginBottom="8dp"
       android:clickable="true"
       android:focusable="true"

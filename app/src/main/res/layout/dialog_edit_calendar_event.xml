@@ -30,6 +30,7 @@
 
     <!-- main view -->
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primaryBgColor"
@@ -91,7 +92,7 @@
                 <Button
                     android:id="@+id/b_set_by_duration"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/outline_button_height"
+                    android:layout_height="@dimen/circle_button_size"
                     android:background="@drawable/outline_button"
                     android:theme="@style/outlined_button"
                     android:layout_marginStart="@dimen/side_button_margin"
@@ -135,7 +136,20 @@
 
             </android.support.constraint.ConstraintLayout>
 
+            <!---->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_event_event_color_label"
+                android:theme="@style/FieldLabel"
+                />
 
+            <com.djdenpa.quickcalendar.views.components.QuickColorPicker
+                android:id="@+id/qcp_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </com.djdenpa.quickcalendar.views.components.QuickColorPicker>
 
         </LinearLayout>
 

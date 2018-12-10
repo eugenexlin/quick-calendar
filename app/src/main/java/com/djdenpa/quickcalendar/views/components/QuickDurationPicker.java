@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -43,8 +44,11 @@ public class QuickDurationPicker extends FrameLayout {
   EditText etDuration;
   @BindView(R.id.s_duration)
   Spinner sDuration;
+
   @BindView(R.id.b_set)
-  Button bSet;
+  ImageButton bSet;
+  @BindView(R.id.b_cancel)
+  ImageButton bCancel;
 
   private long mCurrentMillis = 0;
   private int mCurrentPosition = 0;
@@ -99,12 +103,8 @@ public class QuickDurationPicker extends FrameLayout {
       }
     });
 
-    bSet.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        finishInputAndCallback();
-      }
-    });
+    bSet.setOnClickListener(v -> finishInputAndCallback());
+    bCancel.setOnClickListener(v -> mCallback.saveDurationMillis(-1));
 
     etDuration.addTextChangedListener(new TextWatcher() {
       @Override
@@ -118,12 +118,9 @@ public class QuickDurationPicker extends FrameLayout {
         mCurrentMillis = getDurationMillis();
       }
     });
-    etDuration.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-      @Override
-      public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        finishInputAndCallback();
-        return true;
-      }
+    etDuration.setOnEditorActionListener((v, actionId, event) -> {
+      finishInputAndCallback();
+      return true;
     });
 
   }

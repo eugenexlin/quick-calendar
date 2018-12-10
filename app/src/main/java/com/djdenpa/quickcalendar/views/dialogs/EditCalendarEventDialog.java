@@ -17,6 +17,7 @@ import android.widget.EditText;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Event;
+import com.djdenpa.quickcalendar.views.components.QuickColorPicker;
 import com.djdenpa.quickcalendar.views.components.QuickDatePicker;
 import com.djdenpa.quickcalendar.views.components.QuickDurationPicker;
 
@@ -30,14 +31,18 @@ implements QuickDurationPicker.SaveDurationHandler {
 
   @Override
   public void saveDurationMillis(long millis) {
+    bSetByDuration.setVisibility(View.VISIBLE);
+    qdpEndDate.setVisibility(View.VISIBLE);
+    qdpDuration.setVisibility(View.INVISIBLE);
+
+    if (millis <= 0) {
+      return;
+    }
+
     Calendar startTime = qdpBeginDate.getValue();
     java.util.Calendar endCal = Calendar.getInstance();
     endCal.setTimeInMillis(startTime.getTime().getTime() + millis);
     qdpEndDate.setValue(endCal);
-
-    bSetByDuration.setVisibility(View.VISIBLE);
-    qdpEndDate.setVisibility(View.VISIBLE);
-    qdpDuration.setVisibility(View.INVISIBLE);
   }
 
   public interface EditCalendarNameListener {
@@ -66,6 +71,9 @@ implements QuickDurationPicker.SaveDurationHandler {
 
   @BindView(R.id.qdp_duration)
   QuickDurationPicker qdpDuration;
+
+  @BindView(R.id.qcp_color)
+  QuickColorPicker qcpColor;
 
   @BindView(R.id.b_set_by_duration)
   Button bSetByDuration;
@@ -108,6 +116,8 @@ implements QuickDurationPicker.SaveDurationHandler {
     qdpEndDate.setValue(endCal);
 
     qdpDuration.setCallback(this);
+
+    qcpColor.setColor(mEvent.color);
 
     bSetByDuration.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -196,6 +206,7 @@ implements QuickDurationPicker.SaveDurationHandler {
     mEvent.name = etEventName.getText().toString();
     mEvent.eventStartUTC = startTime;
     mEvent.eventDurationMs = duration;
+    mEvent.color = qcpColor.getColor();
     mListener.saveEvent(mEvent);
   }
 }

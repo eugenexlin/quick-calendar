@@ -186,5 +186,6 @@ public class QuickDatePicker extends FrameLayout {
     etDay.setText(String.format(format2Digits, calendar.get(Calendar.DAY_OF_MONTH)));
     etHour.setText(String.format(format2Digits, calendar.get(Calendar.HOUR)));
     etMinute.setText(String.format(format2Digits, calendar.get(Calendar.MINUTE)));
+    sAmPm.setSelection(calendar.get(Calendar.AM_PM));
   }
 }
