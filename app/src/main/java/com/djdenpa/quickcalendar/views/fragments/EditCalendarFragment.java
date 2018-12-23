@@ -138,16 +138,19 @@ public class EditCalendarFragment extends Fragment
 
     rvCalendarWeeks.setAdapter(mAdapter);
 
-    llHeader.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        mAdapter.handleTouchDate(-1, -1);
-      }
-    });
+    llHeader.setOnClickListener(v -> mAdapter.handleTouchDate(-1, -1));
 
     if (viewModel.isFirstEntry) {
       rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION );
     }
+
+    fabAddEvent.setOnClickListener(v -> {
+      long timeUtc = mAdapter.getCursorDate().getTime().getTime();
+      Event event = new Event();
+      event.eventStartUTC = timeUtc;
+      event.eventDurationMs = 1000*60*60*24-1;
+      PromptEditEvent(event);
+    });
 
     rvCalendarWeeks.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override

@@ -431,6 +431,12 @@ public class CalendarWeekAdapter
     }
   }
 
+  public java.util.Calendar getCursorDate() {
+    java.util.Calendar javaCal = java.util.Calendar.getInstance();
+    javaCal.setTime(mDateCursor.getTime());
+    return javaCal;
+  }
+
   @Override
   public void handleTouchDate(int position, int index) {
     if (position < 0) {
