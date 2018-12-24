@@ -56,12 +56,33 @@ public class CalendarEventViewManager {
       // invalid color...
       color = mContext.getColor(R.color.primaryLightColor);
     }
+    int colorSum = getColorSum(color);
+    if (colorSum < 100) {
+      tvEventName.setTextColor(mContext.getColor(R.color.light_gray));
+    } else if (colorSum < 200) {
+      tvEventName.setTextColor(mContext.getColor(R.color.lighter_gray));
+    } else if (colorSum < 300) {
+      tvEventName.setTextColor(mContext.getColor(R.color.lightest_gray));
+    } else if (colorSum < 400) {
+      tvEventName.setTextColor(mContext.getColor(R.color.white));
+    } else {
+      tvEventName.setTextColor(mContext.getColor(R.color.black));
+    }
     ivEventBlock.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
     tvEventName.setText(event.name);
 
     clRoot.setOnClickListener(v -> fragment.PromptEditEvent(event));
 
   }
+
+  public int getColorSum(int color) {
+    int sum = 0;
+    sum += Color.red(color);
+    sum += Color.green(color);
+    sum += Color.blue(color);
+    return sum;
+  }
+
 
   public void setAsPlaceholder() {
     clRoot.setVisibility(View.VISIBLE);
