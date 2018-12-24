@@ -28,6 +28,16 @@
 
   </style>
 
+  <style name="date_circle">
+    <item name="android:layout_width">@dimen/date_circle_dimension</item>
+    <item name="android:layout_height">@dimen/date_circle_dimension</item>
+    <item name="android:layout_marginStart">@dimen/date_circle_margin_start</item>
+    <item name="android:layout_marginTop">@dimen/date_circle_margin_top</item>
+    <item name="android:textAlignment">center</item>
+    <item name="android:textSize">@dimen/calendar_date_text_size</item>
+
+  </style>
+
   <style name="full_screen_dialog" parent="Theme.AppCompat.Dialog">
     <item name="android:windowNoTitle">true</item>
 

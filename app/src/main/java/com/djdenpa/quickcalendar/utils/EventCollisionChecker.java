@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 public class EventCollisionChecker {
   LinkedList<EventCollisionInfo> events = new LinkedList<>();
+  public int currentMax;
 
   public boolean findAvailableSlotAndInsert(EventCollisionInfo newEvent){
     if (events.contains(newEvent)) {
@@ -20,6 +21,10 @@ public class EventCollisionChecker {
       if (!takenSlots.contains(i)){
         newEvent.layer = i;
         events.add(newEvent);
+
+        if (currentMax < i) {
+          currentMax = i;
+        }
         return true;
       }
     }

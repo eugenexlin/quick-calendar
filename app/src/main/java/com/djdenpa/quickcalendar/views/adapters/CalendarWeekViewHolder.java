@@ -227,13 +227,13 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     return clCalendarWeeks;
   }
 
-  public void resynchronizeHighlightMonth(int mCurrentMonth) {
+  public void resynchronizeHighlightMonth(int currentMonth) {
     for (int i = 0; i < 7; i++) {
       TextView tv = getDayTextField(i);
       if (tv.getTag(R.id.tag_tv_month_key) == null){
         continue;
       }
-      if ((int)tv.getTag(R.id.tag_tv_month_key) == mCurrentMonth){
+      if ((int)tv.getTag(R.id.tag_tv_month_key) == currentMonth){
         tv.setTextColor(mContext.getColor(R.color.darker_gray));
         tv.setTypeface(null, Typeface.BOLD);
       }else{

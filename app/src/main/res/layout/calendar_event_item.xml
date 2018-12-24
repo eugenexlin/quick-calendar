@@ -25,6 +25,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       android:textColor="@color/black"
+      android:textSize="@dimen/event_text_size"
       />
 
 </android.support.constraint.ConstraintLayout>

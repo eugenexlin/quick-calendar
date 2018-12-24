@@ -63,4 +63,10 @@ public class CalendarEventViewManager {
 
   }
 
+  public void setAsPlaceholder() {
+    clRoot.setVisibility(View.VISIBLE);
+    tvEventName.setText("");
+    clRoot.setOnClickListener(null);
+  }
+
 }

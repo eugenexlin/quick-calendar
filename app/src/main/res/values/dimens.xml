@@ -55,6 +55,10 @@
   <dimen name="color_circle_size">36dp</dimen>
   <dimen name="color_picker_margin">16dp</dimen>
   <dimen name="color_edit_text_width">100dp</dimen>
+  <dimen name="date_circle_dimension">22sp</dimen>
+  <dimen name="date_circle_margin_start">1dp</dimen>
+  <dimen name="date_circle_margin_top">3dp</dimen>
+  <dimen name="event_text_size">16dp</dimen>
 
 
 </resources>

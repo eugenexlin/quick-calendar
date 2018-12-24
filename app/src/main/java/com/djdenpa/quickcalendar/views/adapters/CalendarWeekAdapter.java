@@ -2,7 +2,10 @@ package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -42,7 +45,8 @@ public class CalendarWeekAdapter
   public static int START_POSITION = ITEM_COUNT/2;
 
   private static final double MILLIS_PER_DAY = (1000 * 60 * 60 * 24);
-  public static final int EVENT_BAR_HEIGHT = 56;
+  public static final int FIRST_EVENT_LAYER_OFFSET = 70;
+  public static final int EVENT_BAR_HEIGHT = 64;
   public static final int EVENT_BAR_MARGIN = 5;
 
   private int mEventGranularityFactor;
@@ -188,7 +192,8 @@ public class CalendarWeekAdapter
     int month = baseDate.get(java.util.Calendar.MONTH);
 
     TextView view = holder.getDayTextField(0);
-    view.setText(String.format(mContext.getString(R.string.day_mode_date_string_format), String.valueOf(dateNumber), getDayModeDayOfWeek(dayOfWeek)));
+//    view.setText(String.format(mContext.getString(R.string.day_mode_date_string_format), String.valueOf(dateNumber), getDayModeDayOfWeek(dayOfWeek)));
+    view.setText(String.valueOf(dateNumber));
     view.setTag(R.id.tag_tv_month_key, month);
 
     // clear out all texts except the first
@@ -239,7 +244,7 @@ public class CalendarWeekAdapter
 
         int offsetTop = (EVENT_BAR_HEIGHT + EVENT_BAR_MARGIN) * eventInfo.layer;
 
-        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 60 + offsetTop);
+        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, FIRST_EVENT_LAYER_OFFSET + offsetTop);
         constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.START, holder.getHighResDayGuideline(beginPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 2);
         constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.END, holder.getHighResDayGuideline(endPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 3);
 
@@ -247,6 +252,19 @@ public class CalendarWeekAdapter
 
       }
     }
+    CreatePlaceHolderEventItem(constraintSet, holder,oECC.currentMax+1);
+  }
+
+  private void CreatePlaceHolderEventItem(ConstraintSet constraintSet, CalendarWeekViewHolder holder, int layer) {
+    ConstraintLayout parent = holder.getParentLayout();
+    CalendarEventViewManager eventItem = holder.getViewFromPoolOrCreate(mContext, holder);
+    eventItem.setAsPlaceholder();
+    constraintSet.clone(parent);
+    int offsetTop = (EVENT_BAR_HEIGHT + EVENT_BAR_MARGIN) * layer;
+    constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, FIRST_EVENT_LAYER_OFFSET + offsetTop);
+    constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.START, holder.getGuideline(0).getId(), ConstraintSet.START, 0);
+    constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.END, holder.getGuideline(0).getId(), ConstraintSet.START, 0);
+    constraintSet.applyTo(parent);
   }
 
   private void BindDataByWeek(CalendarWeekViewHolder holder, int position){
@@ -316,7 +334,7 @@ public class CalendarWeekAdapter
 
         int offsetTop = (EVENT_BAR_HEIGHT + EVENT_BAR_MARGIN) * eventInfo.layer;
 
-        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 60 + offsetTop);
+        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, FIRST_EVENT_LAYER_OFFSET + offsetTop);
         constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.START, holder.getHighResWeekGuideline(beginPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 2);
         constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.END, holder.getHighResWeekGuideline(endPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 3);
 
@@ -324,6 +342,7 @@ public class CalendarWeekAdapter
 
       }
     }
+    CreatePlaceHolderEventItem(constraintSet, holder,oECC.currentMax+1);
   }
 
   // this takes into account the display mode.
@@ -397,18 +416,31 @@ public class CalendarWeekAdapter
           continue;
         }
         int viewMonth = (int) view.getTag(R.id.tag_tv_month_key);
-        if (viewMonth == mHighlightMonth) {
+        if (holder.getAdapterPosition() == mDateCursorPosition &&
+                ((mDisplayMode == DisplayMode.ROW_PER_DAY && i == 0) ||
+                 (mDisplayMode == DisplayMode.ROW_PER_WEEK && i == mDateCursorIndex))) {
+
+
+          view.setTextColor(mContext.getColor(R.color.white));
+          view.setTypeface(null, Typeface.BOLD);
+          Drawable drawable = mContext.getDrawable(R.drawable.circle);
+          drawable.setColorFilter(new PorterDuffColorFilter(mContext.getColor(R.color.secondaryColor), PorterDuff.Mode.MULTIPLY));
+          view.setBackground(drawable);
+        } else if (viewMonth == mHighlightMonth) {
           view.setTextColor(mContext.getColor(R.color.darker_gray));
           view.setTypeface(null, Typeface.BOLD);
-        }else{
+          view.setBackground(null);
+
+        } else {
           view.setTextColor(mContext.getColor(R.color.lighter_gray));
           view.setTypeface(null, Typeface.NORMAL);
+          view.setBackground(null);
+
         }
       }
 
     }
   }
-
 
   public String getDayModeDayOfWeek(int position){
     switch(position) {
@@ -483,8 +515,9 @@ public class CalendarWeekAdapter
           holder.renderCursor(mDateCursorPosition, -1);
           break;
       }
-
     }
+    // re-render everything
+    setHighlightMonth(mHighlightMonth);
   }
 
 
@@ -495,6 +528,8 @@ public class CalendarWeekAdapter
   public void setCursorStateHandler(CursorStateHandler handler) {
     mCursorStateHandler = handler;
   }
+
+
 
 
 }
