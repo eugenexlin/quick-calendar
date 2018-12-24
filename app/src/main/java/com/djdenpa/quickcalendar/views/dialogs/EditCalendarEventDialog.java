@@ -47,6 +47,7 @@ implements QuickDurationPicker.SaveDurationHandler {
 
   public interface EditCalendarNameListener {
     void saveEvent(Event event);
+    void finishDialog();
   }
 
   public static final String BUNDLE_CALENDAR_EVENT = "BUNDLE_CALENDAR_EVENT";
@@ -162,6 +163,12 @@ implements QuickDurationPicker.SaveDurationHandler {
     t_toolbar.setTitle(getDialogTitleResId());
 
     return view;
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    mListener.finishDialog();
   }
 
   @Override

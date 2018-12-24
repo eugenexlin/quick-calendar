@@ -109,6 +109,12 @@ public class EditCalendarFragment extends Fragment
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    fabAddEvent.setEnabled(true);
+  }
+
+  @Override
   public View onCreateView(LayoutInflater inflater,
                            @Nullable ViewGroup container,
                            @Nullable Bundle savedInstanceState) {
@@ -145,6 +151,8 @@ public class EditCalendarFragment extends Fragment
     }
 
     fabAddEvent.setOnClickListener(v -> {
+      fabAddEvent.setEnabled(false);
+
       long timeUtc = mAdapter.getCursorDate().getTime().getTime();
       Event event = new Event();
       event.eventStartUTC = timeUtc;
@@ -334,6 +342,11 @@ public class EditCalendarFragment extends Fragment
   public void saveEvent(Event event) {
     viewModel.getActiveEventSet().saveEvent(event);
     mAdapter.notifyDataSetChanged();
+  }
+
+  @Override
+  public void finishDialog() {
+    fabAddEvent.setEnabled(true);
   }
 
 
