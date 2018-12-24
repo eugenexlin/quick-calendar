@@ -1,7 +1,10 @@
 package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -13,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
+import com.djdenpa.quickcalendar.models.DisplayMode;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -178,7 +182,6 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
   public void RecycleViewToPool(CalendarEventViewManager eventItem) {
     eventItem.hide();
     mRecycledEventViews.push(eventItem);
-
   }
 
   public CalendarEventViewManager getViewFromPoolOrCreate(Context context, @NonNull CalendarWeekViewHolder holder) {
@@ -227,20 +230,44 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     return clCalendarWeeks;
   }
 
-  public void resynchronizeHighlightMonth(int currentMonth) {
+  public void resynchronizeDateNumberVisuals(int currentMonth, DisplayMode displayMode, int cursorPosition, int cursorIndex) {
+
+    if (displayMode == DisplayMode.ROW_PER_DAY) {
+      cursorIndex = -1;
+    }
+
     for (int i = 0; i < 7; i++) {
-      TextView tv = getDayTextField(i);
-      if (tv.getTag(R.id.tag_tv_month_key) == null){
+      TextView view = getDayTextField(i);
+      if (view == null) {
         continue;
       }
-      if ((int)tv.getTag(R.id.tag_tv_month_key) == currentMonth){
-        tv.setTextColor(mContext.getColor(R.color.darker_gray));
-        tv.setTypeface(null, Typeface.BOLD);
-      }else{
-        tv.setTextColor(mContext.getColor(R.color.lighter_gray));
-        tv.setTypeface(null, Typeface.NORMAL);
+      if (view.getTag(R.id.tag_tv_month_key) == null){
+        continue;
+      }
+      int viewMonth = (int) view.getTag(R.id.tag_tv_month_key);
+      if (getAdapterPosition() == cursorPosition &&
+              ((displayMode == DisplayMode.ROW_PER_DAY && i == 0) ||
+                      (displayMode == DisplayMode.ROW_PER_WEEK && i == cursorIndex))) {
+
+
+        view.setTextColor(mContext.getColor(R.color.white));
+        view.setTypeface(null, Typeface.BOLD);
+        Drawable drawable = mContext.getDrawable(R.drawable.circle);
+        drawable.setColorFilter(new PorterDuffColorFilter(mContext.getColor(R.color.secondaryColor), PorterDuff.Mode.MULTIPLY));
+        view.setBackground(drawable);
+      } else if (viewMonth == currentMonth) {
+        view.setTextColor(mContext.getColor(R.color.darker_gray));
+        view.setTypeface(null, Typeface.BOLD);
+        view.setBackground(null);
+
+      } else {
+        view.setTextColor(mContext.getColor(R.color.lighter_gray));
+        view.setTypeface(null, Typeface.NORMAL);
+        view.setBackground(null);
+
       }
     }
+    renderCursor(cursorPosition, cursorIndex);
   }
 
   // index of cursor, or -1 for entire week
@@ -290,6 +317,12 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
             getGuideline(index+1).getId(),
             ConstraintSet.START, 0);
     constraintSet.applyTo(clCalendarWeeks);
+
+    TextView tv = getDayTextField(index);
+    tv.setBackground(null);
+    Drawable drawable = mContext.getDrawable(R.drawable.circle);
+    drawable.setColorFilter(new PorterDuffColorFilter(mContext.getColor(R.color.secondaryColor), PorterDuff.Mode.MULTIPLY));
+    tv.setBackground(drawable);
   }
   private void setCursorWhole(){
     // cursor is showing, but we nee to hide, so HIDE
@@ -306,6 +339,12 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
             getGuideline(7).getId(),
             ConstraintSet.START, 0);
     constraintSet.applyTo(clCalendarWeeks);
+
+    TextView tv = getDayTextField(0);
+    tv.setBackground(null);
+    Drawable drawable = mContext.getDrawable(R.drawable.circle);
+    drawable.setColorFilter(new PorterDuffColorFilter(mContext.getColor(R.color.secondaryColor), PorterDuff.Mode.MULTIPLY));
+    tv.setBackground(drawable);
   }
   private void clearCursor(){
     mCursorEnabled = false;
@@ -323,6 +362,12 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
             getGuideline(0).getId(),
             ConstraintSet.START, 0);
     constraintSet.applyTo(clCalendarWeeks);
+
+    for (int i = 0; i < 7; i++) {
+      TextView tv = getDayTextField(i);
+      tv.setBackground(null);
+    }
+
   }
 
 }

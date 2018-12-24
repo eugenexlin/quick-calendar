@@ -175,8 +175,12 @@ public class CalendarWeekAdapter
     }
 
     holder.setCurrentPosition(position);
-    holder.renderCursor(mDateCursorPosition, mDateCursorIndex);
-    holder.resynchronizeHighlightMonth(mHighlightMonth);
+    holder.resynchronizeDateNumberVisuals(
+            mHighlightMonth,
+            mDisplayMode,
+            mDateCursorPosition,
+            mDateCursorIndex
+    );
   }
 
   private void BindDataByDay(CalendarWeekViewHolder holder, int position) {
@@ -404,42 +408,7 @@ public class CalendarWeekAdapter
 
   public void setHighlightMonth(int month) {
     mHighlightMonth = month;
-
-    for (CalendarWeekViewHolder holder: mAllViewHolders) {
-
-      for (int i = 0; i < 7; i++) {
-        TextView view = holder.getDayTextField(i);
-        if (view == null) {
-          continue;
-        }
-        if (view.getTag(R.id.tag_tv_month_key) == null){
-          continue;
-        }
-        int viewMonth = (int) view.getTag(R.id.tag_tv_month_key);
-        if (holder.getAdapterPosition() == mDateCursorPosition &&
-                ((mDisplayMode == DisplayMode.ROW_PER_DAY && i == 0) ||
-                 (mDisplayMode == DisplayMode.ROW_PER_WEEK && i == mDateCursorIndex))) {
-
-
-          view.setTextColor(mContext.getColor(R.color.white));
-          view.setTypeface(null, Typeface.BOLD);
-          Drawable drawable = mContext.getDrawable(R.drawable.circle);
-          drawable.setColorFilter(new PorterDuffColorFilter(mContext.getColor(R.color.secondaryColor), PorterDuff.Mode.MULTIPLY));
-          view.setBackground(drawable);
-        } else if (viewMonth == mHighlightMonth) {
-          view.setTextColor(mContext.getColor(R.color.darker_gray));
-          view.setTypeface(null, Typeface.BOLD);
-          view.setBackground(null);
-
-        } else {
-          view.setTextColor(mContext.getColor(R.color.lighter_gray));
-          view.setTypeface(null, Typeface.NORMAL);
-          view.setBackground(null);
-
-        }
-      }
-
-    }
+    resynchronizeAllDateNumberVisuals();
   }
 
   public String getDayModeDayOfWeek(int position){
@@ -494,30 +463,25 @@ public class CalendarWeekAdapter
     }
 
     mDateCursor = date;
-    renderCursor();
     mCursorStateHandler.onSetCursorVisibility(true);
+    resynchronizeAllDateNumberVisuals();
   }
 
   public void clearCursor() {
     mDateCursorPosition = -1;
-    renderCursor();
     mCursorStateHandler.onSetCursorVisibility(false);
+    resynchronizeAllDateNumberVisuals();
   }
 
-  public void renderCursor() {
+  public void resynchronizeAllDateNumberVisuals() {
     for (CalendarWeekViewHolder holder: mAllViewHolders) {
-      switch (mDisplayMode){
-        case ROW_PER_WEEK:
-          //only add index days if it is in week item mode
-          holder.renderCursor(mDateCursorPosition, mDateCursorIndex);
-          break;
-        case ROW_PER_DAY:
-          holder.renderCursor(mDateCursorPosition, -1);
-          break;
-      }
+      holder.resynchronizeDateNumberVisuals(
+              mHighlightMonth,
+              mDisplayMode,
+              mDateCursorPosition,
+              mDateCursorIndex
+      );
     }
-    // re-render everything
-    setHighlightMonth(mHighlightMonth);
   }
 
 

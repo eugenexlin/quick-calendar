@@ -1,5 +1,8 @@
 package com.djdenpa.quickcalendar.views.adapters;
 
+import android.content.ClipData;
+import android.content.ClipData.Item;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.EventCollisionInfo;
+import com.djdenpa.quickcalendar.utils.EventDragShadow;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
 import static com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter.EVENT_BAR_HEIGHT;
@@ -72,6 +76,16 @@ public class CalendarEventViewManager {
     tvEventName.setText(event.name);
 
     clRoot.setOnClickListener(v -> fragment.PromptEditEvent(event));
+    clRoot.setOnLongClickListener(new View.OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        EventDragShadow ds = new EventDragShadow(v);
+        ClipData data = ClipData.newPlainText("","");
+        v.startDrag(data,ds,v,0);
+//        v.setVisibility(View.INVISIBLE);
+        return false;
+      }
+    });
 
   }
 
