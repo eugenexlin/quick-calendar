@@ -11,15 +11,12 @@ import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.EventSet;
 
 public class EditCalendarViewModel extends ViewModel {
-  public MutableLiveData<Calendar> activeCalendar;
+  public MutableLiveData<Calendar> activeCalendar = new MutableLiveData<>();
   public int activeEventSetId;
 
   private Application mApplication;
 
-  public boolean isFirstEntry = true;
-
   public void init() {
-    activeCalendar = new MutableLiveData<>();
     Calendar calendar = new Calendar();
     activeCalendar.setValue(calendar);
   }

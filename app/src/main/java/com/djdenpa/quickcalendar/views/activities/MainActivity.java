@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.djdenpa.quickcalendar.R;
@@ -64,21 +65,27 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onResume() {
     super.onResume();
+    Log.d("log", "onResume");
 
+    BindCalendarData();
+  }
+
+  private void BindCalendarData() {
     mRecentCalendarFragment.setLoading(true);
     QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
       List<Calendar> data = mDB.calendarDao().loadAllCalendars();
+      Log.d("log", "setAdapterData");
       mRecentCalendarFragment.setAdapterData(data);
       mRecentCalendarFragment.setLoading(false);
       QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
         mRecentCalendarFragment.setLoading(false);
       });
     });
-
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
   }
+
 }

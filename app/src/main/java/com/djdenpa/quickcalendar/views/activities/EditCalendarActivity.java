@@ -1,5 +1,7 @@
 package com.djdenpa.quickcalendar.views.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,17 +12,27 @@ import android.view.MenuItem;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
+import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.Event;
+import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
+import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
+import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
 
 public class EditCalendarActivity extends AppCompatActivity implements EditCalendarFragment.SaveEnabledHandler {
 
+  public static final String EXTRA_CALENDAR_ID = "EXTRA_CALENDAR_ID";
+
   EditCalendarFragment mEditCalendarFragment;
 
   QuickCalendarDatabase mDB;
+  private static final int DEFAULT_TASK_ID = 0;
+  private int mCalendarId = DEFAULT_TASK_ID;
 
   private boolean mCanSave = false;
+
+  private EditCalendarViewModel mViewModel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +45,28 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     setSupportActionBar(toolbar);
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+    Intent intent = getIntent();
+    if (intent != null && intent.hasExtra(EXTRA_CALENDAR_ID)) {
+      if (mCalendarId == DEFAULT_TASK_ID) {
+        mCalendarId = intent.getIntExtra(EXTRA_CALENDAR_ID, 0);
+      }
+    }
+
+
+    mViewModel = ViewModelProviders.of(this).get(EditCalendarViewModel.class);
+    mViewModel.init();
+    if (mCalendarId == DEFAULT_TASK_ID) {
+      // test data
+      mViewModel.setEntireCalendar(
+              new MockCalendarDataGenerator().getMockCalendar());
+    } else {
+      QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
+        Calendar calendar = mDB.calendarDao().loadCalendar(mCalendarId);
+        QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+          mViewModel.setEntireCalendar(calendar);
+        });
+      });
+    }
   }
 
   @Override
@@ -86,7 +120,18 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     mEditCalendarFragment = (EditCalendarFragment) fm.findFragmentById(R.id.edit_calendar_fragment);
 
     mEditCalendarFragment.setActivity(this);
+    mEditCalendarFragment.setViewModel(mViewModel);
 
   }
+
+//
+//  @Override
+//  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//    super.onActivityResult(requestCode, resultCode, data);
+//
+//    Intent refresh = new Intent(this, MainActivity.class);
+//    startActivity(refresh);
+//    this.finish();
+//  }
 }
 

@@ -112,6 +112,7 @@ public class CalendarTileListFragment extends Fragment {
 
   public void setAdapterData(List<Calendar> data) {
     mCalendarTilesAdapter.setData(data);
+    mCalendarTilesAdapter.notifyDataSetChanged();
     if (data.size() <= 0 ) {
       rvCalendarTiles.setVisibility(View.GONE);
       clEmptyState.setVisibility(View.VISIBLE);

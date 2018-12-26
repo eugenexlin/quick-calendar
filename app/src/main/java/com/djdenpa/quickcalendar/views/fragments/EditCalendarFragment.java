@@ -23,7 +23,6 @@ import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.DisplayMode;
 import com.djdenpa.quickcalendar.models.Event;
-import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.activities.EditCalendarActivity;
@@ -36,7 +35,6 @@ import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListTextMapper
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,7 +74,7 @@ public class EditCalendarFragment extends Fragment
 
   // this is for throttling
   private long previousRVScrollTime = System.currentTimeMillis();
-  private EditCalendarViewModel viewModel;
+  private EditCalendarViewModel mViewModel;
 
   boolean mIsLargeLayout;
 
@@ -84,31 +82,7 @@ public class EditCalendarFragment extends Fragment
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    viewModel = ViewModelProviders.of(getActivity()).get(EditCalendarViewModel.class);
-    // test data
-    if (viewModel.isFirstEntry) {
-      viewModel.init();
-      viewModel.setEntireCalendar(
-              new MockCalendarDataGenerator().getMockCalendar());
-    }
-
     mDB = QuickCalendarDatabase.getInstance(getActivity().getApplicationContext());
-
-    try{
-      if (viewModel.getActiveCalendar().getValue().name.length() == 0){
-        tvCalendarName.setText(getString(R.string.calendar_untitled_name));
-      }
-    } catch(Exception ex) {
-    }
-
-    viewModel.getActiveCalendar().observe(this, calendar -> {
-      if (calendar.name.length() == 0){
-        tvCalendarName.setText(getString(R.string.calendar_untitled_name));
-      } else {
-        tvCalendarName.setText(calendar.name);
-      }
-      mAdapter.setData(viewModel.getActiveEventSet());
-    });
 
     mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
   }
@@ -145,20 +119,10 @@ public class EditCalendarFragment extends Fragment
 
     mAdapter = new CalendarWeekAdapter(this);
     mAdapter.setCursorStateHandler(this);
-    //fetch earliest event, it will be base scroll
-    long earliestEventMillis = viewModel.getActiveCalendar().getValue().getFirstEventSet().getEarliestMillisUTC();
-    mAdapter.setMidpointDateMillis(earliestEventMillis);
-    java.util.Calendar earliestEventCal = java.util.Calendar.getInstance();
-    earliestEventCal.setTimeInMillis(earliestEventMillis);
-    updateCalendarFocusMonth(earliestEventCal);
 
     rvCalendarWeeks.setAdapter(mAdapter);
 
     llHeader.setOnClickListener(v -> mAdapter.handleTouchDate(-1, -1));
-
-    if (viewModel.isFirstEntry) {
-      rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION );
-    }
 
     fabAddEvent.setOnClickListener(v -> {
       fabAddEvent.setEnabled(false);
@@ -188,7 +152,6 @@ public class EditCalendarFragment extends Fragment
     }
 
     setWeekHeaderVisibilityBasedOnMode();
-    viewModel.isFirstEntry = false;
 
     return rootView;
   }
@@ -235,7 +198,7 @@ public class EditCalendarFragment extends Fragment
     EditCalendarNameDialog dialog = new EditCalendarNameDialog();
     Bundle args = new Bundle();
     args.putString(EditCalendarNameDialog.BUNDLE_CALENDAR_NAME,
-            viewModel.getActiveCalendar().getValue().name);
+            mViewModel.getActiveCalendar().getValue().name);
     dialog.setArguments(args);
     dialog.setTargetFragment(this, 0);
     dialog.show(getFragmentManager(), "EDIT_NAME");
@@ -320,7 +283,7 @@ public class EditCalendarFragment extends Fragment
   @Override
   public void setCalendarName(String name) {
     String cleanedName = name.trim();
-    viewModel.setCalendarName(cleanedName);
+    mViewModel.setCalendarName(cleanedName);
   }
 
   private static final int DIALOG_CODE_CHANGE_WEEK_GRANULARITY = 0;
@@ -354,7 +317,7 @@ public class EditCalendarFragment extends Fragment
 
   @Override
   public void saveEvent(Event event) {
-    viewModel.getActiveEventSet().saveEvent(event);
+    mViewModel.getActiveEventSet().saveEvent(event);
     mAdapter.notifyDataSetChanged();
   }
 
@@ -382,6 +345,29 @@ public class EditCalendarFragment extends Fragment
     }
   }
 
+  public void setViewModel(EditCalendarViewModel viewModel) {
+    mViewModel = viewModel;
+
+    mViewModel.getActiveCalendar().observe(this, calendar -> {
+      if (calendar.name.length() == 0){
+        tvCalendarName.setText(getString(R.string.calendar_untitled_name));
+      } else {
+        tvCalendarName.setText(calendar.name);
+      }
+      mAdapter.setData(mViewModel.getActiveEventSet());
+    });
+
+    //fetch earliest event, it will be base scroll
+    long earliestEventMillis = mViewModel.getActiveCalendar().getValue().getFirstEventSet().getEarliestMillisUTC();
+    mAdapter.setMidpointDateMillis(earliestEventMillis);
+    java.util.Calendar earliestEventCal = java.util.Calendar.getInstance();
+    earliestEventCal.setTimeInMillis(earliestEventMillis);
+    updateCalendarFocusMonth(earliestEventCal);
+
+    rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION );
+
+  }
+
   public interface SaveEnabledHandler {
     void toggleSaveButton(boolean isEnabled);
   }
@@ -389,8 +375,12 @@ public class EditCalendarFragment extends Fragment
   public void saveCalendar() {
     QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
       // set last access to now
-      viewModel.activeCalendar.getValue().lastAccess = new Date();
-      mDB.calendarDao().insertCalendar(viewModel.activeCalendar.getValue());
+      mViewModel.activeCalendar.getValue().lastAccess = new Date();
+      if (mViewModel.activeCalendar.getValue().id == 0) {
+        mDB.calendarDao().insertCalendar(mViewModel.activeCalendar.getValue());
+      } else{
+        mDB.calendarDao().updateCalendar(mViewModel.activeCalendar.getValue());
+      }
       mSaveEnabledHandler.toggleSaveButton(false);
       QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
         Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();

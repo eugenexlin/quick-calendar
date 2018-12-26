@@ -14,8 +14,11 @@ import java.util.List;
 @Dao
 public interface CalendarDao {
 
-  @Query("SELECT * FROM Calendar ORDER BY lastAccess")
+  @Query("SELECT * FROM Calendar ORDER BY lastAccess DESC")
   List<Calendar> loadAllCalendars();
+
+  @Query("SELECT * FROM Calendar WHERE id = :id")
+  Calendar loadCalendar(int id);
 
   @Insert
   void insertCalendar(Calendar calendar);

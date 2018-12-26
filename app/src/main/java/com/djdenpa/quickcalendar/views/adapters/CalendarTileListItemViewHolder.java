@@ -1,5 +1,6 @@
 package com.djdenpa.quickcalendar.views.adapters;
 
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +18,10 @@ public class CalendarTileListItemViewHolder extends RecyclerView.ViewHolder {
   TextView tvName;
   @BindView(R.id.iv_calendar_tile_thumbnail)
   ImageView ivThumbnail;
+  @BindView(R.id.cl_tile_item)
+  ConstraintLayout clTileItem;
+
+
 
   public CalendarTileListItemViewHolder(View itemView) {
     super(itemView);
