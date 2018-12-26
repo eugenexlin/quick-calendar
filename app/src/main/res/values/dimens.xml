@@ -59,6 +59,7 @@
   <dimen name="date_circle_margin_start">1dp</dimen>
   <dimen name="date_circle_margin_top">3dp</dimen>
   <dimen name="event_text_size">16dp</dimen>
+  <dimen name="tile_progress_bar_size">64dp</dimen>
 
 
 </resources>

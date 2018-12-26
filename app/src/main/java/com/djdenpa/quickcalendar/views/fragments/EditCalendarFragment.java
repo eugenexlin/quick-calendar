@@ -24,6 +24,7 @@ import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.DisplayMode;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
+import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.activities.EditCalendarActivity;
 import com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter;
@@ -35,6 +36,7 @@ import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListTextMapper
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -385,10 +387,14 @@ public class EditCalendarFragment extends Fragment
   }
 
   public void saveCalendar() {
-    // set last access to now
-    viewModel.activeCalendar.getValue().lastAccess = new Date();
-    mDB.calendarDao().insertCalendar(viewModel.activeCalendar.getValue());
-    mSaveEnabledHandler.toggleSaveButton(false);
-    Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();
+    QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
+      // set last access to now
+      viewModel.activeCalendar.getValue().lastAccess = new Date();
+      mDB.calendarDao().insertCalendar(viewModel.activeCalendar.getValue());
+      mSaveEnabledHandler.toggleSaveButton(false);
+      QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+        Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();
+      });
+    });
   }
 }

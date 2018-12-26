@@ -19,46 +19,66 @@
       android:textSize="@dimen/tiles_title_size"
       android:paddingBottom="@dimen/standard_line_gap"/>
 
-  <android.support.v7.widget.RecyclerView
-      android:id="@+id/rv_calendar_tiles"
+  <android.support.constraint.ConstraintLayout
+      android:id="@+id/cl_tile_body"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      />
-
-  <android.support.constraint.ConstraintLayout
-      android:id="@+id/cl_empty_state"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/empty_state_height"
-      android:background="@color/tile_placeholder_background"
       >
 
-    <TextView
-        android:id="@+id/tv_no_calendars"
-        android:layout_width="wrap_content"
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_calendar_tiles"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/no_calendars"
-        android:textColor="@color/gray"
-        android:textSize="@dimen/empty_state_text_size"
+        />
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/empty_state_height"
+        android:background="@color/tile_placeholder_background"
+        >
+
+      <TextView
+          android:id="@+id/tv_no_calendars"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/no_calendars"
+          android:textColor="@color/gray"
+          android:textSize="@dimen/empty_state_text_size"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.5"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintVertical_bias="0.45"/>
+
+      <TextView
+          android:id="@+id/tv_no_calendars_sub"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:text="@string/no_calendars_sub"
+          android:textColor="@color/gray"
+          android:textSize="@dimen/empty_state_sub_text_size"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.5"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/tv_no_calendars"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="@dimen/tile_progress_bar_size"
+        android:layout_height="@dimen/tile_progress_bar_size"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45"/>
-
-    <TextView
-        android:id="@+id/tv_no_calendars_sub"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/no_calendars_sub"
-        android:textColor="@color/gray"
-        android:textSize="@dimen/empty_state_sub_text_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_no_calendars"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
   </android.support.constraint.ConstraintLayout>
-
 </LinearLayout>

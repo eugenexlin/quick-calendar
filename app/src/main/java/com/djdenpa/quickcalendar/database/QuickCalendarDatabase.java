@@ -29,9 +29,8 @@ public abstract class QuickCalendarDatabase extends RoomDatabase {
                   QuickCalendarDatabase.class,
                   QuickCalendarDatabase.DATABASE_NAME
                   )
-                  .allowMainThreadQueries()
                   .build();
-
+//                   .allowMainThreadQueries()
         }
       }
     }

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
@@ -32,6 +33,8 @@ public class CalendarTileListFragment extends Fragment {
   RecyclerView rvCalendarTiles;
   @BindView(R.id.cl_empty_state)
   ConstraintLayout clEmptyState;
+  @BindView(R.id.pb_loading)
+  ProgressBar pbLoading;
 
   private CalendarTileListItemAdapter mCalendarTilesAdapter;
 
@@ -115,6 +118,14 @@ public class CalendarTileListFragment extends Fragment {
     } else {
       rvCalendarTiles.setVisibility(View.VISIBLE);
       clEmptyState.setVisibility(View.GONE);
+    }
+  }
+
+  public void setLoading(boolean isLoading){
+    if (isLoading) {
+      pbLoading.setVisibility(View.VISIBLE);
+    } else {
+      pbLoading.setVisibility(View.GONE);
     }
   }
 

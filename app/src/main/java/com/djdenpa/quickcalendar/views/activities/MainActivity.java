@@ -11,6 +11,7 @@ import android.view.View;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.Calendar;
+import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.views.fragments.CalendarTileListFragment;
 
 import java.util.List;
@@ -64,8 +65,16 @@ public class MainActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
 
-    List<Calendar> data = mDB.calendarDao().loadAllCalendars();
-    mRecentCalendarFragment.setAdapterData(data);
+    mRecentCalendarFragment.setLoading(true);
+    QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
+      List<Calendar> data = mDB.calendarDao().loadAllCalendars();
+      mRecentCalendarFragment.setAdapterData(data);
+      mRecentCalendarFragment.setLoading(false);
+      QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+        mRecentCalendarFragment.setLoading(false);
+      });
+    });
+
   }
 
   @Override
