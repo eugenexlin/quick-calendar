@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.djdenpa.quickcalendar.R;
-import com.djdenpa.quickcalendar.comparer.CalendarInfoComparator;
+import com.djdenpa.quickcalendar.comparer.CalendarComparator;
 import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.CalendarInfo;
 import com.squareup.picasso.Picasso;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTileListItemViewHolder> {
 
-  public final LinkedList<CalendarInfo> mCalendarData = new LinkedList<>();
+  public final LinkedList<Calendar> mCalendarData = new LinkedList<>();
 
   @NonNull
   @Override
@@ -33,7 +33,7 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
 
   @Override
   public void onBindViewHolder(@NonNull CalendarTileListItemViewHolder holder, int position) {
-    CalendarInfo calendar = getItem(position);
+    Calendar calendar = getItem(position);
     holder.tvName.setText(calendar.name);
     Picasso.get().load(R.drawable.ic_calendar).into(holder.ivThumbnail);
   }
@@ -43,13 +43,13 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
     return mCalendarData.size();
   }
 
-  private CalendarInfo getItem(int position) {
+  private Calendar getItem(int position) {
     return mCalendarData.get(position);
   }
 
-  private CalendarInfoComparator calendarInfoComparator = new CalendarInfoComparator();
+  private CalendarComparator calendarComparator = new CalendarComparator();
 
-  public void setData(LinkedList<CalendarInfo> data){
+  public void setData(List<Calendar> data){
     mCalendarData.clear();
 
     // MEMO TO ME, Collections.copy does not auto resize collection,
@@ -57,9 +57,9 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
     // not very friendly.
     // Collections.copy(mCalendarData, data);
 
-    for (CalendarInfo ci : data){
-      mCalendarData.add(ci);
+    for (Calendar c : data){
+      mCalendarData.add(c);
     }
-    Collections.sort(mCalendarData, calendarInfoComparator);
+    Collections.sort(mCalendarData, calendarComparator);
   }
 }

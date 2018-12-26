@@ -1,19 +1,28 @@
 package com.djdenpa.quickcalendar.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
 import java.util.HashMap;
 
+@Entity
 public class Calendar implements Parcelable {
+
+  @PrimaryKey (autoGenerate = true)
   public int id;
   public String name;
   public Date lastAccess;
   public String creatorIdentity;
 
+  @Ignore
   private int nextEventSetId;
+  @Ignore
   private Object nextEventSetIdLock = new Object();
+  @Ignore
   private HashMap<Integer, EventSet> eventSetHash = new HashMap<>();
 
   public Calendar(){
@@ -27,6 +36,13 @@ public class Calendar implements Parcelable {
     name = in.readString();
     lastAccess = new Date(in.readLong());
     creatorIdentity = in.readString();
+  }
+
+  protected Calendar(int pId, String pName, Date pLastAccess, String pCreatorIdentity) {
+    id = pId;
+    name = pName;
+    lastAccess = pLastAccess;
+    creatorIdentity = pCreatorIdentity;
   }
 
   public static final Creator<Calendar> CREATOR = new Creator<Calendar>() {

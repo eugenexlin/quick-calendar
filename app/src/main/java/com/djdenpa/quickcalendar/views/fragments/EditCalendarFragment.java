@@ -14,12 +14,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.djdenpa.quickcalendar.R;
+import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.DisplayMode;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
@@ -33,6 +34,7 @@ import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListTextMapper
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +45,8 @@ public class EditCalendarFragment extends Fragment
         GenericSingleSelectListDialog.GenericSpinnerDialogListener,
         EditCalendarEventDialog.EditCalendarNameListener,
         CalendarWeekAdapter.CursorStateHandler {
+
+  QuickCalendarDatabase mDB;
 
   private Unbinder unbinder;
   @BindView(R.id.tv_calendar_name)
@@ -60,6 +64,7 @@ public class EditCalendarFragment extends Fragment
 
   // this is for opening dialog
   private AppCompatActivity mActivity;
+  private SaveEnabledHandler mSaveEnabledHandler;
 
   private int mCurrentYear = -1;
   private int mCurrentMonth = -1;
@@ -85,6 +90,8 @@ public class EditCalendarFragment extends Fragment
               new MockCalendarDataGenerator().getMockCalendar());
     }
 
+    mDB = QuickCalendarDatabase.getInstance(getActivity().getApplicationContext());
+
     try{
       if (viewModel.getActiveCalendar().getValue().name.length() == 0){
         tvCalendarName.setText(getString(R.string.calendar_untitled_name));
@@ -106,6 +113,7 @@ public class EditCalendarFragment extends Fragment
 
   public void setActivity(EditCalendarActivity activity) {
     mActivity = activity;
+    mSaveEnabledHandler = activity;
   }
 
   @Override
@@ -220,6 +228,8 @@ public class EditCalendarFragment extends Fragment
   }
 
   private void PromptChangeName(){
+    mSaveEnabledHandler.toggleSaveButton(true);
+
     EditCalendarNameDialog dialog = new EditCalendarNameDialog();
     Bundle args = new Bundle();
     args.putString(EditCalendarNameDialog.BUNDLE_CALENDAR_NAME,
@@ -227,6 +237,7 @@ public class EditCalendarFragment extends Fragment
     dialog.setArguments(args);
     dialog.setTargetFragment(this, 0);
     dialog.show(getFragmentManager(), "EDIT_NAME");
+
   }
 
   public void PromptChangeGranularityFactor(){
@@ -277,6 +288,7 @@ public class EditCalendarFragment extends Fragment
 
 
   public void PromptEditEvent(Event event){
+    mSaveEnabledHandler.toggleSaveButton(true);
 
     EditCalendarEventDialog dialog = new EditCalendarEventDialog();
     Bundle args = new Bundle();
@@ -366,5 +378,17 @@ public class EditCalendarFragment extends Fragment
         fabAddEvent.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.crispy_hide));
       }
     }
+  }
+
+  public interface SaveEnabledHandler {
+    void toggleSaveButton(boolean isEnabled);
+  }
+
+  public void saveCalendar() {
+    // set last access to now
+    viewModel.activeCalendar.getValue().lastAccess = new Date();
+    mDB.calendarDao().insertCalendar(viewModel.activeCalendar.getValue());
+    mSaveEnabledHandler.toggleSaveButton(false);
+    Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();
   }
 }

@@ -1,11 +1,9 @@
 package com.djdenpa.quickcalendar.utils;
 
 import com.djdenpa.quickcalendar.models.Calendar;
-import com.djdenpa.quickcalendar.models.CalendarInfo;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.models.EventSet;
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -38,13 +36,13 @@ public class MockCalendarDataGenerator {
 
   public Random rand = new Random();
 
-  public LinkedList<CalendarInfo> getMockCalendarInfos(){
-    LinkedList<CalendarInfo> result = new LinkedList<>();
+  public LinkedList<Calendar> getMockCalendars(){
+    LinkedList<Calendar> result = new LinkedList<>();
     for (int i = 0; i < 1 + rand.nextInt(20); i++){
-      CalendarInfo ci = new CalendarInfo();
-      ci.name = "Test Calendar " + i;
-      ci.id = i;
-      result.add(ci);
+      Calendar calendar = new Calendar();
+      calendar.name = "Test Calendar " + i;
+      calendar.id = i;
+      result.add(calendar);
     }
     return result;
   }

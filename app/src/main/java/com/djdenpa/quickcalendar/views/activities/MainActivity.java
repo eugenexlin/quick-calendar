@@ -9,8 +9,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.djdenpa.quickcalendar.R;
+import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
+import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.views.fragments.CalendarTileListFragment;
 
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,10 +21,14 @@ public class MainActivity extends AppCompatActivity {
   CalendarTileListFragment mRecentCalendarFragment;
   CalendarTileListFragment mRecentSharedCalendarFragment;
 
+  QuickCalendarDatabase mDB;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    mDB = QuickCalendarDatabase.getInstance(getApplicationContext());
 
     // TEST LOCALE
 //    Resources resources = getResources();
@@ -39,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
     mRecentSharedCalendarFragment.setEmptyStateHelperText(
             getString(R.string.no_shared_calendars_sub));
 
-    mRecentCalendarFragment.bindTestData();
+    // mRecentCalendarFragment.bindTestData();
+
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_create_new);
     fab.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +58,14 @@ public class MainActivity extends AppCompatActivity {
       }
     });
 
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    List<Calendar> data = mDB.calendarDao().loadAllCalendars();
+    mRecentCalendarFragment.setAdapterData(data);
   }
 
   @Override

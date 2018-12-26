@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
+import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.CalendarInfo;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.views.adapters.CalendarTileListItemAdapter;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,16 +96,18 @@ public class CalendarTileListFragment extends Fragment {
     return view;
   }
 
+
+
   public void setEmptyStateHelperText(String message){
     tvNoCalendarsSub.setText(message);
   }
 
   public void bindTestData(){
     MockCalendarDataGenerator junk = new MockCalendarDataGenerator();
-    setAdapterData(junk.getMockCalendarInfos());
+    setAdapterData(junk.getMockCalendars());
   }
 
-  public void setAdapterData(LinkedList<CalendarInfo> data) {
+  public void setAdapterData(List<Calendar> data) {
     mCalendarTilesAdapter.setData(data);
     if (data.size() <= 0 ) {
       rvCalendarTiles.setVisibility(View.GONE);

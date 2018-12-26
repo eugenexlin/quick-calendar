@@ -1,13 +1,12 @@
 package com.djdenpa.quickcalendar.comparer;
 
-import com.djdenpa.quickcalendar.models.CalendarInfo;
+import com.djdenpa.quickcalendar.models.Calendar;
 
 import java.util.Comparator;
-import java.util.Date;
 
-public class CalendarInfoComparator implements Comparator<CalendarInfo> {
+public class CalendarComparator implements Comparator<Calendar> {
   @Override
-  public int compare(CalendarInfo o1, CalendarInfo o2) {
+  public int compare(Calendar o1, Calendar o2) {
     if (o1.lastAccess == null && o2.lastAccess == null){
       return 0;
     }
