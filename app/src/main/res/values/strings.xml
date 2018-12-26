@@ -37,6 +37,8 @@
   <string name="preference_calendar_day_granularity">calendar_day_granularity</string>
   <string name="preference_calendar_display_mode">calendar_display_mode</string>
 
+  <string name="menu_save">Save</string>
+  <string name="menu_delete_calendar">Delete Calendar</string>
   <string name="menu_change_granularity">Change Event Granularity</string>
   <string name="menu_add_event">Add Event</string>
   <string name="menu_change_view">Change View</string>
@@ -79,7 +81,6 @@
   <string name="after_month">/</string>
   <string name="after_day"/>
   <string name="format_2_digit">%1$02d</string>
-  <string name="menu_save">Save</string>
   <string name="set_by_duration">SET BY DURATION</string>
   <string name="set_button">SET</string>
   <string name="cancel_button">CANCEL</string>

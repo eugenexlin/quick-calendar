@@ -26,4 +26,10 @@
       android:orderInCategory="4"
       android:title="@string/menu_change_granularity"
       app:showAsAction="ifRoom"/>
+
+  <item
+      android:id="@+id/action_delete_calendar"
+      android:orderInCategory="5"
+      android:title="@string/menu_delete_calendar"
+      app:showAsAction="ifRoom"/>
 </menu>

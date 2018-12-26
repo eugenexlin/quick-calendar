@@ -3,6 +3,7 @@ package com.djdenpa.quickcalendar.views.activities;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +21,7 @@ import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
 
-public class EditCalendarActivity extends AppCompatActivity implements EditCalendarFragment.SaveEnabledHandler {
+public class EditCalendarActivity extends AppCompatActivity implements EditCalendarFragment.MenuEnabledHandler {
 
   public static final String EXTRA_CALENDAR_ID = "EXTRA_CALENDAR_ID";
 
@@ -31,6 +32,7 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
   private int mCalendarId = DEFAULT_TASK_ID;
 
   private boolean mCanSave = false;
+  private boolean mCanDelete = false;
 
   private EditCalendarViewModel mViewModel;
 
@@ -78,6 +80,10 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       MenuItem item = menu.findItem(R.id.action_save_calendar);
       item.setEnabled(false);
     }
+    if (!mCanDelete) {
+      MenuItem item = menu.findItem(R.id.action_delete_calendar);
+      item.setEnabled(false);
+    }
 
     return true;
   }
@@ -102,6 +108,17 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       mEditCalendarFragment.saveCalendar();
       return true;
     }
+    if (id == R.id.action_delete_calendar) {
+      new AlertDialog.Builder(this)
+              .setTitle("Delete Calendar")
+              .setMessage("Do you really want to delete?")
+              .setIcon(android.R.drawable.ic_dialog_alert)
+              .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> mEditCalendarFragment.deleteCalendar())
+              .setNegativeButton(android.R.string.no, null)
+              .show();
+
+      return true;
+    }
 
 
     return super.onOptionsItemSelected(item);
@@ -109,6 +126,12 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
 
   public void toggleSaveButton( boolean isEnabled) {
     mCanSave = isEnabled;
+    invalidateOptionsMenu();
+  }
+
+  @Override
+  public void toggleDeleteButton(boolean isEnabled) {
+    mCanDelete = isEnabled;
     invalidateOptionsMenu();
   }
 

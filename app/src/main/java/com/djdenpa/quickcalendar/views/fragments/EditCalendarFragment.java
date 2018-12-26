@@ -1,6 +1,5 @@
 package com.djdenpa.quickcalendar.views.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -64,7 +63,7 @@ public class EditCalendarFragment extends Fragment
 
   // this is for opening dialog
   private AppCompatActivity mActivity;
-  private SaveEnabledHandler mSaveEnabledHandler;
+  private MenuEnabledHandler mMenuEnabledHandler;
 
   private int mCurrentYear = -1;
   private int mCurrentMonth = -1;
@@ -89,7 +88,7 @@ public class EditCalendarFragment extends Fragment
 
   public void setActivity(EditCalendarActivity activity) {
     mActivity = activity;
-    mSaveEnabledHandler = activity;
+    mMenuEnabledHandler = activity;
   }
 
   @Override
@@ -193,7 +192,7 @@ public class EditCalendarFragment extends Fragment
   }
 
   private void PromptChangeName(){
-    mSaveEnabledHandler.toggleSaveButton(true);
+    mMenuEnabledHandler.toggleSaveButton(true);
 
     EditCalendarNameDialog dialog = new EditCalendarNameDialog();
     Bundle args = new Bundle();
@@ -253,7 +252,7 @@ public class EditCalendarFragment extends Fragment
 
 
   public void PromptEditEvent(Event event){
-    mSaveEnabledHandler.toggleSaveButton(true);
+    mMenuEnabledHandler.toggleSaveButton(true);
 
     EditCalendarEventDialog dialog = new EditCalendarEventDialog();
     Bundle args = new Bundle();
@@ -355,6 +354,7 @@ public class EditCalendarFragment extends Fragment
         tvCalendarName.setText(calendar.name);
       }
       mAdapter.setData(mViewModel.getActiveEventSet());
+      mMenuEnabledHandler.toggleDeleteButton(mViewModel.activeCalendar.getValue().id != 0);
     });
 
     //fetch earliest event, it will be base scroll
@@ -368,8 +368,19 @@ public class EditCalendarFragment extends Fragment
 
   }
 
-  public interface SaveEnabledHandler {
+  public void deleteCalendar() {
+    QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
+      mDB.calendarDao().deleteCalendar(mViewModel.activeCalendar.getValue());
+      QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+        Toast.makeText(getContext(), "Calendar Deleted", Toast.LENGTH_SHORT).show();
+        getActivity().finish();
+      });
+    });
+  }
+
+  public interface MenuEnabledHandler {
     void toggleSaveButton(boolean isEnabled);
+    void toggleDeleteButton(boolean isEnabled);
   }
 
   public void saveCalendar() {
@@ -381,7 +392,7 @@ public class EditCalendarFragment extends Fragment
       } else{
         mDB.calendarDao().updateCalendar(mViewModel.activeCalendar.getValue());
       }
-      mSaveEnabledHandler.toggleSaveButton(false);
+      mMenuEnabledHandler.toggleSaveButton(false);
       QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
         Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();
       });
