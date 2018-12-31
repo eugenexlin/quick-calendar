@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djdenpa.quickcalendar.R;
+import com.djdenpa.quickcalendar.database.CoreDataLayer;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.DisplayMode;
 import com.djdenpa.quickcalendar.models.Event;
@@ -386,12 +387,9 @@ public class EditCalendarFragment extends Fragment
   public void saveCalendar() {
     QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
       // set last access to now
-      mViewModel.activeCalendar.getValue().lastAccess = new Date();
-      if (mViewModel.activeCalendar.getValue().id == 0) {
-        mDB.calendarDao().insertCalendar(mViewModel.activeCalendar.getValue());
-      } else{
-        mDB.calendarDao().updateCalendar(mViewModel.activeCalendar.getValue());
-      }
+      com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.activeCalendar.getValue();
+      calendar.lastAccess = new Date();
+      CoreDataLayer.saveCalendar(mDB, calendar);
       mMenuEnabledHandler.toggleSaveButton(false);
       QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
         Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();
