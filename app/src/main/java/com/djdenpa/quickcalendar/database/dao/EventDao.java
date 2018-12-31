@@ -7,30 +7,32 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.models.EventSet;
 
 import java.util.List;
 
 @Dao
-public interface EventSetDao {
+public interface EventDao {
 
-  @Query("SELECT * FROM EventSet WHERE calendarId = :calendarId")
-  List<EventSet> loadCalendarEventSets(int calendarId);
+  @Query("SELECT * FROM Event WHERE eventSetId = :eventSetId")
+  List<Event> loadEventSetEvents(int eventSetId);
 
-  @Query("SELECT * FROM EventSet")
-  List<EventSet> loadAllEventSets();
+  @Query("SELECT * FROM Event")
+  List<Event> loadAllEvents();
 
-//  @Query("SELECT * FROM EventSet WHERE id = :id")
-//  EventSet loadEventSet(int id);
+//  @Query("SELECT * FROM Event WHERE id = :id")
+//  EventSet loadEvent(int id);
 
   @Insert
-  long insertEventSet(EventSet eventSet);
+  long insertEvent(Event event);
 
   @Update(onConflict = OnConflictStrategy.REPLACE)
-  void updateEventSet(EventSet eventSet);
+  void updateEvent(Event event);
 
   @Delete
-  void deleteEventSet(EventSet eventSet);
+  void deleteEvent(Event event);
+
 
 
 }

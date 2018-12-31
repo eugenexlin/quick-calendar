@@ -6,8 +6,11 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 public class Calendar implements Parcelable {
@@ -19,7 +22,7 @@ public class Calendar implements Parcelable {
   public String creatorIdentity;
 
   @Ignore
-  private int nextEventSetId;
+  private int nextEventSetId = 1;
   @Ignore
   private Object nextEventSetIdLock = new Object();
   @Ignore
@@ -37,13 +40,12 @@ public class Calendar implements Parcelable {
     lastAccess = new Date(in.readLong());
     creatorIdentity = in.readString();
   }
-
-  protected Calendar(int pId, String pName, Date pLastAccess, String pCreatorIdentity) {
-    id = pId;
-    name = pName;
-    lastAccess = pLastAccess;
-    creatorIdentity = pCreatorIdentity;
-  }
+//  protected Calendar(int pId, String pName, Date pLastAccess, String pCreatorIdentity) {
+//    id = pId;
+//    name = pName;
+//    lastAccess = pLastAccess;
+//    creatorIdentity = pCreatorIdentity;
+//  }
 
   public static final Creator<Calendar> CREATOR = new Creator<Calendar>() {
     @Override
@@ -70,28 +72,40 @@ public class Calendar implements Parcelable {
     parcel.writeString(creatorIdentity);
   }
 
-  public void saveEventSet(EventSet eventSet) {
-    // if they add an event with an id greater than the next event id,
-    // hek set our next id to greater than that one
-    if (eventSet.id > nextEventSetId) {
-      synchronized (nextEventSetIdLock){
-        nextEventSetId = eventSet.id + 1;
-      }
-    }
-    // if no id, assign one.
-    if (eventSet.id == 0){
-      eventSet.id = claimNextId();
-    }
-    // now we see if this event id is already there. if so, save over it.
-    if (eventSetHash.containsKey(eventSet.id )){
-      EventSet existingEventSet = eventSetHash.get(eventSet.id);
-      existingEventSet.copyFrom(eventSet);
-    } else {
-      eventSetHash.put(eventSet.id, eventSet);
+  public Collection<EventSet> getAllEventSets() {
+    return eventSetHash.values();
+  }
+
+  // probably only use this for loading from db
+  public void replaceAllEventSets(Collection<EventSet> eventSets){
+    eventSetHash.clear();
+    for (EventSet eventSet : eventSets) {
+      saveEventSet(eventSet);
     }
   }
 
-  public int claimNextId() {
+  public void saveEventSet(EventSet eventSet) {
+    // if they add an event with an id greater than the next event id,
+    // hek set our next id to greater than that one
+    if (eventSet.localId > nextEventSetId) {
+      synchronized (nextEventSetIdLock){
+        nextEventSetId = eventSet.localId + 1;
+      }
+    }
+    // if no id, assign one.
+    if (eventSet.localId == 0){
+      eventSet.localId = claimNextId();
+    }
+    // now we see if this event id is already there. if so, save over it.
+    if (eventSetHash.containsKey(eventSet.localId )){
+      EventSet existingEventSet = eventSetHash.get(eventSet.localId);
+      existingEventSet.copyFrom(eventSet);
+    } else {
+      eventSetHash.put(eventSet.localId, eventSet);
+    }
+  }
+
+  private int claimNextId() {
     int result;
     synchronized (nextEventSetIdLock){
       result = nextEventSetId;
@@ -110,6 +124,7 @@ public class Calendar implements Parcelable {
     }
     if (result == null) {
       result = new EventSet();
+      result.localId = 1;
       eventSetHash.put(1, result);
     }
     return result;

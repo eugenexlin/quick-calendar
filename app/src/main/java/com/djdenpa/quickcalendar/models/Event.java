@@ -1,20 +1,39 @@
 package com.djdenpa.quickcalendar.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(foreignKeys = @ForeignKey(entity = EventSet.class,
+          parentColumns = "id",
+          childColumns = "eventSetId",
+          onDelete = CASCADE),
+        indices = {@Index("eventSetId")}
+        )
 public class Event implements Parcelable {
+
+  @PrimaryKey(autoGenerate = true)
+  public int id;
+  public int eventSetId;
   public long eventStartUTC;
   public long eventDurationMs;
   public String name;
-  public int id;
 
   // hex color string
   // color class is not well supported in sdk 24 :(
   public String color;
+
+  @Ignore
+  public int localId;
 
   public Event(){
     java.util.Calendar javaCal = java.util.Calendar.getInstance();

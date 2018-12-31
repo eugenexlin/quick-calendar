@@ -11,9 +11,17 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.djdenpa.quickcalendar.database.dao.CalendarDao;
+import com.djdenpa.quickcalendar.database.dao.EventDao;
+import com.djdenpa.quickcalendar.database.dao.EventSetDao;
 import com.djdenpa.quickcalendar.models.Calendar;
+import com.djdenpa.quickcalendar.models.Event;
+import com.djdenpa.quickcalendar.models.EventSet;
 
-@Database(entities = {Calendar.class}, version = 1, exportSchema = false)
+@Database(entities = {
+        Calendar.class,
+        EventSet.class,
+        Event.class
+  }, version = 1, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class QuickCalendarDatabase extends RoomDatabase {
 
@@ -38,6 +46,8 @@ public abstract class QuickCalendarDatabase extends RoomDatabase {
   }
 
   public abstract CalendarDao calendarDao();
+  public abstract EventSetDao eventSetDao();
+  public abstract EventDao eventDao();
 
   @NonNull
   @Override

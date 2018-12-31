@@ -1,5 +1,6 @@
 package com.djdenpa.quickcalendar.database.dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -15,13 +16,13 @@ import java.util.List;
 public interface CalendarDao {
 
   @Query("SELECT * FROM Calendar ORDER BY lastAccess DESC")
-  List<Calendar> loadAllCalendars();
+  LiveData<List<Calendar>> loadAllCalendars();
 
   @Query("SELECT * FROM Calendar WHERE id = :id")
   Calendar loadCalendar(int id);
 
   @Insert
-  void insertCalendar(Calendar calendar);
+  long insertCalendar(Calendar calendar);
 
   @Update(onConflict = OnConflictStrategy.REPLACE)
   void updateCalendar(Calendar calendar);

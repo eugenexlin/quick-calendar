@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onResume() {
     super.onResume();
-    Log.d("log", "onResume");
 
     BindCalendarData();
   }
@@ -73,12 +72,11 @@ public class MainActivity extends AppCompatActivity {
   private void BindCalendarData() {
     mRecentCalendarFragment.setLoading(true);
     QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
-      List<Calendar> data = mDB.calendarDao().loadAllCalendars();
-      Log.d("log", "setAdapterData");
-      mRecentCalendarFragment.setAdapterData(data);
-      mRecentCalendarFragment.setLoading(false);
-      QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
-        mRecentCalendarFragment.setLoading(false);
+      mDB.calendarDao().loadAllCalendars().observe(this, calendarList -> {
+        QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+          mRecentCalendarFragment.setAdapterData(calendarList);
+          mRecentCalendarFragment.setLoading(false);
+        });
       });
     });
   }

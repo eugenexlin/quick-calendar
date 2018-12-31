@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.djdenpa.quickcalendar.R;
+import com.djdenpa.quickcalendar.database.CoreDataLayer;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.Event;
@@ -63,7 +64,7 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
               new MockCalendarDataGenerator().getMockCalendar());
     } else {
       QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
-        Calendar calendar = mDB.calendarDao().loadCalendar(mCalendarId);
+        Calendar calendar = CoreDataLayer.loadCalendar(mDB, mCalendarId);
         QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
           mViewModel.setEntireCalendar(calendar);
         });
