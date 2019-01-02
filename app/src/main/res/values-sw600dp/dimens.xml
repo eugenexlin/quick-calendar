@@ -9,7 +9,9 @@
   <dimen name="empty_state_text_size">24sp</dimen>
   <dimen name="empty_state_sub_text_size">18sp</dimen>
 
-  <dimen name="calendar_date_text_size">18sp</dimen>
+  <dimen name="color_picker_width">300dp</dimen>
+  <dimen name="color_picker_height">240dp</dimen>
 
-  <dimen name="color_picker_size">350dp</dimen>
+  <dimen name="calendar_date_text_size">20sp</dimen>
+  <dimen name="date_circle_dimension">28sp</dimen>
 </resources>

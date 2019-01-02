@@ -2,8 +2,12 @@ package com.djdenpa.quickcalendar.views.components;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -44,8 +48,8 @@ public class QuickColorPicker extends FrameLayout {
 
   @BindView(R.id.color_picker)
   ColorPickerView colorPicker;
-  @BindView(R.id.brightness_slide)
-  BrightnessSlideBar brightnessSlide;
+//  @BindView(R.id.brightness_slide)
+//  BrightnessSlideBar brightnessSlide;
 
   @BindView(R.id.iv_new_color)
   ImageView ivNewColor;
@@ -117,9 +121,14 @@ public class QuickColorPicker extends FrameLayout {
     });
     bCancel.setOnClickListener(v -> hideColorSelector());
 
-    // TODO create easy to select color pallet
-    // float size = getResources().getDimension(R.dimen.color_picker_size);
-    colorPicker.attachBrightnessSlider(brightnessSlide);
+    BitmapFactory.Options options = new BitmapFactory.Options();
+    options.inScaled = false;
+    Bitmap paletteBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.material_color, options);
+    int width = paletteBitmap.getWidth()*64;
+    int height = paletteBitmap.getHeight()*64;
+    Bitmap scaledPalette = Bitmap.createScaledBitmap(paletteBitmap, width, height, false);
+    colorPicker.setPaletteDrawable(new BitmapDrawable(getResources(), scaledPalette));
+//    colorPicker.attachBrightnessSlider(brightnessSlide);
     colorPicker.setFlagView(new QuickFlag(mContext, R.layout.view_color_picker_flag));
     colorPicker.setFlagMode(FlagMode.ALWAYS);
   }
@@ -194,9 +203,9 @@ public class QuickColorPicker extends FrameLayout {
 
     @Override
     public void onRefresh(ColorEnvelope colorEnvelope) {
-      int color = brightnessSlide.assembleColor();
+//      int color = brightnessSlide.assembleColor();
       ivCircle.setColorFilter(colorEnvelope.getColor(), PorterDuff.Mode.MULTIPLY);
-      setNewColor(color);
+      setNewColor(colorEnvelope.getColor());
     }
   }
 }

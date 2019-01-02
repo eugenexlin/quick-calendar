@@ -41,19 +41,19 @@
 
     <com.skydoves.colorpickerview.ColorPickerView
         android:id="@+id/color_picker"
-        android:layout_width="@dimen/color_picker_size"
-        android:layout_height="@dimen/color_picker_size"
+        android:layout_width="@dimen/color_picker_width"
+        android:layout_height="@dimen/color_picker_height"
         android:layout_margin="@dimen/color_picker_margin"
         app:palette="@drawable/palette"
         app:selector="@drawable/wheel" />
 
-    <com.skydoves.colorpickerview.sliders.BrightnessSlideBar
-        android:id="@+id/brightness_slide"
-        android:layout_width="@dimen/color_picker_size"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/color_picker_margin"
-        app:selector_BrightnessSlider="@drawable/wheel"
-        />
+    <!--<com.skydoves.colorpickerview.sliders.BrightnessSlideBar-->
+        <!--android:id="@+id/brightness_slide"-->
+        <!--android:layout_width="@dimen/color_picker_size"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="@dimen/color_picker_margin"-->
+        <!--app:selector_BrightnessSlider="@drawable/wheel"-->
+        <!--/>-->
 
     <LinearLayout
         android:orientation="horizontal"
