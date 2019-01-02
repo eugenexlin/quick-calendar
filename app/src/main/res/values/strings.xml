@@ -84,6 +84,10 @@
   <string name="set_by_duration">SET BY DURATION</string>
   <string name="set_button">SET</string>
   <string name="cancel_button">CANCEL</string>
+  <string name="sign_out">Sign Out</string>
+  <string name="disconnect">Disconnect</string>
+  <string name="sign_in_please">Sign in so we have an identity to enforce ownership with.</string>
+  <string name="signed_in_as_fmt">Signed in as: %s</string>
 
   <string-array name="am_pm">
     <item>AM</item>
@@ -96,5 +100,7 @@
     <item>days</item>
     <item>weeks</item>
   </string-array>
+
+  <string name="google_client_id">586345749577-gdp597tkms81vuq8hgvljn5d9n53gtvd.apps.googleusercontent.com</string>
 
 </resources>

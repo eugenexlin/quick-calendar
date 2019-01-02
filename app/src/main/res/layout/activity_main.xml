@@ -9,11 +9,14 @@
     android:fitsSystemWindows="false"
     tools:context=".views.activities.MainActivity" >
 
+
   <ScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:layout_behavior="@string/appbar_scrolling_view_behavior"
       >
+
+
 
     <LinearLayout
         android:id="@+id/cl_fragments"
@@ -22,6 +25,56 @@
         android:paddingBottom="@dimen/scroll_padding_for_fab"
         android:orientation="vertical"
         >
+
+      <LinearLayout
+          android:id="@+id/ll_identity"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:padding="16dp"
+          >
+
+        <TextView
+            android:id="@+id/tv_account_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="not logged in"
+            />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:visibility="visible"
+            tools:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_sign_out_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+          <Button
+              android:id="@+id/sign_out_button"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/sign_out"
+              />
+
+          <Button
+              android:id="@+id/disconnect_button"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/disconnect"
+              />
+        </LinearLayout>
+
+      </LinearLayout>
 
       <fragment
           android:id="@+id/f_recent_calendars"

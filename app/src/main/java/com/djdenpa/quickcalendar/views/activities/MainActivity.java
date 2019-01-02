@@ -1,27 +1,52 @@
 package com.djdenpa.quickcalendar.views.activities;
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
-import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.views.fragments.CalendarTileListFragment;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
-import java.util.List;
-import java.util.Locale;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 
 public class MainActivity extends AppCompatActivity {
 
   CalendarTileListFragment mRecentCalendarFragment;
   CalendarTileListFragment mRecentSharedCalendarFragment;
+
+  GoogleSignInClient mGoogleSignInClient;
+
+  private Unbinder unbinder;
+
+  @BindView(R.id.ll_sign_out_buttons)
+  LinearLayout mLogoutButtonLayout;
+  @BindView(R.id.sign_in_button)
+  SignInButton mSignInButton;
+  @BindView(R.id.tv_account_text)
+  TextView mLoginText;
+  @BindView(R.id.sign_out_button)
+  TextView mSignOutButton;
+  @BindView(R.id.disconnect_button)
+  TextView mDisconnectButton;
+
+  private static final int RC_SIGN_IN = 9001;
 
   QuickCalendarDatabase mDB;
 
@@ -29,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    unbinder = ButterKnife.bind(this);
 
     mDB = QuickCalendarDatabase.getInstance(getApplicationContext());
 
@@ -51,15 +78,52 @@ public class MainActivity extends AppCompatActivity {
     // mRecentCalendarFragment.bindTestData();
 
 
-    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_create_new);
-    fab.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Intent intent = new Intent(MainActivity.this, EditCalendarActivity.class);
-        startActivity(intent);
-      }
+    FloatingActionButton fab = findViewById(R.id.fab_create_new);
+    fab.setOnClickListener(view -> {
+      Intent intent = new Intent(MainActivity.this, EditCalendarActivity.class);
+      startActivity(intent);
     });
 
+    mSignInButton.setOnClickListener(view -> {
+      Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+      startActivityForResult(signInIntent, RC_SIGN_IN);
+    });
+
+    mSignOutButton.setOnClickListener(view -> mGoogleSignInClient.signOut()
+            .addOnCompleteListener(this, task -> updateGoogleAccountToUI(null)));
+
+    mDisconnectButton.setOnClickListener(view -> mGoogleSignInClient.revokeAccess()
+            .addOnCompleteListener(this, task -> updateGoogleAccountToUI(null)));
+
+
+    String serverClientId = getString(R.string.google_client_id);
+    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(serverClientId)
+            .requestEmail()
+            .build();
+    mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+  }
+
+  protected void updateGoogleAccountToUI(GoogleSignInAccount account){
+    if (account == null) {
+      mSignInButton.setVisibility(View.VISIBLE);
+      mLogoutButtonLayout.setVisibility(View.GONE);
+      mLoginText.setText(R.string.sign_in_please);
+
+    } else {
+      mLogoutButtonLayout.setVisibility(View.VISIBLE);
+      mSignInButton.setVisibility(View.GONE);
+      mLoginText.setText(getString(R.string.signed_in_as_fmt, account.getEmail()));
+    }
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+
+    GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+    updateGoogleAccountToUI(account);
   }
 
   @Override
@@ -84,6 +148,25 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onDestroy() {
     super.onDestroy();
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (requestCode == RC_SIGN_IN) {
+      try {
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        GoogleSignInAccount account = task.getResult(ApiException.class);
+        updateGoogleAccountToUI(account);
+      } catch (ApiException e) {
+        Toast.makeText(this, "Exception during account sign in. " + e.getMessage(), Toast.LENGTH_SHORT).show();
+      }
+    }
+  }
+
+  private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+
   }
 
 }
