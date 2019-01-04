@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "586345749577",
+    "firebase_url": "https://quick-calendar-1546421441366.firebaseio.com",
+    "project_id": "quick-calendar-1546421441366",
+    "storage_bucket": "quick-calendar-1546421441366.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586345749577:android:b8748c36db0524a5",
+        "android_client_info": {
+          "package_name": "com.djdenpa.quickcalendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "586345749577-34nar6565cocfif9f440gqe6sukm65t0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.djdenpa.quickcalendar",
+            "certificate_hash": "d75b909fc9d7d7e0a7ac6a5f078edd7e877e1e7e"
+          }
+        },
+        {
+          "client_id": "586345749577-1af3elf1jdpb7uinm604qd574bs5dbus.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGFN70Yg-7bUVHZ-Hja1OhoIeeKyoIh3E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586345749577-1af3elf1jdpb7uinm604qd574bs5dbus.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

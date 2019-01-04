@@ -13,6 +13,9 @@ import com.djdenpa.quickcalendar.models.EventSet;
 public class EditCalendarViewModel extends ViewModel {
   public MutableLiveData<Calendar> activeCalendar = new MutableLiveData<>();
   public int activeEventSetId;
+  public String identity = "";
+  public String uid = "";
+  public String idToken = "";
 
   private Application mApplication;
 

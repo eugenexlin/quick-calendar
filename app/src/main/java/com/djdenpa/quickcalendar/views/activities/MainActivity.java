@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
+import com.djdenpa.quickcalendar.utils.SharedPreferenceManager;
 import com.djdenpa.quickcalendar.views.fragments.CalendarTileListFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -20,6 +21,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
   CalendarTileListFragment mRecentSharedCalendarFragment;
 
   GoogleSignInClient mGoogleSignInClient;
+
+  private FirebaseAuth mAuth;
 
   private Unbinder unbinder;
 
@@ -90,10 +97,10 @@ public class MainActivity extends AppCompatActivity {
     });
 
     mSignOutButton.setOnClickListener(view -> mGoogleSignInClient.signOut()
-            .addOnCompleteListener(this, task -> updateGoogleAccountToUI(null)));
+            .addOnCompleteListener(this, task -> processGoogleAccount(null)));
 
     mDisconnectButton.setOnClickListener(view -> mGoogleSignInClient.revokeAccess()
-            .addOnCompleteListener(this, task -> updateGoogleAccountToUI(null)));
+            .addOnCompleteListener(this, task -> processGoogleAccount(null)));
 
 
     String serverClientId = getString(R.string.google_client_id);
@@ -103,18 +110,49 @@ public class MainActivity extends AppCompatActivity {
             .build();
     mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+    mAuth = FirebaseAuth.getInstance();
+
   }
 
-  protected void updateGoogleAccountToUI(GoogleSignInAccount account){
+  protected void processGoogleAccount(GoogleSignInAccount account){
+    SharedPreferenceManager prefMan = new SharedPreferenceManager(this);
+
     if (account == null) {
+
       mSignInButton.setVisibility(View.VISIBLE);
       mLogoutButtonLayout.setVisibility(View.GONE);
       mLoginText.setText(R.string.sign_in_please);
 
     } else {
+
+      String idToken = account.getIdToken();
+
+      prefMan.setUserIdToken(idToken);
+      prefMan.setUserEmail(account.getEmail());
+
       mLogoutButtonLayout.setVisibility(View.VISIBLE);
       mSignInButton.setVisibility(View.GONE);
       mLoginText.setText(getString(R.string.signed_in_as_fmt, account.getEmail()));
+
+      AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+      mAuth.signInWithCredential(credential);
+
+      FirebaseUser fu = mAuth.getCurrentUser();
+      prefMan.setUserId(fu.getUid());
+      
+      // db write access rule
+      /*
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    }
+  }
+}
+       */
     }
   }
 
@@ -123,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     super.onStart();
 
     GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-    updateGoogleAccountToUI(account);
+    processGoogleAccount(account);
   }
 
   @Override
@@ -158,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
       try {
         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
         GoogleSignInAccount account = task.getResult(ApiException.class);
-        updateGoogleAccountToUI(account);
+        processGoogleAccount(account);
       } catch (ApiException e) {
         Toast.makeText(this, "Exception during account sign in. " + e.getMessage(), Toast.LENGTH_SHORT).show();
       }

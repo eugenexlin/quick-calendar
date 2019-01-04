@@ -18,6 +18,7 @@ import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
+import com.djdenpa.quickcalendar.utils.SharedPreferenceManager;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
@@ -70,6 +71,11 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
         });
       });
     }
+
+    SharedPreferenceManager prefMan = new SharedPreferenceManager(this);
+    mViewModel.idToken = prefMan.getUserIdToken();
+    mViewModel.uid = prefMan.getUserId();
+    mViewModel.identity= prefMan.getUserEmail();
   }
 
   @Override

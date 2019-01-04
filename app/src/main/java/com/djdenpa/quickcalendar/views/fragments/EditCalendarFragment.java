@@ -31,10 +31,14 @@ import com.djdenpa.quickcalendar.views.dialogs.EditCalendarEventDialog;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarNameDialog;
 import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListDialog;
 import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListTextMapper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,6 +89,7 @@ public class EditCalendarFragment extends Fragment
     mDB = QuickCalendarDatabase.getInstance(getActivity().getApplicationContext());
 
     mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
+
   }
 
   public void setActivity(EditCalendarActivity activity) {
@@ -385,9 +390,18 @@ public class EditCalendarFragment extends Fragment
   }
 
   public void saveCalendar() {
+
+    // Write a message to the database
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("users/" + mViewModel.uid + "/message");
+    myRef.setValue(new Random().nextInt());
+
     QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
       // set last access to now
       com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.activeCalendar.getValue();
+      if (calendar.creatorIdentity == "") {
+        calendar.creatorIdentity = mViewModel.identity;
+      }
       calendar.lastAccess = new Date();
       CoreDataLayer.saveCalendar(mDB, calendar);
       mMenuEnabledHandler.toggleSaveButton(false);
