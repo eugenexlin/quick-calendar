@@ -82,6 +82,13 @@ public class MainActivity extends AppCompatActivity {
     mRecentSharedCalendarFragment.setEmptyStateHelperText(
             getString(R.string.no_shared_calendars_sub));
 
+    mRecentCalendarFragment.setHeaderText(
+            getString(R.string.tile_fragment_recent_title));
+    mRecentSharedCalendarFragment.setHeaderText(
+            getString(R.string.tile_fragment_recent_shared_title));
+
+
+
     // mRecentCalendarFragment.bindTestData();
 
 

@@ -37,6 +37,8 @@ public class CalendarTileListFragment extends Fragment {
   ConstraintLayout clEmptyState;
   @BindView(R.id.pb_loading)
   ProgressBar pbLoading;
+  @BindView(R.id.tv_tile_header)
+  TextView tvTileHeader;
 
   private CalendarTileListItemAdapter mCalendarTilesAdapter;
 
@@ -82,6 +84,10 @@ public class CalendarTileListFragment extends Fragment {
   public void bindTestData(){
     MockCalendarDataGenerator junk = new MockCalendarDataGenerator();
     setAdapterData(junk.getMockCalendars());
+  }
+
+  public void setHeaderText(String text){
+    tvTileHeader.setText(text);
   }
 
   public void setAdapterData(List<Calendar> data) {
