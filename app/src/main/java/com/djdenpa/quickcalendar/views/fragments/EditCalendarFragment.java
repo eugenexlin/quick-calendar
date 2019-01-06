@@ -384,6 +384,11 @@ public class EditCalendarFragment extends Fragment
     });
   }
 
+  public void setEntireCalendar(com.djdenpa.quickcalendar.models.Calendar calendar) {
+    mViewModel.setEntireCalendar(calendar);
+    mAdapter.notifyDataSetChanged();
+  }
+
   public interface MenuEnabledHandler {
     void toggleSaveButton(boolean isEnabled);
     void toggleDeleteButton(boolean isEnabled);

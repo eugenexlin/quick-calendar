@@ -67,7 +67,8 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
         Calendar calendar = CoreDataLayer.loadCalendar(mDB, mCalendarId);
         QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
-          mViewModel.setEntireCalendar(calendar);
+          mEditCalendarFragment.setEntireCalendar(calendar);
+
         });
       });
     }

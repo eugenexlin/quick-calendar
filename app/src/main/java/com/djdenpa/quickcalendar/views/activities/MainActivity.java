@@ -139,9 +139,11 @@ public class MainActivity extends AppCompatActivity {
 
       FirebaseUser fu = mAuth.getCurrentUser();
       prefMan.setUserId(fu.getUid());
-      
-      // db write access rule
+
       /*
+this Firebase setting will restrict currently logged in user to their user id folder.
+This was for testing, but we can not use this because we need a shared space.
+
 {
   "rules": {
     "users": {
