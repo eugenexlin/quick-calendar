@@ -49,8 +49,23 @@
   </item>
 
   <item
-      android:id="@+id/action_delete_calendar"
+      android:id="@+id/m_extra"
+      android:title="@string/extra_menu_label"
       android:orderInCategory="6"
+      >
+    <menu>
+      <item
+          android:id="@+id/actions_generate_test_events"
+          android:orderInCategory="1"
+          android:title="@string/menu_generate_test_data"
+          app:showAsAction="ifRoom"/>
+
+    </menu>
+  </item>
+
+  <item
+      android:id="@+id/action_delete_calendar"
+      android:orderInCategory="7"
       android:title="@string/menu_delete_calendar"
       app:showAsAction="ifRoom"/>
 </menu>

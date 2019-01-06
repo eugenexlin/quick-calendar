@@ -215,16 +215,18 @@ public class CalendarWeekAdapter
       // default to inverted left right position
       // they must return to neutral for us to render the event.
       long beginOffsetMillis = event.eventStartUTC - dayStartMillis;
-      long endOffsetMillis = beginOffsetMillis + event.eventDurationMs;
       int beginPosition = (int) Math.floor(
               (double)beginOffsetMillis/MILLIS_PER_DAY*mEventGranularityFactor);
-      int endPosition = (int) Math.ceil(
-              (double)endOffsetMillis/MILLIS_PER_DAY*mEventGranularityFactor);
+      int endOffsetPositions = (int) (Math.ceil(event.eventDurationMs/MILLIS_PER_DAY)*mEventGranularityFactor);
+      int endPosition = beginPosition + endOffsetPositions;
       //if out of bound, do not draw
       if (beginPosition > mEventGranularityFactor){
         continue;
       }
-      if (endPosition < 0){
+      // we say less than equal because
+      // if it ends on midnight,
+      // we probably don't want a dink to get on the next day
+      if (endPosition <= 0){
         continue;
       }
       // otherwise clip to the limits of this row.
@@ -305,16 +307,15 @@ public class CalendarWeekAdapter
       // default to inverted left right position
       // they must return to neutral for us to render the event.
       long beginOffsetMillis = event.eventStartUTC - weekStartMillis;
-      long endOffsetMillis = beginOffsetMillis + event.eventDurationMs;
       int beginPosition = (int) Math.floor(
               (double)beginOffsetMillis/MILLIS_PER_DAY*mEventGranularityFactor);
-      int endPosition = (int) Math.ceil(
-              (double)endOffsetMillis/MILLIS_PER_DAY*mEventGranularityFactor);
+      int endOffsetPositions = (int) (Math.ceil(event.eventDurationMs/MILLIS_PER_DAY)*mEventGranularityFactor);
+      int endPosition = beginPosition + endOffsetPositions;
       //if out of bound, do not draw
       if (beginPosition > 7*mEventGranularityFactor){
         continue;
       }
-      if (endPosition < 0){
+      if (endPosition <= 0){
         continue;
       }
       // otherwise clip to the limits of this row.

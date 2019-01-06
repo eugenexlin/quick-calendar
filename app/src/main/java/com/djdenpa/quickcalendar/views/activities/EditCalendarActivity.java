@@ -63,8 +63,8 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     mViewModel.init();
     if (mCalendarId == DEFAULT_TASK_ID) {
       // test data
-      mViewModel.setEntireCalendar(
-              new MockCalendarDataGenerator().getMockCalendar());
+//      mViewModel.setEntireCalendar(
+//              new MockCalendarDataGenerator().getMockCalendar());
     } else {
       QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
         Calendar calendar = CoreDataLayer.loadCalendar(mDB, mCalendarId);
@@ -141,6 +141,11 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       return true;
     }
 
+    if (id == R.id.actions_generate_test_events){
+      mEditCalendarFragment.setEntireCalendar(
+              new MockCalendarDataGenerator().getMockCalendar());
+      return true;
+    }
 
     return super.onOptionsItemSelected(item);
   }

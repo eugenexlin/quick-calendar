@@ -2,6 +2,9 @@ package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,8 +14,11 @@ import android.widget.ProgressBar;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.comparer.CalendarComparator;
+import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.CalendarInfo;
+import com.djdenpa.quickcalendar.models.CalendarThumbnail;
+import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.views.activities.EditCalendarActivity;
 import com.djdenpa.quickcalendar.views.activities.MainActivity;
 import com.squareup.picasso.Picasso;
@@ -25,6 +31,8 @@ import static com.djdenpa.quickcalendar.views.activities.EditCalendarActivity.EX
 
 public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTileListItemViewHolder> {
 
+  QuickCalendarDatabase mDB;
+
   Context mContext;
 
   public final LinkedList<Calendar> mCalendarData = new LinkedList<>();
@@ -36,6 +44,8 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
     LayoutInflater inflater = LayoutInflater.from(mContext);
     View view = inflater.inflate(R.layout.calendar_tile_item, parent, false);
 
+    mDB = QuickCalendarDatabase.getInstance(mContext.getApplicationContext());
+
     return new CalendarTileListItemViewHolder(view);
   }
 
@@ -43,7 +53,25 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
   public void onBindViewHolder(@NonNull CalendarTileListItemViewHolder holder, int position) {
     Calendar calendar = getItem(position);
     holder.tvName.setText(calendar.name);
-    Picasso.get().load(R.drawable.ic_calendar).into(holder.ivThumbnail);
+
+    QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
+      List<CalendarThumbnail> list = mDB.calendarThumbnailDao().loadCalendarThumbnails(calendar.id);
+      Drawable drawable;
+
+      if (list.size() >= 1) {
+        Bitmap bitmap = list.get(0).getBitmap();
+        drawable = new BitmapDrawable(mContext.getResources(), bitmap);
+        QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+          holder.ivThumbnail.setImageDrawable(drawable);
+        });
+      } else {
+        QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+          holder.ivThumbnail.setImageDrawable(null);
+        });
+      }
+
+    });
+
     holder.clTileItem.setOnClickListener(v -> {
       Intent intent = new Intent(mContext,  EditCalendarActivity.class);
       intent.putExtra(EXTRA_CALENDAR_ID, calendar.id);

@@ -210,6 +210,8 @@ implements QuickDurationPicker.SaveDurationHandler {
     if (duration < 1000) {
       duration = 1000;
     }
+    // trim so no less than second
+    duration = duration / 1000 * 1000;
     mEvent.name = etEventName.getText().toString();
     mEvent.eventStartUTC = startTime;
     mEvent.eventDurationMs = duration;

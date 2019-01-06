@@ -1,5 +1,8 @@
 package com.djdenpa.quickcalendar.views.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -14,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +25,7 @@ import android.widget.Toast;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.CoreDataLayer;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
+import com.djdenpa.quickcalendar.models.CalendarThumbnail;
 import com.djdenpa.quickcalendar.models.DisplayMode;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
@@ -38,6 +43,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -65,6 +71,10 @@ public class EditCalendarFragment extends Fragment
   FloatingActionButton fabAddEvent;
   @BindView(R.id.ll_calendar_header)
   LinearLayout llHeader;
+//  @BindView(R.id.iv_test)
+//  ImageView ivTest;
+
+
 
   // this is for opening dialog
   private AppCompatActivity mActivity;
@@ -409,10 +419,41 @@ public class EditCalendarFragment extends Fragment
       }
       calendar.lastAccess = new Date();
       CoreDataLayer.saveCalendar(mDB, calendar);
-      mMenuEnabledHandler.toggleSaveButton(false);
       QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+        mMenuEnabledHandler.toggleSaveButton(false);
         Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();
       });
+      updateThumbnail(calendar);
     });
+  }
+
+  // call me from diskIO
+  public void updateThumbnail(com.djdenpa.quickcalendar.models.Calendar calendar) {
+    List<CalendarThumbnail> thumbnails = mDB.calendarThumbnailDao().loadCalendarThumbnails(calendar.id);
+    if (thumbnails.size() > 1) {
+      // just as safety... purge any dupe thumbnails for a certain calendarID
+      for (int i = 1; i < thumbnails.size(); i++){
+        mDB.calendarThumbnailDao().deleteCalendarThumbnail(thumbnails.get(i));
+      }
+    }
+
+    CalendarThumbnail thumb;
+    if (thumbnails.size() >= 1) {
+      thumb = thumbnails.get(0);
+      thumb.generateThumbnail(calendar);
+      mDB.calendarThumbnailDao().updateCalendarThumbnail(thumb);
+    }else {
+      thumb = new CalendarThumbnail();
+      thumb.generateThumbnail(calendar);
+      mDB.calendarThumbnailDao().insertCalendarThumbnail(thumb);
+    }
+    // test code to look at thumb
+//    Bitmap bitmap = thumb.getBitmap();
+//    BitmapDrawable bitDraw = new BitmapDrawable(getActivity().getResources(), bitmap);
+//    bitDraw.setAntiAlias(false);
+//    QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+//      ivTest.setImageDrawable(bitDraw);
+//    });
+    // wipe existing thumbnails
   }
 }

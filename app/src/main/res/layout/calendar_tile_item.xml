@@ -18,11 +18,10 @@
       android:layout_height="@dimen/tile_icon_size"
       android:background="@color/tile_placeholder_background"
       android:contentDescription="@string/calendar_tile_thumbnail"
-      android:tint="@color/tile_placeholder_foreground"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:srcCompat="@drawable/ic_calendar"/>
+      />
 
     <TextView
         android:id="@+id/tv_calendar_tile_name"
