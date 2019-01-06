@@ -12,6 +12,7 @@ import android.support.constraint.Guideline;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,10 @@ import java.util.LinkedList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter.EVENT_BAR_HEIGHT;
+import static com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter.getEventCursorHeight;
+import static com.djdenpa.quickcalendar.views.adapters.CalendarWeekAdapter.getEventCursorThickness;
 
 public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
 
@@ -63,6 +68,8 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
 
   @BindView(R.id.iv_cursor)
   ImageView ivCursor;
+  @BindView(R.id.iv_event_cursor)
+  ImageView ivEventCursor;
   @BindView(R.id.iv_month_divider)
   ImageView ivVerticalDivider;
 
@@ -91,12 +98,18 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
 
   // this list shall hold hidden constraint layouts that
   private LinkedList<CalendarEventViewManager> mRecycledEventViews = new LinkedList<>();
+  // this list shall hold all created layouts
+  private LinkedList<CalendarEventViewManager> mEventViews = new LinkedList<>();
 
 
   public CalendarWeekViewHolder(View itemView, Context context) {
     super(itemView);
 
     ButterKnife.bind(this, itemView);
+
+    ViewGroup.LayoutParams params = ivEventCursor.getLayoutParams();
+    params.height = EVENT_BAR_HEIGHT + getEventCursorHeight();
+    ivEventCursor.setLayoutParams(params);
 
     clCalendarWeeks.setOnTouchListener(new View.OnTouchListener() {
       @Override
@@ -190,6 +203,7 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
       return result;
     }
     CalendarEventViewManager manager = new CalendarEventViewManager(context, holder);
+    mEventViews.push(manager);
     manager.ivEventBlock.setOnTouchListener(new View.OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
@@ -370,4 +384,44 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
 
   }
 
+  public void setEventCursor(int eventLocalId) {
+    for (CalendarEventViewManager vm : mEventViews) {
+      if (vm.mEventLocalId == eventLocalId) {
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(clCalendarWeeks);
+        constraintSet.connect(
+                ivEventCursor.getId(),
+                ConstraintSet.START,
+                vm.guidelineStart.getId(),
+                ConstraintSet.START, 0);
+        constraintSet.connect(
+                ivEventCursor.getId(),
+                ConstraintSet.END,
+                vm.guidelineEnd.getId(),
+                ConstraintSet.END, 0);
+        constraintSet.connect(
+                ivEventCursor.getId(),
+                ConstraintSet.TOP,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.TOP, vm.marginTop - getEventCursorThickness());
+        constraintSet.applyTo(clCalendarWeeks);
+        return;
+      }
+    }
+    // did not find, so put off screen;
+    ConstraintSet constraintSet = new ConstraintSet();
+    constraintSet.clone(clCalendarWeeks);
+    constraintSet.connect(
+            ivEventCursor.getId(),
+            ConstraintSet.START,
+            getGuideline(0).getId(),
+            ConstraintSet.START, 0);
+    constraintSet.connect(
+            ivEventCursor.getId(),
+            ConstraintSet.END,
+            getGuideline(0).getId(),
+            ConstraintSet.START, 0);
+    constraintSet.applyTo(clCalendarWeeks);
+    constraintSet.applyTo(clCalendarWeeks);
+  }
 }

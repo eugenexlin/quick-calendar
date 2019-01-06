@@ -75,7 +75,6 @@ public class EditCalendarFragment extends Fragment
 //  ImageView ivTest;
 
 
-
   // this is for opening dialog
   private AppCompatActivity mActivity;
   private MenuEnabledHandler mMenuEnabledHandler;
@@ -145,7 +144,7 @@ public class EditCalendarFragment extends Fragment
       long timeUtc = mAdapter.getCursorDate().getTime().getTime();
       Event event = new Event();
       event.eventStartUTC = timeUtc;
-      event.eventDurationMs = 1000*60*60*24-1;
+      event.eventDurationMs = 1000*60*60*24;
       PromptEditEvent(event);
     });
 
@@ -266,6 +265,12 @@ public class EditCalendarFragment extends Fragment
 
   }
 
+  public void handleClickEvent(Event event) {
+    // on second click, this should edit
+    if (mAdapter.setEventCursorLocalId(event.localId)) {
+      PromptEditEvent(event);
+    }
+  }
 
   public void PromptEditEvent(Event event){
     mMenuEnabledHandler.toggleSaveButton(true);

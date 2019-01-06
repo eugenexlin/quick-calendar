@@ -1,13 +1,12 @@
 package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.ClipData;
-import android.content.ClipData.Item;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Guideline;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Event;
-import com.djdenpa.quickcalendar.utils.EventCollisionInfo;
 import com.djdenpa.quickcalendar.utils.EventDragShadow;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
@@ -32,6 +30,11 @@ public class CalendarEventViewManager {
   public ImageView ivEventBlock;
   public TextView tvEventName;
 
+  public int mEventLocalId;
+  public int marginTop;
+  public Guideline guidelineStart;
+  public Guideline guidelineEnd;
+
   public CalendarEventViewManager(Context context, @NonNull CalendarWeekViewHolder holder){
     mContext = context;
     LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -39,9 +42,6 @@ public class CalendarEventViewManager {
     ivEventBlock = clRoot.findViewById(R.id.iv_calendar_event_block);
     tvEventName = clRoot.findViewById(R.id.tv_calendar_event_name);
     clRoot.setTag(R.id.tag_gv_view_manager, this);
-    ViewGroup.LayoutParams params = clRoot.getLayoutParams();
-    params.height = EVENT_BAR_HEIGHT;
-    clRoot.setLayoutParams(params);
     clRoot.setId(View.generateViewId());
     holder.clCalendarWeeks.addView(clRoot);
   }
@@ -51,6 +51,7 @@ public class CalendarEventViewManager {
   }
 
   public void setEventData(Event event, EditCalendarFragment fragment) {
+    mEventLocalId = event.localId;
     clRoot.setVisibility(View.VISIBLE);
 //    ivEventBlock.setColorFilter(mContext.getColor(R.color.primaryLightColor), PorterDuff.Mode.MULTIPLY);
     int color;
@@ -75,7 +76,7 @@ public class CalendarEventViewManager {
     ivEventBlock.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
     tvEventName.setText(event.name);
 
-    clRoot.setOnClickListener(v -> fragment.PromptEditEvent(event));
+    clRoot.setOnClickListener(v -> fragment.handleClickEvent(event));
     clRoot.setOnLongClickListener(new View.OnLongClickListener() {
       @Override
       public boolean onLongClick(View v) {

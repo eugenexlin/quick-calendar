@@ -145,7 +145,9 @@ public class MainActivity extends AppCompatActivity {
       mAuth.signInWithCredential(credential);
 
       FirebaseUser fu = mAuth.getCurrentUser();
-      prefMan.setUserId(fu.getUid());
+      if (fu != null) {
+        prefMan.setUserId(fu.getUid());
+      }
 
       /*
 this Firebase setting will restrict currently logged in user to their user id folder.

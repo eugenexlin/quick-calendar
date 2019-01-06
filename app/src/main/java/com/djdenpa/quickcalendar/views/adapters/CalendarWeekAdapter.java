@@ -2,16 +2,12 @@ package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.constraint.Guideline;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -24,10 +20,8 @@ import com.djdenpa.quickcalendar.utils.EventCollisionChecker;
 import com.djdenpa.quickcalendar.utils.EventCollisionInfo;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 /*
  I want something that scrolls forever, but also take advantage of the
@@ -45,9 +39,17 @@ public class CalendarWeekAdapter
   public static int START_POSITION = ITEM_COUNT/2;
 
   private static final double MILLIS_PER_DAY = (1000 * 60 * 60 * 24);
-  public static final int FIRST_EVENT_LAYER_OFFSET = 70;
-  public static final int EVENT_BAR_HEIGHT = 64;
-  public static final int EVENT_BAR_MARGIN = 5;
+
+  public static int FIRST_EVENT_LAYER_OFFSET = 70;
+
+  public static int EVENT_BAR_HEIGHT = 64;
+  public static int EVENT_BAR_MARGIN = 5;
+  public static int getEventCursorThickness() {
+    return EVENT_BAR_MARGIN*2/5;
+  }
+  public static int getEventCursorHeight() {
+    return EVENT_BAR_MARGIN*4/5;
+  }
 
   private int mEventGranularityFactor;
 
@@ -56,6 +58,19 @@ public class CalendarWeekAdapter
   private java.util.Calendar mDateCursor;
   private int mDateCursorPosition;
   private int mDateCursorIndex;
+
+  private int mEventCursorLocalId;
+  public boolean setEventCursorLocalId (int cursorLocalId) {
+    if (mEventCursorLocalId == cursorLocalId) {
+      mEventCursorLocalId = 0;
+      return true;
+    }
+    mEventCursorLocalId = cursorLocalId;
+    for (CalendarWeekViewHolder holder: mAllViewHolders) {
+      holder.setEventCursor(cursorLocalId);
+    }
+    return false;
+  }
 
   private DisplayMode mDisplayMode;
 
@@ -114,6 +129,9 @@ public class CalendarWeekAdapter
     } else {
       defaultGranularity = 24;
     }
+    FIRST_EVENT_LAYER_OFFSET = mContext.getResources().getDimensionPixelSize(R.dimen.event_item_first_offset);
+    EVENT_BAR_HEIGHT = mContext.getResources().getDimensionPixelSize(R.dimen.event_item_height);
+    EVENT_BAR_MARGIN = mContext.getResources().getDimensionPixelSize(R.dimen.event_item_margin);
     mEventGranularityFactor = sharedPref.getInt(getGranularityPreferenceKey(), defaultGranularity);
   }
 
@@ -250,9 +268,16 @@ public class CalendarWeekAdapter
 
         int offsetTop = (EVENT_BAR_HEIGHT + EVENT_BAR_MARGIN) * eventInfo.layer;
 
+        Guideline guidelineStart = holder.getHighResDayGuideline(beginPosition, mEventGranularityFactor);
+        Guideline guidelineEnd = holder.getHighResDayGuideline(endPosition, mEventGranularityFactor);
+
         constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, FIRST_EVENT_LAYER_OFFSET + offsetTop);
-        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.START, holder.getHighResDayGuideline(beginPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 2);
-        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.END, holder.getHighResDayGuideline(endPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 3);
+        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.START, guidelineStart.getId(), ConstraintSet.START, 2);
+        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.END, guidelineEnd.getId(), ConstraintSet.START, 3);
+
+        eventItem.marginTop = FIRST_EVENT_LAYER_OFFSET + offsetTop;
+        eventItem.guidelineStart = guidelineStart;
+        eventItem.guidelineEnd = guidelineEnd;
 
         constraintSet.applyTo(parent);
 
@@ -339,9 +364,16 @@ public class CalendarWeekAdapter
 
         int offsetTop = (EVENT_BAR_HEIGHT + EVENT_BAR_MARGIN) * eventInfo.layer;
 
+        Guideline guidelineStart = holder.getHighResWeekGuideline(beginPosition, mEventGranularityFactor);
+        Guideline guidelineEnd = holder.getHighResWeekGuideline(endPosition, mEventGranularityFactor);
+
         constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, FIRST_EVENT_LAYER_OFFSET + offsetTop);
-        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.START, holder.getHighResWeekGuideline(beginPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 2);
-        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.END, holder.getHighResWeekGuideline(endPosition, mEventGranularityFactor).getId(), ConstraintSet.START, 3);
+        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.START, guidelineStart.getId(), ConstraintSet.START, 2);
+        constraintSet.connect(eventItem.clRoot.getId(), ConstraintSet.END, guidelineEnd.getId(), ConstraintSet.START, 3);
+
+        eventItem.marginTop = FIRST_EVENT_LAYER_OFFSET + offsetTop;
+        eventItem.guidelineStart = guidelineStart;
+        eventItem.guidelineEnd = guidelineEnd;
 
         constraintSet.applyTo(parent);
 
@@ -445,6 +477,7 @@ public class CalendarWeekAdapter
       clearCursor();
       return;
     }
+    setEventCursorLocalId(-1);
 
     if (mDateCursorPosition == position && mDateCursorIndex == index) {
       // no change. do nothing;

@@ -23,7 +23,7 @@
   <dimen name="calendar_floating_tag_padding_vertical">2dp</dimen>
   <dimen name="calendar_floating_tag_text_size">18sp</dimen>
 
-  <dimen name="calendar_event_block_radius">3dp</dimen>
+  <dimen name="calendar_event_block_radius">5dp</dimen>
 
   <dimen name="empty_state_height">192dp</dimen>
 
@@ -59,8 +59,14 @@
   <dimen name="date_circle_dimension">22sp</dimen>
   <dimen name="date_circle_margin_start">1dp</dimen>
   <dimen name="date_circle_margin_top">3dp</dimen>
+
+
   <dimen name="event_text_size">16dp</dimen>
+  <dimen name="event_item_height">36dp</dimen>
+  <dimen name="event_item_margin">5dp</dimen>
+
   <dimen name="tile_progress_bar_size">64dp</dimen>
+  <dimen name="event_item_first_offset">30dp</dimen>
 
 
 </resources>
