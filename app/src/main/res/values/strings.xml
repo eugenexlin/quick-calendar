@@ -41,7 +41,7 @@
   <string name="menu_delete_calendar">Delete Calendar</string>
   <string name="menu_change_granularity">Change Event Granularity</string>
   <string name="menu_add_event">Add Event</string>
-  <string name="menu_change_view">Change View</string>
+  <string name="menu_change_view">Change Calendar Mode</string>
 
   <string name="edit_event_title">Edit Event</string>
   <string name="add_event_title">Add New Event</string>
@@ -102,5 +102,8 @@
   </string-array>
 
   <string name="google_client_id">586345749577-gdp597tkms81vuq8hgvljn5d9n53gtvd.apps.googleusercontent.com</string>
+  <string name="prev">prev</string>
+  <string name="next">next</string>
+  <string name="settings_menu_label">Settings</string>
 
 </resources>

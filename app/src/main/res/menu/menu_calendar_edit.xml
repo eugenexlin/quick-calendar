@@ -7,29 +7,50 @@
       android:id="@+id/action_save_calendar"
       android:orderInCategory="1"
       android:title="@string/menu_save"
-      app:showAsAction="ifRoom"/>
-
+      android:icon="@drawable/ic_save_black_24dp"
+      app:showAsAction="always"/>
+  <item
+      android:id="@+id/action_prev_event"
+      android:orderInCategory="2"
+      android:title="@string/prev"
+      android:icon="@drawable/ic_navigate_before_black_24dp"
+      app:showAsAction="always"/>
+  <item
+      android:id="@+id/action_next_event"
+      android:orderInCategory="3"
+      android:title="@string/next"
+      android:icon="@drawable/ic_navigate_next_black_24dp"
+      app:showAsAction="always"/>
   <item
     android:id="@+id/action_add_event"
-    android:orderInCategory="2"
+    android:orderInCategory="4"
     android:title="@string/menu_add_event"
     app:showAsAction="ifRoom"/>
 
   <item
-      android:id="@+id/action_change_calendar_view"
-      android:orderInCategory="3"
-      android:title="@string/menu_change_view"
-      app:showAsAction="ifRoom"/>
+    android:id="@+id/m_settings"
+    android:title="@string/settings_menu_label"
+    android:orderInCategory="5"
+      >
+    <menu>
+      <item
+          android:id="@+id/action_change_calendar_view"
+          android:orderInCategory="1"
+          android:title="@string/menu_change_view"
+          app:showAsAction="ifRoom"/>
 
-  <item
-      android:id="@+id/action_change_granularity"
-      android:orderInCategory="4"
-      android:title="@string/menu_change_granularity"
-      app:showAsAction="ifRoom"/>
+      <item
+          android:id="@+id/action_change_granularity"
+          android:orderInCategory="2"
+          android:title="@string/menu_change_granularity"
+          app:showAsAction="ifRoom"/>
+
+    </menu>
+  </item>
 
   <item
       android:id="@+id/action_delete_calendar"
-      android:orderInCategory="5"
+      android:orderInCategory="6"
       android:title="@string/menu_delete_calendar"
       app:showAsAction="ifRoom"/>
 </menu>

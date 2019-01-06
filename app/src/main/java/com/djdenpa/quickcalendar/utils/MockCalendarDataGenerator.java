@@ -63,6 +63,8 @@ public class MockCalendarDataGenerator {
   public EventSet getMockEventSet(){
     EventSet result = new EventSet();
 
+    maxEventStartUTC = System.currentTimeMillis() + maxEventMs*rand.nextInt(50);
+
     result.name = "Test Set + " + rand.nextInt(99999);
     int eventCount = rand.nextInt(maxEventCount - minEventCount) + minEventCount;
 

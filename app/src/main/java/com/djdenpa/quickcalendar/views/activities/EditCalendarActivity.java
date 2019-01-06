@@ -2,6 +2,8 @@ package com.djdenpa.quickcalendar.views.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -84,9 +86,20 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu_calendar_edit, menu);
 
+    for(int i = 0; i < menu.size(); i++){
+      Drawable drawable = menu.getItem(i).getIcon();
+      if(drawable != null) {
+        drawable.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+        drawable.setAlpha(255);
+      }
+    }
+
     if (!mCanSave) {
       MenuItem item = menu.findItem(R.id.action_save_calendar);
       item.setEnabled(false);
+      Drawable drawable = item.getIcon();
+      drawable.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+      drawable.setAlpha(50);
     }
     if (!mCanDelete) {
       MenuItem item = menu.findItem(R.id.action_delete_calendar);
