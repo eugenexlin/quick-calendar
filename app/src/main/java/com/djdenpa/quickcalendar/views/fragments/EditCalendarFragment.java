@@ -13,10 +13,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.CalendarThumbnail;
 import com.djdenpa.quickcalendar.models.DisplayMode;
 import com.djdenpa.quickcalendar.models.Event;
+import com.djdenpa.quickcalendar.models.EventSet;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.activities.EditCalendarActivity;
@@ -45,6 +48,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -377,16 +381,6 @@ public class EditCalendarFragment extends Fragment
       mAdapter.setData(mViewModel.getActiveEventSet());
       mMenuEnabledHandler.toggleDeleteButton(mViewModel.activeCalendar.getValue().id != 0);
     });
-
-    //fetch earliest event, it will be base scroll
-    long earliestEventMillis = mViewModel.getActiveCalendar().getValue().getFirstEventSet().getEarliestMillisUTC();
-    mAdapter.setMidpointDateMillis(earliestEventMillis);
-    java.util.Calendar earliestEventCal = java.util.Calendar.getInstance();
-    earliestEventCal.setTimeInMillis(earliestEventMillis);
-    updateCalendarFocusMonth(earliestEventCal);
-
-    rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION );
-
   }
 
   public void deleteCalendar() {
@@ -401,6 +395,37 @@ public class EditCalendarFragment extends Fragment
 
   public void setEntireCalendar(com.djdenpa.quickcalendar.models.Calendar calendar) {
     mViewModel.setEntireCalendar(calendar);
+    mAdapter.notifyDataSetChanged();
+
+    //fetch earliest event, it will be base scroll
+    long earliestEventMillis = mViewModel.getActiveCalendar().getValue().getFirstEventSet().getEarliestMillisUTC();
+    mAdapter.setMidpointDateMillis(earliestEventMillis);
+    java.util.Calendar earliestEventCal = java.util.Calendar.getInstance();
+    earliestEventCal.setTimeInMillis(earliestEventMillis);
+    updateCalendarFocusMonth(earliestEventCal);
+
+    rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION );
+
+  }
+
+  public void toggleSaveButton(boolean isEnabled) {
+
+    mMenuEnabledHandler.toggleSaveButton(isEnabled);
+  }
+
+  public void selectAdjacentEvent(int polarity) {
+    Event event = mAdapter.selectAdjacentEvent(polarity);
+    if (event == null) {
+      return;
+    }
+    int position = mAdapter.getPositionOfDate(event.eventStartUTC);
+    Log.i("test", ""+position);
+    rvCalendarWeeks.scrollToPosition(position);
+    mAdapter.setEventCursorLocalId(event.localId);
+  }
+
+  public void setEventSet(EventSet eventSet) {
+    mAdapter.setTestEventSet(eventSet);
     mAdapter.notifyDataSetChanged();
   }
 

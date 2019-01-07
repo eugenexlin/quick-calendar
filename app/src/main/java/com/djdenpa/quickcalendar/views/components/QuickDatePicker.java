@@ -20,6 +20,7 @@ import java.time.YearMonth;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -141,7 +142,8 @@ public class QuickDatePicker extends FrameLayout {
 
     Calendar result = Calendar.getInstance();
     result.set(year, getCalendarMonth(month), day, hour, minute);
-
+    result.set(java.util.Calendar.SECOND, 0);
+    result.set(java.util.Calendar.MILLISECOND, 0);
     // save the validated values into edit texts
     setValue(result);
 

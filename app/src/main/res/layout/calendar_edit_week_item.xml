@@ -30,6 +30,9 @@
       android:layout_height="0dp"
       android:elevation="4dp"
       android:src="@drawable/event_cursor"
+
+      android:focusable="true"
+      android:focusableInTouchMode="true"
       />
 
 

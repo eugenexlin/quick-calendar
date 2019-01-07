@@ -129,6 +129,14 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       mEditCalendarFragment.saveCalendar();
       return true;
     }
+    if (id == R.id.action_next_event) {
+      mEditCalendarFragment.selectAdjacentEvent(1);
+      return true;
+    }
+    if (id == R.id.action_prev_event) {
+      mEditCalendarFragment.selectAdjacentEvent(-1);
+      return true;
+    }
     if (id == R.id.action_delete_calendar) {
       new AlertDialog.Builder(this)
               .setTitle("Delete Calendar")
@@ -142,8 +150,9 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     }
 
     if (id == R.id.actions_generate_test_events){
-      mEditCalendarFragment.setEntireCalendar(
-              new MockCalendarDataGenerator().getMockCalendar());
+      mEditCalendarFragment.setEventSet(
+              new MockCalendarDataGenerator().getMockEventSet());
+      mEditCalendarFragment.toggleSaveButton(true);
       return true;
     }
 

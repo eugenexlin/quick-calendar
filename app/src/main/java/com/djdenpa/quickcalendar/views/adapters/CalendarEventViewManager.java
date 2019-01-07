@@ -46,8 +46,12 @@ public class CalendarEventViewManager {
     holder.clCalendarWeeks.addView(clRoot);
   }
 
-  public void hide() {
+  public void recycleAndHide() {
     clRoot.setVisibility(View.GONE);
+    mEventLocalId = -1;
+    marginTop = 0;
+    guidelineStart = null;
+    guidelineEnd = null;
   }
 
   public void setEventData(Event event, EditCalendarFragment fragment) {

@@ -19,7 +19,7 @@ public class MockCalendarDataGenerator {
   // and then it uses distribution formula for that time range.
   // that way if we want a rare long event, it wont skew our distribution.
   public long minEventMs = 1000*60*60;
-  public long medianEventMs = 1000*60*60*6;
+  public long medianEventMs = 1000*60*60*12;
   public long maxEventMs = 1000*60*60*24*7;
   public DistributionFormula eventMsDistribution = DistributionFormula.GAUSSIAN_3SD;
 

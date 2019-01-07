@@ -75,6 +75,7 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
 
   Context mContext;
 
+  private int previousEventLocalId;
 
   TouchDateHandler mTouchHandler;
   private int mCurrentPosition;
@@ -191,9 +192,10 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     return getHighResWeekGuideline(position*7, multiplier);
   }
 
-  // hide a view's visibility and
+  // recycleAndHide a view's visibility and
   public void RecycleViewToPool(CalendarEventViewManager eventItem) {
-    eventItem.hide();
+    eventItem.recycleAndHide();
+
     mRecycledEventViews.push(eventItem);
   }
 
@@ -317,7 +319,7 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
       setCursorWhole();
       return;
     }
-    // cursor is showing, but we nee to hide, so HIDE
+    // cursor is showing, but we nee to recycleAndHide, so HIDE
     ConstraintSet constraintSet = new ConstraintSet();
     constraintSet.clone(clCalendarWeeks);
     constraintSet.connect(
@@ -339,7 +341,7 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     tv.setBackground(drawable);
   }
   private void setCursorWhole(){
-    // cursor is showing, but we nee to hide, so HIDE
+    // cursor is showing, but we nee to recycleAndHide, so HIDE
     ConstraintSet constraintSet = new ConstraintSet();
     constraintSet.clone(clCalendarWeeks);
     constraintSet.connect(
@@ -362,7 +364,7 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
   }
   private void clearCursor(){
     mCursorEnabled = false;
-    // cursor is showing, but we nee to hide, so HIDE
+    // cursor is showing, but we nee to recycleAndHide, so HIDE
     ConstraintSet constraintSet = new ConstraintSet();
     constraintSet.clone(clCalendarWeeks);
     constraintSet.connect(
@@ -383,10 +385,19 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     }
 
   }
-
-  public void setEventCursor(int eventLocalId) {
+  public void resetEventCursor(){
+    previousEventLocalId = -1;
+  }
+  public boolean setEventCursor(int eventLocalId, boolean requestFocus) {
+    if (previousEventLocalId == eventLocalId) {
+      return false;
+    }
+    previousEventLocalId = eventLocalId;
     for (CalendarEventViewManager vm : mEventViews) {
-      if (vm.mEventLocalId == eventLocalId) {
+      if (vm.mEventLocalId == eventLocalId &&
+              vm.guidelineStart != null &&
+              vm.guidelineEnd != null) {
+
         ConstraintSet constraintSet = new ConstraintSet();
         constraintSet.clone(clCalendarWeeks);
         constraintSet.connect(
@@ -405,7 +416,10 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
                 ConstraintSet.PARENT_ID,
                 ConstraintSet.TOP, vm.marginTop - getEventCursorThickness());
         constraintSet.applyTo(clCalendarWeeks);
-        return;
+        if (requestFocus) {
+          ivEventCursor.requestFocus();
+        }
+        return true;
       }
     }
     // did not find, so put off screen;
@@ -423,5 +437,6 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
             ConstraintSet.START, 0);
     constraintSet.applyTo(clCalendarWeeks);
     constraintSet.applyTo(clCalendarWeeks);
+    return false;
   }
 }

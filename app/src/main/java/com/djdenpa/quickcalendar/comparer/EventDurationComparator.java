@@ -5,7 +5,7 @@ import com.djdenpa.quickcalendar.models.Event;
 
 import java.util.Comparator;
 
-public class EventDurationComparer implements Comparator<Event> {
+public class EventDurationComparator implements Comparator<Event> {
   @Override
   public int compare(Event o1, Event o2) {
     if (o1.eventDurationMs != o2.eventDurationMs ) {

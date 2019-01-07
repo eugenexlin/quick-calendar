@@ -7,10 +7,9 @@ import android.arch.persistence.room.PrimaryKey;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import com.djdenpa.quickcalendar.comparer.EventDurationComparer;
+import com.djdenpa.quickcalendar.comparer.EventDurationComparator;
 
 import java.nio.ByteBuffer;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,7 +48,7 @@ public class CalendarThumbnail {
     for (Event event : eventSet.getAllEvents()) {
       sortedEvents.add(event);
     }
-    Collections.sort(sortedEvents, new EventDurationComparer());
+    Collections.sort(sortedEvents, new EventDurationComparator());
     Collections.reverse(sortedEvents);
 
     // first get the range of the data set
