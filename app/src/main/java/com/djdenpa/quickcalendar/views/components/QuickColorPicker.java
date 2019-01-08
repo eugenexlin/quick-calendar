@@ -61,6 +61,8 @@ public class QuickColorPicker extends FrameLayout {
   @BindView(R.id.b_cancel)
   ImageButton bCancel;
 
+  private boolean needsSave = false;
+
   public QuickColorPicker(Context context) {
     super(context);
     mContext = context;
@@ -116,8 +118,7 @@ public class QuickColorPicker extends FrameLayout {
     });
 
     bSet.setOnClickListener(v -> {
-      setColor(etNewColor.getText().toString());
-      hideColorSelector();
+      saveIfNecessary();
     });
     bCancel.setOnClickListener(v -> hideColorSelector());
 
@@ -133,13 +134,22 @@ public class QuickColorPicker extends FrameLayout {
     colorPicker.setFlagMode(FlagMode.ALWAYS);
   }
 
+  public void saveIfNecessary(){
+    if (needsSave) {
+      setColor(etNewColor.getText().toString());
+      hideColorSelector();
+    }
+  }
+
   public void showColorSelector(){
+    needsSave = true;
     llColor.setVisibility(GONE);
     llColorPicker.setVisibility(VISIBLE);
     colorPicker.selectCenter();
     setNewColor(tryParseColor(mCurrentColor));
   }
   public void hideColorSelector(){
+    needsSave = false;
     llColor.setVisibility(VISIBLE);
     llColorPicker.setVisibility(GONE);
   }

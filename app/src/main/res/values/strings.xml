@@ -107,5 +107,8 @@
   <string name="settings_menu_label">Settings</string>
   <string name="extra_menu_label">Extras</string>
   <string name="menu_generate_test_data">Generate Test Data</string>
+  <string name="menu_real_time_share">Real-time Share</string>
+  <string name="menu_share_link">Share Link</string>
+  <string name="menu_disable_share">Disable</string>
 
 </resources>

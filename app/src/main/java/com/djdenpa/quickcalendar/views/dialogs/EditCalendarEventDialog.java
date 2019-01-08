@@ -215,6 +215,7 @@ implements QuickDurationPicker.SaveDurationHandler {
     mEvent.name = etEventName.getText().toString();
     mEvent.eventStartUTC = startTime;
     mEvent.eventDurationMs = duration;
+    qcpColor.saveIfNecessary();
     mEvent.color = qcpColor.getColor();
     mListener.saveEvent(mEvent);
   }

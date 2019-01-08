@@ -96,6 +96,8 @@ public class EditCalendarFragment extends Fragment
 
   boolean mIsLargeLayout;
 
+  private boolean mIsFirebaseShareOn;
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -107,6 +109,7 @@ public class EditCalendarFragment extends Fragment
     mViewModel = ViewModelProviders.of(this).get(EditCalendarViewModel.class);
 
     mViewModel.getActiveCalendar().observe(this, calendar -> {
+      Log.w("test", "OBSERVING CALENDAR CHANGE");
       if (calendar.name.length() == 0){
         tvCalendarName.setText(getString(R.string.calendar_untitled_name));
       } else {
@@ -118,7 +121,21 @@ public class EditCalendarFragment extends Fragment
       if (mMenuEnabledHandler != null) {
         mMenuEnabledHandler.toggleDeleteButton(mViewModel.activeCalendar.getValue().id != 0);
       }
+
+      QuickCalendarExecutors.getInstance().networkIO().execute(() -> pushToFirebase());
     });
+    mViewModel.getIsFirebaseShareOn().observe(this, isOn -> {
+      mIsFirebaseShareOn = isOn;
+    });
+  }
+
+  public void pushToFirebase() {
+    com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.getActiveCalendar().getValue();
+    Log.w("test", calendar.name);
+    if (mIsFirebaseShareOn) {
+      Log.w("test", calendar.getFirebaseHash());
+      Log.w("test", calendar.getFirebaseSerialization());
+    }
   }
 
   public void setActivity(EditCalendarActivity activity) {
@@ -491,5 +508,9 @@ public class EditCalendarFragment extends Fragment
 //      ivTest.setImageDrawable(bitDraw);
 //    });
     // wipe existing thumbnails
+  }
+
+  public void publishToFirebase(){
+
   }
 }

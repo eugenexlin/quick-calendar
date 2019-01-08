@@ -17,13 +17,19 @@ public class EditCalendarViewModel extends ViewModel {
   public String uid = "";
   public String idToken = "";
 
-  private Application mApplication;
+  public MutableLiveData<Boolean> isFirebaseShareOn = new MutableLiveData<>();
+
+  public LiveData<Boolean> getIsFirebaseShareOn(){
+    return isFirebaseShareOn;
+  }
+  public void setIsFirebaseShareOn(boolean isOn){
+    isFirebaseShareOn.setValue(isOn);
+  }
 
   public void init() {
     Calendar calendar = new Calendar();
     activeCalendar.setValue(calendar);
   }
-  // todo init with id
 
   public void setEntireCalendar(Calendar calendar){
     activeCalendar.setValue(calendar);

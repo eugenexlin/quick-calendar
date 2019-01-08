@@ -21,11 +21,31 @@
       android:title="@string/next"
       android:icon="@drawable/ic_navigate_next_black_24dp"
       app:showAsAction="always"/>
+
   <item
     android:id="@+id/action_add_event"
     android:orderInCategory="4"
     android:title="@string/menu_add_event"
     app:showAsAction="ifRoom"/>
+
+  <item
+      android:id="@+id/m_real_time_share"
+      android:title="@string/menu_real_time_share"
+      android:orderInCategory="5"
+      >
+    <menu>
+      <item
+          android:id="@+id/action_create_share"
+          android:orderInCategory="4"
+          android:title="@string/menu_share_link"
+          app:showAsAction="ifRoom"/>
+      <item
+          android:id="@+id/action_disable_share"
+          android:orderInCategory="4"
+          android:title="@string/menu_disable_share"
+          app:showAsAction="ifRoom"/>
+    </menu>
+  </item>
 
   <item
     android:id="@+id/m_settings"

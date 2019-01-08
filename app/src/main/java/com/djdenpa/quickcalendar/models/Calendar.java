@@ -6,20 +6,37 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.common.base.Utf8;
+import com.google.common.hash.Hashing;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 @Entity
-public class Calendar implements Parcelable {
+public class Calendar {
 
+  @Expose
   @PrimaryKey (autoGenerate = true)
   public int id;
+  @Expose
   public String name;
+  @Expose
   public Date lastAccess;
+  @Expose
   public String creatorIdentity;
+  @Expose
+  public int shareCode;
 
   @Ignore
   private int nextEventSetId = 1;
@@ -39,37 +56,6 @@ public class Calendar implements Parcelable {
     name = in.readString();
     lastAccess = new Date(in.readLong());
     creatorIdentity = in.readString();
-  }
-//  protected Calendar(int pId, String pName, Date pLastAccess, String pCreatorIdentity) {
-//    id = pId;
-//    name = pName;
-//    lastAccess = pLastAccess;
-//    creatorIdentity = pCreatorIdentity;
-//  }
-
-  public static final Creator<Calendar> CREATOR = new Creator<Calendar>() {
-    @Override
-    public Calendar createFromParcel(Parcel in) {
-      return new Calendar(in);
-    }
-
-    @Override
-    public Calendar[] newArray(int size) {
-      return new Calendar[size];
-    }
-  };
-
-  @Override
-  public int describeContents() {
-    return 0;
-  }
-
-  @Override
-  public void writeToParcel(Parcel parcel, int i) {
-    parcel.writeInt(id);
-    parcel.writeString(name);
-    parcel.writeLong(lastAccess.getTime());
-    parcel.writeString(creatorIdentity);
   }
 
   public Collection<EventSet> getAllEventSets() {
@@ -137,4 +123,29 @@ public class Calendar implements Parcelable {
     return getFirstEventSet();
   }
 
+  public String getFirebaseHash(){
+    if (shareCode == 0) {
+      shareCode = new Random().nextInt();
+    }
+    String starter = creatorIdentity + "_" + id + "_" + shareCode;
+
+    return Hashing.sha256()
+            .hashString(starter, StandardCharsets.UTF_8)
+            .toString();
+  }
+
+  public String getFirebaseSerialization() {
+    Gson gson = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
+    String initialJson = gson.toJson(this);
+    try {
+      JSONObject jObj = new JSONObject(initialJson);
+      jObj.put("eventSets", new int[0]);
+      return jObj.toString();
+    } catch (JSONException e) {
+      e.printStackTrace();
+      return "{}";
+    }
+  }
 }

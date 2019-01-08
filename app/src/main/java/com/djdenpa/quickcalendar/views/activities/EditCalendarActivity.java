@@ -148,6 +148,16 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       return true;
     }
 
+
+    if (id == R.id.action_create_share) {
+      mViewModel.setIsFirebaseShareOn(true);
+      return true;
+    }
+    if (id == R.id.action_disable_share) {
+      mViewModel.setIsFirebaseShareOn(false);
+      return true;
+    }
+
     if (id == R.id.actions_generate_test_events){
       mEditCalendarFragment.setEventSet(
               new MockCalendarDataGenerator().getMockEventSet());
