@@ -261,26 +261,43 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
         continue;
       }
       int viewMonth = (int) view.getTag(R.id.tag_tv_month_key);
+      boolean shouldNotFade = false;
+
       if (getAdapterPosition() == cursorPosition &&
-              ((displayMode == DisplayMode.ROW_PER_DAY && i == 0) ||
-                      (displayMode == DisplayMode.ROW_PER_WEEK && i == cursorIndex))) {
+          ((displayMode == DisplayMode.ROW_PER_DAY && i == 0) ||
+            (displayMode == DisplayMode.ROW_PER_WEEK && i == cursorIndex))) {
 
-
+        shouldNotFade = true;
         view.setTextColor(mContext.getColor(R.color.white));
         view.setTypeface(null, Typeface.BOLD);
         Drawable drawable = mContext.getDrawable(R.drawable.circle);
-        drawable.setColorFilter(new PorterDuffColorFilter(mContext.getColor(R.color.secondaryColor), PorterDuff.Mode.MULTIPLY));
+        drawable.setColorFilter(new PorterDuffColorFilter(
+                mContext.getColor(R.color.secondaryColor),
+                PorterDuff.Mode.MULTIPLY));
         view.setBackground(drawable);
-      } else if (viewMonth == currentMonth) {
-        view.setTextColor(mContext.getColor(R.color.darker_gray));
+
+      } else if (view.getTag(R.id.tag_tv_is_today_key) != null) {
+
+        shouldNotFade = true;
+        view.setTextColor(mContext.getColor(R.color.white));
         view.setTypeface(null, Typeface.BOLD);
-        view.setBackground(null);
+        Drawable drawable = mContext.getDrawable(R.drawable.circle);
+        drawable.setColorFilter(new PorterDuffColorFilter(
+                mContext.getColor(R.color.primaryColor),
+                PorterDuff.Mode.MULTIPLY));
+        view.setBackground(drawable);
 
       } else {
-        view.setTextColor(mContext.getColor(R.color.lighter_gray));
+
+        view.setTextColor(mContext.getColor(R.color.darker_gray));
         view.setTypeface(null, Typeface.NORMAL);
         view.setBackground(null);
 
+      }
+      if (viewMonth == currentMonth || shouldNotFade) {
+        view.setAlpha(1f);
+      } else {
+        view.setAlpha(0.3f);
       }
     }
     renderCursor(cursorPosition, cursorIndex);
@@ -381,7 +398,9 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
 
     for (int i = 0; i < 7; i++) {
       TextView tv = getDayTextField(i);
-      tv.setBackground(null);
+      if (tv.getTag(R.id.tag_tv_is_today_key) == null){
+        tv.setBackground(null);
+      }
     }
 
   }

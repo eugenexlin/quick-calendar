@@ -61,6 +61,7 @@ public class CalendarWeekAdapter
   private java.util.Calendar mDateCursor;
   private int mDateCursorPosition;
   private int mDateCursorIndex;
+  private int mDateCursorMonth;
 
   private int mEventCursorLocalId = -1;
   public int getEventCursorLocalId() {
@@ -212,8 +213,33 @@ public class CalendarWeekAdapter
     );
   }
 
-  private void BindDataByDay(CalendarWeekViewHolder holder, int position) {
+  private long currentDateUpdate = 0;
+  private int currentDate = 0;
+  private int currentMonth = 0;
+  private int currentYear = 0;
+  private boolean isToday(java.util.Calendar cal){
+    // one minute interval
+    if (System.currentTimeMillis() - currentDateUpdate > 60000) {
+      java.util.Calendar currentCal = java.util.Calendar.getInstance();
+      currentDate = currentCal.get(java.util.Calendar.DATE);
+      currentMonth = currentCal.get(java.util.Calendar.MONTH);
+      currentYear = currentCal.get(Calendar.YEAR);
+      currentDateUpdate= System.currentTimeMillis();
+    }
+    // most short circuits
+    if (cal.get(Calendar.DATE) != currentDate) {
+      return false;
+    }
+    if (cal.get(Calendar.MONTH) != currentMonth) {
+      return false;
+    }
+    if (cal.get(Calendar.YEAR) != currentYear) {
+      return false;
+    }
+    return true;
+  }
 
+  private void BindDataByDay(CalendarWeekViewHolder holder, int position) {
 
     java.util.Calendar baseDate = getItemBaseDate(position);
 
@@ -222,13 +248,22 @@ public class CalendarWeekAdapter
     ConstraintSet constraintSet = new ConstraintSet();
 
     int dateNumber = baseDate.get(java.util.Calendar.DATE);
-    int dayOfWeek = baseDate.get(Calendar.DAY_OF_WEEK);
     int month = baseDate.get(java.util.Calendar.MONTH);
+    boolean isToday = isToday(baseDate);
 
     TextView view = holder.getDayTextField(0);
-//    view.setText(String.format(mContext.getString(R.string.day_mode_date_string_format), String.valueOf(dateNumber), getDayModeDayOfWeek(dayOfWeek)));
+
     view.setText(String.valueOf(dateNumber));
     view.setTag(R.id.tag_tv_month_key, month);
+    if (isToday) {
+      if (view.getTag(R.id.tag_tv_is_today_key) == null) {
+        view.setTag(R.id.tag_tv_is_today_key, 1);
+      }
+    }else{
+      if (view.getTag(R.id.tag_tv_is_today_key) != null) {
+        view.setTag(R.id.tag_tv_is_today_key, null);
+      }
+    }
 
     // clear out all texts except the first
     for (int i = 1; i < 7; i++) {
@@ -333,9 +368,20 @@ public class CalendarWeekAdapter
       int dateNumber = dayOfWeek.get(java.util.Calendar.DATE);
       int month = dayOfWeek.get(java.util.Calendar.MONTH);
 
+      boolean isToday = isToday(dayOfWeek);
+
       TextView view = holder.getDayTextField(i);
       view.setText(String.valueOf(dateNumber));
       view.setTag(R.id.tag_tv_month_key, month);
+      if (isToday) {
+        if (view.getTag(R.id.tag_tv_is_today_key) == null) {
+          view.setTag(R.id.tag_tv_is_today_key, 1);
+        }
+      }else{
+        if (view.getTag(R.id.tag_tv_is_today_key) != null) {
+          view.setTag(R.id.tag_tv_is_today_key, null);
+        }
+      }
 
       // special check for if date is 1, so we can draw a line
       if (dateNumber == 1) {
@@ -530,6 +576,7 @@ public class CalendarWeekAdapter
     }
 
     mDateCursor = date;
+    mDateCursorMonth = date.get(Calendar.MONTH);
     mCursorStateHandler.onSetCursorVisibility(true);
     resynchronizeAllDateNumberVisuals();
   }

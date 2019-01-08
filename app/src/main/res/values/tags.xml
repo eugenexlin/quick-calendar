@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <item name="tag_tv_month_key" type="id"/>
+  <item name="tag_tv_is_today_key" type="id"/>
   <item name="tag_gv_view_manager" type="id"/>
 
 </resources>

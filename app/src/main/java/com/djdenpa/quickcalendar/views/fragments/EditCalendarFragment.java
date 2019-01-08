@@ -187,6 +187,8 @@ public class EditCalendarFragment extends Fragment
 
     setWeekHeaderVisibilityBasedOnMode();
 
+    initializeAdapterSettings();
+
     return rootView;
   }
 
@@ -398,7 +400,10 @@ public class EditCalendarFragment extends Fragment
   public void setEntireCalendar(com.djdenpa.quickcalendar.models.Calendar calendar) {
     mViewModel.setEntireCalendar(calendar);
     mAdapter.notifyDataSetChanged();
+    initializeAdapterSettings();
+  }
 
+  public void initializeAdapterSettings(){
     //fetch earliest event, it will be base scroll
     long earliestEventMillis = mViewModel.getActiveCalendar().getValue().getFirstEventSet().getEarliestMillisUTC();
     mAdapter.setMidpointDateMillis(earliestEventMillis);
@@ -407,7 +412,6 @@ public class EditCalendarFragment extends Fragment
     updateCalendarFocusMonth(earliestEventCal);
 
     rvCalendarWeeks.scrollToPosition(CalendarWeekAdapter.START_POSITION );
-
   }
 
   public void toggleSaveButton(boolean isEnabled) {
