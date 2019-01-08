@@ -1,5 +1,6 @@
 package com.djdenpa.quickcalendar.views.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -103,6 +104,21 @@ public class EditCalendarFragment extends Fragment
 
     mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
 
+    mViewModel = ViewModelProviders.of(this).get(EditCalendarViewModel.class);
+
+    mViewModel.getActiveCalendar().observe(this, calendar -> {
+      if (calendar.name.length() == 0){
+        tvCalendarName.setText(getString(R.string.calendar_untitled_name));
+      } else {
+        tvCalendarName.setText(calendar.name);
+      }
+      mViewModel.getActiveEventSet().observe(this, eventSet -> {
+        mAdapter.setData(eventSet);
+      });
+      if (mMenuEnabledHandler != null) {
+        mMenuEnabledHandler.toggleDeleteButton(mViewModel.activeCalendar.getValue().id != 0);
+      }
+    });
   }
 
   public void setActivity(EditCalendarActivity activity) {
@@ -341,7 +357,7 @@ public class EditCalendarFragment extends Fragment
 
   @Override
   public void saveEvent(Event event) {
-    mViewModel.getActiveEventSet().saveEvent(event);
+    mViewModel.getActiveEventSet().getValue().saveEvent(event);
     mAdapter.notifyDataSetChanged();
   }
 
@@ -367,20 +383,6 @@ public class EditCalendarFragment extends Fragment
         fabAddEvent.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.crispy_hide));
       }
     }
-  }
-
-  public void setViewModel(EditCalendarViewModel viewModel) {
-    mViewModel = viewModel;
-
-    mViewModel.getActiveCalendar().observe(this, calendar -> {
-      if (calendar.name.length() == 0){
-        tvCalendarName.setText(getString(R.string.calendar_untitled_name));
-      } else {
-        tvCalendarName.setText(calendar.name);
-      }
-      mAdapter.setData(mViewModel.getActiveEventSet());
-      mMenuEnabledHandler.toggleDeleteButton(mViewModel.activeCalendar.getValue().id != 0);
-    });
   }
 
   public void deleteCalendar() {

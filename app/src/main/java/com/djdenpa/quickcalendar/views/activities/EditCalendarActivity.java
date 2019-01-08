@@ -70,7 +70,6 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
         Calendar calendar = CoreDataLayer.loadCalendar(mDB, mCalendarId);
         QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
           mEditCalendarFragment.setEntireCalendar(calendar);
-
         });
       });
     }
@@ -178,18 +177,7 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     mEditCalendarFragment = (EditCalendarFragment) fm.findFragmentById(R.id.edit_calendar_fragment);
 
     mEditCalendarFragment.setActivity(this);
-    mEditCalendarFragment.setViewModel(mViewModel);
-
   }
 
-//
-//  @Override
-//  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//    super.onActivityResult(requestCode, resultCode, data);
-//
-//    Intent refresh = new Intent(this, MainActivity.class);
-//    startActivity(refresh);
-//    this.finish();
-//  }
 }
 

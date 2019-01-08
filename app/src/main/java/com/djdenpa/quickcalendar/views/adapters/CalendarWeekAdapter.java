@@ -214,6 +214,7 @@ public class CalendarWeekAdapter
 
   private void BindDataByDay(CalendarWeekViewHolder holder, int position) {
 
+
     java.util.Calendar baseDate = getItemBaseDate(position);
 
     int verticalLinePosition = 0;
@@ -235,6 +236,10 @@ public class CalendarWeekAdapter
       otherView.setText("");
     }
     holder.setVerticalDividerPosition(verticalLinePosition);
+
+    if (mEventSet == null) {
+      return;
+    }
 
     long dayStartMillis = baseDate.getTimeInMillis();
     EventCollisionChecker oECC = new EventCollisionChecker();
@@ -339,6 +344,10 @@ public class CalendarWeekAdapter
 
     }
     holder.setVerticalDividerPosition(verticalLinePosition);
+
+    if (mEventSet == null) {
+      return;
+    }
 
     long weekStartMillis = baseDate.getTimeInMillis();
     EventCollisionChecker oECC = new EventCollisionChecker();
@@ -546,6 +555,11 @@ public class CalendarWeekAdapter
   public CursorStateHandler mCursorStateHandler;
 
   public Event selectAdjacentEvent(int polarity) {
+
+    if (mEventSet == null) {
+      return null;
+    }
+
     Event event = mEventSet.getEventByLocalId(mEventCursorLocalId);
     if (event == null) {
       long cursorUTC = getCursorDate().getTime().getTime();

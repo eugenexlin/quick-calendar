@@ -4,15 +4,15 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.support.annotation.NonNull;
 
-import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.EventSet;
 
 public class EditCalendarViewModel extends ViewModel {
   public MutableLiveData<Calendar> activeCalendar = new MutableLiveData<>();
-  public int activeEventSetId;
+  public int activeEventSetLocalId;
+  public int previousActiveEventSetLocalId = -1;
+  public MutableLiveData<EventSet> activeEventSet = new MutableLiveData<>();
   public String identity = "";
   public String uid = "";
   public String idToken = "";
@@ -27,20 +27,26 @@ public class EditCalendarViewModel extends ViewModel {
 
   public void setEntireCalendar(Calendar calendar){
     activeCalendar.setValue(calendar);
+    // re fetch the active event set
+    activeEventSet.setValue(null);
+    getActiveEventSet();
   }
 
   public LiveData<Calendar> getActiveCalendar(){
-    if(activeCalendar == null){
+    if(activeCalendar.getValue() == null){
       init();
     }
     return activeCalendar;
   }
 
-  public EventSet getActiveEventSet(){
-    Calendar calendar = activeCalendar.getValue();
-    EventSet eventSet = calendar.getEventSetById(activeEventSetId);
-    activeEventSetId = eventSet.id;
-    return eventSet;
+  public LiveData<EventSet> getActiveEventSet(){
+    if (activeEventSet.getValue() == null || previousActiveEventSetLocalId != activeEventSetLocalId) {
+      EventSet eventSet = activeCalendar.getValue().getEventSetById(activeEventSetLocalId);
+      activeEventSetLocalId = eventSet.localId;
+      previousActiveEventSetLocalId = activeEventSetLocalId;
+      activeEventSet.setValue(eventSet);
+    }
+    return activeEventSet;
   }
 
   public void setCalendarName(String name){
