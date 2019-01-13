@@ -1,6 +1,7 @@
 package com.djdenpa.quickcalendar.views.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.djdenpa.quickcalendar.BuildConfig;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.CoreDataLayer;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
@@ -49,7 +51,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,8 +97,6 @@ public class EditCalendarFragment extends Fragment
 
   boolean mIsLargeLayout;
 
-  private boolean mIsFirebaseShareOn;
-
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -106,10 +105,9 @@ public class EditCalendarFragment extends Fragment
 
     mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
 
-    mViewModel = ViewModelProviders.of(this).get(EditCalendarViewModel.class);
+    mViewModel = ViewModelProviders.of(getActivity()).get(EditCalendarViewModel.class);
 
     mViewModel.getActiveCalendar().observe(this, calendar -> {
-      Log.w("test", "OBSERVING CALENDAR CHANGE");
       if (calendar.name.length() == 0){
         tvCalendarName.setText(getString(R.string.calendar_untitled_name));
       } else {
@@ -124,15 +122,13 @@ public class EditCalendarFragment extends Fragment
 
       QuickCalendarExecutors.getInstance().networkIO().execute(() -> pushToFirebase());
     });
-    mViewModel.getIsFirebaseShareOn().observe(this, isOn -> {
-      mIsFirebaseShareOn = isOn;
-    });
+
   }
 
   public void pushToFirebase() {
     com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.getActiveCalendar().getValue();
-    Log.w("test", calendar.name);
-    if (mIsFirebaseShareOn) {
+    Boolean isFirebaseShareOn = mViewModel.getIsFirebaseShareOn();
+    if (isFirebaseShareOn) {
       Log.w("test", calendar.getFirebaseHash());
       Log.w("test", calendar.getFirebaseSerialization());
     }
@@ -311,7 +307,16 @@ public class EditCalendarFragment extends Fragment
     }
   }
 
+  private long previousEditEventMillis = 0;
   public void PromptEditEvent(Event event){
+    long currentMillis = System.currentTimeMillis();
+    if (currentMillis - 1000 < previousEditEventMillis) {
+      // clicked too fast. eat this input lol
+      // spamming to open multiple dialogs is not great.
+      return;
+    }
+    previousEditEventMillis = currentMillis;
+
     mMenuEnabledHandler.toggleSaveButton(true);
 
     EditCalendarEventDialog dialog = new EditCalendarEventDialog();
@@ -452,12 +457,34 @@ public class EditCalendarFragment extends Fragment
     mAdapter.notifyDataSetChanged();
   }
 
+  public void enableFirebaseShare() {
+    mViewModel.setIsFirebaseShareOn(true);
+    com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.getActiveCalendar().getValue();
+    String hash = calendar.getFirebaseHash();
+    String name = mViewModel.userName;
+    if (name.length() <= 0) {
+      name = mViewModel.identity;
+    }
+
+    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+    shareIntent.setType("text/plain");
+    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Quick Calendar");
+    String shareMessage= name
+            + " wants to share their calendar. Open in Quick Calendar\n\n"
+            + "https://raw.githubusercontent.com/eugenexlin/quick-calendar/master/index.html?hash=" + hash;
+    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+    startActivity(Intent.createChooser(shareIntent, "choose one"));
+  }
+
   public interface MenuEnabledHandler {
     void toggleSaveButton(boolean isEnabled);
     void toggleDeleteButton(boolean isEnabled);
   }
 
   public void saveCalendar() {
+    saveCalendar(false);
+  }
+  public void saveCalendar(boolean startShare) {
 
     // Write a message to the database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -469,6 +496,9 @@ public class EditCalendarFragment extends Fragment
       com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.activeCalendar.getValue();
       if (calendar.creatorIdentity == "") {
         calendar.creatorIdentity = mViewModel.identity;
+      }
+      if (calendar.id == 0) {
+        calendar.EnsureShareCodeInitialized();
       }
       calendar.lastAccess = new Date();
       CoreDataLayer.saveCalendar(mDB, calendar);

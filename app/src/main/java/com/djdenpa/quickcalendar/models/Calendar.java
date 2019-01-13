@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +36,7 @@ public class Calendar {
   public Date lastAccess;
   @Expose
   public String creatorIdentity;
-  @Expose
+
   public int shareCode;
 
   @Ignore
@@ -123,6 +124,12 @@ public class Calendar {
     return getFirstEventSet();
   }
 
+  public void EnsureShareCodeInitialized(){
+    if (shareCode == 0) {
+      shareCode = new Random().nextInt();
+    }
+  }
+
   public String getFirebaseHash(){
     if (shareCode == 0) {
       shareCode = new Random().nextInt();
@@ -141,7 +148,7 @@ public class Calendar {
     String initialJson = gson.toJson(this);
     try {
       JSONObject jObj = new JSONObject(initialJson);
-      jObj.put("eventSets", new int[0]);
+      jObj.put("eventSets", new JSONArray());
       return jObj.toString();
     } catch (JSONException e) {
       e.printStackTrace();

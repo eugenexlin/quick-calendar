@@ -16,14 +16,15 @@ public class EditCalendarViewModel extends ViewModel {
   public String identity = "";
   public String uid = "";
   public String idToken = "";
+  public String userName;
 
-  public MutableLiveData<Boolean> isFirebaseShareOn = new MutableLiveData<>();
+  public boolean isFirebaseShareOn = false;
 
-  public LiveData<Boolean> getIsFirebaseShareOn(){
+  public boolean getIsFirebaseShareOn(){
     return isFirebaseShareOn;
   }
   public void setIsFirebaseShareOn(boolean isOn){
-    isFirebaseShareOn.setValue(isOn);
+    isFirebaseShareOn = (isOn);
   }
 
   public void init() {

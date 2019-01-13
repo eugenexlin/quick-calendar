@@ -155,7 +155,12 @@ public class QuickDurationPicker extends FrameLayout {
 
   public long getDurationMillis(){
     long multiplier = getDurationUnitMultiplier(sDuration.getSelectedItemPosition());
-    long duration = Long.parseLong(etDuration.getText().toString());
+    long duration = 0;
+    try {
+      duration = Long.parseLong(etDuration.getText().toString());
+    } catch (NumberFormatException e) {
+      duration = 1;
+    }
     return duration * multiplier;
   }
 

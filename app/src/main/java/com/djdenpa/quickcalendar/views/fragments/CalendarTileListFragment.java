@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.Calendar;
-import com.djdenpa.quickcalendar.models.CalendarInfo;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.views.adapters.CalendarTileListItemAdapter;

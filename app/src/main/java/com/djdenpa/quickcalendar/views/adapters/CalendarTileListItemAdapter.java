@@ -10,18 +10,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.comparer.CalendarComparator;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.Calendar;
-import com.djdenpa.quickcalendar.models.CalendarInfo;
 import com.djdenpa.quickcalendar.models.CalendarThumbnail;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.views.activities.EditCalendarActivity;
-import com.djdenpa.quickcalendar.views.activities.MainActivity;
-import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 import java.util.LinkedList;

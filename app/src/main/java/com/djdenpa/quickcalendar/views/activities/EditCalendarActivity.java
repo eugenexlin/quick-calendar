@@ -4,11 +4,13 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -58,7 +60,11 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
         mCalendarId = intent.getIntExtra(EXTRA_CALENDAR_ID, 0);
       }
     }
-
+    if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+      Uri uri = intent.getData();
+      String hash = uri.getQueryParameter("hash");
+      Log.w("test", hash);
+    }
 
     mViewModel = ViewModelProviders.of(this).get(EditCalendarViewModel.class);
     mViewModel.init();
@@ -79,6 +85,7 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     mViewModel.idToken = prefMan.getUserIdToken();
     mViewModel.uid = prefMan.getUserId();
     mViewModel.identity= prefMan.getUserEmail();
+    mViewModel.userName = prefMan.getUserName();
   }
 
   @Override
@@ -112,7 +119,6 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       MenuItem item2 = menu.findItem(R.id.action_disable_share);
       item2.setEnabled(false);
     }
-
 
     return true;
   }
@@ -165,7 +171,18 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     }
 
     if (id == R.id.action_create_share) {
-      mViewModel.setIsFirebaseShareOn(true);
+      if(mViewModel.getActiveCalendar().getValue().id == 0){
+        new AlertDialog.Builder(this)
+                .setTitle("Share Calendar")
+                .setMessage("Save and share calendar?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> mEditCalendarFragment.saveCalendar(true))
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+      } else {
+        mEditCalendarFragment.enableFirebaseShare();
+      }
+
       return true;
     }
     if (id == R.id.action_disable_share) {
@@ -200,7 +217,6 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
 
     FragmentManager fm = getSupportFragmentManager();
     mEditCalendarFragment = (EditCalendarFragment) fm.findFragmentById(R.id.edit_calendar_fragment);
-
     mEditCalendarFragment.setActivity(this);
   }
 
