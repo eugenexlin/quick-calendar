@@ -7,6 +7,13 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.djdenpa.quickcalendar.comparer.EventComparator;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,9 +33,13 @@ import static com.google.gson.internal.$Gson$Types.arrayOf;
 public class EventSet {
 
   @PrimaryKey(autoGenerate = true)
+  @Expose
   public int id;
+  @Expose
   public int calendarId;
+  @Expose
   public String name;
+  @Expose
   public String creatorIdentity;
 
   // in this program, event id 0 means not yet defined
@@ -41,6 +52,7 @@ public class EventSet {
   private HashMap<Integer, Event> eventHash = new HashMap<>();
 
   @Ignore
+  @Expose
   public int localId;
 
   public EventSet(){
@@ -214,4 +226,25 @@ public class EventSet {
     return result;
   }
 
+  public JSONArray getAllEventsJson() {
+    JSONArray array = new JSONArray();
+    for (Event event : eventHash.values()){
+      array.put(event.getJson());
+    }
+    return array;
+  }
+  public JSONObject getJson() {
+    Gson gson = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
+    String initialJson = gson.toJson(this);
+    try {
+      JSONObject jObj = new JSONObject(initialJson);
+      jObj.put("events", getAllEventsJson());
+      return jObj;
+    } catch (JSONException e) {
+      e.printStackTrace();
+      return new JSONObject();
+    }
+  }
 }

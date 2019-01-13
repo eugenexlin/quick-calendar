@@ -26,7 +26,7 @@ import static com.djdenpa.quickcalendar.database.Migrations.MIGRATION_1_2;
         EventSet.class,
         Event.class,
         CalendarThumbnail.class
-  }, version = 3, exportSchema = false)
+  }, version = 4, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class QuickCalendarDatabase extends RoomDatabase {
 

@@ -9,6 +9,13 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -25,15 +32,20 @@ public class Event implements Parcelable {
   @PrimaryKey(autoGenerate = true)
   public int id;
   public int eventSetId;
+  @Expose
   public long eventStartUTC;
+  @Expose
   public long eventDurationMs;
+  @Expose
   public String name;
 
   // hex color string
   // color class is not well supported in sdk 24 :(
+  @Expose
   public String color;
 
   @Ignore
+  @Expose
   public int localId;
 
   public Event(){
@@ -85,5 +97,19 @@ public class Event implements Parcelable {
     dest.writeLong(eventDurationMs);
     dest.writeString(name);
     dest.writeString(color);
+  }
+
+  public JSONObject getJson() {
+    Gson gson = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
+    String initialJson = gson.toJson(this);
+    try {
+      JSONObject jObj = new JSONObject(initialJson);
+      return jObj;
+    } catch (JSONException e) {
+      e.printStackTrace();
+      return new JSONObject();
+    }
   }
 }

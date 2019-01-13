@@ -4,9 +4,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
-import android.os.Parcelable;
 
-import com.google.common.base.Utf8;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,22 +16,18 @@ import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 @Entity
 public class Calendar {
 
-  @Expose
   @PrimaryKey (autoGenerate = true)
   public int id;
   @Expose
   public String name;
   @Expose
-  public Date lastAccess;
+  public long lastAccess;
   @Expose
   public String creatorIdentity;
 
@@ -48,14 +42,14 @@ public class Calendar {
 
   public Calendar(){
     name = "";
-    lastAccess = new Date();
+    lastAccess =  System.currentTimeMillis();
     creatorIdentity = "";
   }
 
   protected Calendar(Parcel in) {
     id = in.readInt();
     name = in.readString();
-    lastAccess = new Date(in.readLong());
+    lastAccess = in.readLong();
     creatorIdentity = in.readString();
   }
 
@@ -124,6 +118,14 @@ public class Calendar {
     return getFirstEventSet();
   }
 
+  public JSONArray getAllEventSetsJson() {
+    JSONArray array = new JSONArray();
+    for (EventSet set : eventSetHash.values()){
+      array.put(set.getJson());
+    }
+    return array;
+  }
+
   public void EnsureShareCodeInitialized(){
     if (shareCode == 0) {
       shareCode = new Random().nextInt();
@@ -148,7 +150,7 @@ public class Calendar {
     String initialJson = gson.toJson(this);
     try {
       JSONObject jObj = new JSONObject(initialJson);
-      jObj.put("eventSets", new JSONArray());
+      jObj.put("eventSets", getAllEventSetsJson());
       return jObj.toString();
     } catch (JSONException e) {
       e.printStackTrace();

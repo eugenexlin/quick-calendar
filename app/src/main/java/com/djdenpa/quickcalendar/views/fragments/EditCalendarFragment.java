@@ -496,7 +496,7 @@ public class EditCalendarFragment extends Fragment
       if (calendar.id == 0) {
         calendar.EnsureShareCodeInitialized();
       }
-      calendar.lastAccess = new Date();
+      calendar.lastAccess = System.currentTimeMillis();
       CoreDataLayer.saveCalendar(mDB, calendar);
       QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
         mMenuEnabledHandler.toggleSaveButton(false);
