@@ -144,6 +144,10 @@ implements QuickDurationPicker.SaveDurationHandler {
 
     t_toolbar.setVisibility(View.VISIBLE);
     t_toolbar.inflateMenu(R.menu.menu_event_edit);
+    if (mEvent.localId <= 0) {
+      MenuItem item = t_toolbar.getMenu().findItem(R.id.action_delete);
+      item.setVisible(false);
+    }
     t_toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
       @Override
       public boolean onMenuItemClick(MenuItem item) {
@@ -208,7 +212,7 @@ implements QuickDurationPicker.SaveDurationHandler {
   }
 
   private int getDialogTitleResId(){
-    return (mEvent.id > 0 ?
+    return (mEvent.localId > 0 ?
             (R.string.edit_event_title) :
             (R.string.add_event_title));
   }
