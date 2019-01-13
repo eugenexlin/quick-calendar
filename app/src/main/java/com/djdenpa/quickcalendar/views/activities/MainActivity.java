@@ -103,11 +103,22 @@ public class MainActivity extends AppCompatActivity {
       startActivityForResult(signInIntent, RC_SIGN_IN);
     });
 
-    mSignOutButton.setOnClickListener(view -> mGoogleSignInClient.signOut()
-            .addOnCompleteListener(this, task -> processGoogleAccount(null)));
+    mSignOutButton.setOnClickListener(view -> {
+      mGoogleSignInClient.signOut()
+        .addOnCompleteListener(this, task -> processGoogleAccount(null));
+      Toast.makeText(this, "Signed out, but identity features still available.", Toast.LENGTH_SHORT).show();
+    });
 
-    mDisconnectButton.setOnClickListener(view -> mGoogleSignInClient.revokeAccess()
-            .addOnCompleteListener(this, task -> processGoogleAccount(null)));
+    mDisconnectButton.setOnClickListener(view -> {
+      mGoogleSignInClient.revokeAccess()
+              .addOnCompleteListener(this, task -> processGoogleAccount(null));
+      SharedPreferenceManager prefMan = new SharedPreferenceManager(this);
+      prefMan.setUserId("");
+      prefMan.setUserIdToken("");
+      prefMan.setUserEmail("");
+      prefMan.setUserName("");
+      Toast.makeText(this, "Signed out. Identity values have been deleted.", Toast.LENGTH_SHORT).show();
+    });
 
 
     String serverClientId = getString(R.string.google_client_id);
@@ -136,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
       prefMan.setUserIdToken(idToken);
       prefMan.setUserEmail(account.getEmail());
+      prefMan.setUserName(account.getDisplayName());
 
       mLogoutButtonLayout.setVisibility(View.VISIBLE);
       mSignInButton.setVisibility(View.GONE);

@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.CoreDataLayer;
@@ -105,6 +106,14 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       item.setEnabled(false);
     }
 
+    if (mViewModel.uid == "") {
+      MenuItem item1 = menu.findItem(R.id.action_create_share);
+      item1.setEnabled(false);
+      MenuItem item2 = menu.findItem(R.id.action_disable_share);
+      item2.setEnabled(false);
+    }
+
+
     return true;
   }
 
@@ -148,6 +157,12 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       return true;
     }
 
+    if (id == R.id.m_real_time_share){
+      if (mViewModel.uid == "") {
+        Toast.makeText(getApplicationContext(), "Sign in to access real-time share.", Toast.LENGTH_SHORT).show();
+        return true;
+      }
+    }
 
     if (id == R.id.action_create_share) {
       mViewModel.setIsFirebaseShareOn(true);

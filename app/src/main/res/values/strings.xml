@@ -86,7 +86,7 @@
   <string name="cancel_button">CANCEL</string>
   <string name="sign_out">Sign Out</string>
   <string name="disconnect">Disconnect</string>
-  <string name="sign_in_please">Sign in so we have an identity to enforce ownership with.</string>
+  <string name="sign_in_please">Sign in to enable ownership enforcement and real time sharing.</string>
   <string name="signed_in_as_fmt">Signed in as: %s</string>
 
   <string-array name="am_pm">

@@ -13,6 +13,7 @@ public class SharedPreferenceManager {
 
 
   private static final String USER_EMAIL_KEY = "USER_EMAIL_KEY";
+  private static final String USER_NAME_KEY = "USER_NAME_KEY";
   private static final String USER_ID_TOKEN_KEY = "USER_ID_TOKEN_KEY";
   private static final String USER_ID_KEY = "USER_ID_KEY";
 
@@ -38,11 +39,19 @@ public class SharedPreferenceManager {
   public void setUserIdToken(String token) {
     setStringValueByKey(USER_ID_TOKEN_KEY, token);
   }
+
   public String getUserId() {
     return getStringValueByKey(USER_ID_KEY, "");
   }
   public void setUserId(String uid) {
     setStringValueByKey(USER_ID_KEY, uid);
+  }
+
+  public String getUserName() {
+    return getStringValueByKey(USER_NAME_KEY, "");
+  }
+  public void setUserName(String name) {
+    setStringValueByKey(USER_NAME_KEY, name);
   }
 
   private String getStringValueByKey(String key, String defaultValue) {
