@@ -152,7 +152,7 @@ public class Calendar {
       return jObj.toString();
     } catch (JSONException e) {
       e.printStackTrace();
-      return "{}";
+      return "";
     }
   }
 }

@@ -2,9 +2,6 @@ package com.djdenpa.quickcalendar.views.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -20,13 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Adapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.djdenpa.quickcalendar.BuildConfig;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.CoreDataLayer;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
@@ -42,7 +36,6 @@ import com.djdenpa.quickcalendar.views.dialogs.EditCalendarEventDialog;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarNameDialog;
 import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListDialog;
 import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListTextMapper;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -129,8 +122,9 @@ public class EditCalendarFragment extends Fragment
     com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.getActiveCalendar().getValue();
     Boolean isFirebaseShareOn = mViewModel.getIsFirebaseShareOn();
     if (isFirebaseShareOn) {
-      Log.w("test", calendar.getFirebaseHash());
-      Log.w("test", calendar.getFirebaseSerialization());
+      FirebaseDatabase database = FirebaseDatabase.getInstance();
+      DatabaseReference myRef = database.getReference("calendars/" + calendar.getFirebaseHash());
+      myRef.setValue(calendar.getFirebaseSerialization());
     }
   }
 
@@ -465,6 +459,8 @@ public class EditCalendarFragment extends Fragment
     if (name.length() <= 0) {
       name = mViewModel.identity;
     }
+
+    pushToFirebase();
 
     Intent shareIntent = new Intent(Intent.ACTION_SEND);
     shareIntent.setType("text/plain");

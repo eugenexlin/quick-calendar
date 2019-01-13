@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
   SignInButton mSignInButton;
   @BindView(R.id.tv_account_text)
   TextView mLoginText;
-  @BindView(R.id.sign_out_button)
-  TextView mSignOutButton;
+//  @BindView(R.id.sign_out_button)
+//  TextView mSignOutButton;
   @BindView(R.id.disconnect_button)
   TextView mDisconnectButton;
 
@@ -102,12 +102,12 @@ public class MainActivity extends AppCompatActivity {
       Intent signInIntent = mGoogleSignInClient.getSignInIntent();
       startActivityForResult(signInIntent, RC_SIGN_IN);
     });
-
-    mSignOutButton.setOnClickListener(view -> {
-      mGoogleSignInClient.signOut()
-        .addOnCompleteListener(this, task -> processGoogleAccount(null));
-      Toast.makeText(this, "Signed out, but identity features still available.", Toast.LENGTH_SHORT).show();
-    });
+//
+//    mSignOutButton.setOnClickListener(view -> {
+//      mGoogleSignInClient.signOut()
+//        .addOnCompleteListener(this, task -> processGoogleAccount(null));
+//      Toast.makeText(this, "Signed out, but identity features still available.", Toast.LENGTH_SHORT).show();
+//    });
 
     mDisconnectButton.setOnClickListener(view -> {
       mGoogleSignInClient.revokeAccess()
@@ -162,17 +162,11 @@ public class MainActivity extends AppCompatActivity {
       }
 
       /*
-this Firebase setting will restrict currently logged in user to their user id folder.
-This was for testing, but we can not use this because we need a shared space.
-
+this Firebase setting will only allow authenticated users
 {
   "rules": {
-    "users": {
-      "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
-      }
-    }
+  	".read": "null !== auth.uid",
+    ".write": "null !== auth.uid"
   }
 }
        */
