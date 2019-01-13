@@ -381,6 +381,7 @@ public class EditCalendarFragment extends Fragment
 
   public void deleteEvent(int localId) {
     if (mViewModel.getActiveEventSet().getValue().deleteEvent(localId)){
+      mAdapter.notifyDataSetChanged();
       Toast.makeText(getContext(), "Event Deleted", Toast.LENGTH_SHORT).show();
     }
   }
