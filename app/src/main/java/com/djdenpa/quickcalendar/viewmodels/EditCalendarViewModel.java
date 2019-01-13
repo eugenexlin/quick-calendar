@@ -1,6 +1,5 @@
 package com.djdenpa.quickcalendar.viewmodels;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -48,7 +47,7 @@ public class EditCalendarViewModel extends ViewModel {
 
   public LiveData<EventSet> getActiveEventSet(){
     if (activeEventSet.getValue() == null || previousActiveEventSetLocalId != activeEventSetLocalId) {
-      EventSet eventSet = activeCalendar.getValue().getEventSetById(activeEventSetLocalId);
+      EventSet eventSet = activeCalendar.getValue().getEventSetByLocalId(activeEventSetLocalId);
       activeEventSetLocalId = eventSet.localId;
       previousActiveEventSetLocalId = activeEventSetLocalId;
       activeEventSet.setValue(eventSet);

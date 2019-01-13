@@ -32,5 +32,7 @@ public interface EventSetDao {
   @Delete
   void deleteEventSet(EventSet eventSet);
 
+  @Query("DELETE FROM EventSet WHERE id=:id")
+  void deleteEventSetById(int id);
 
 }

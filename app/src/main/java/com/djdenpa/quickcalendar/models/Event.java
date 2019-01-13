@@ -5,19 +5,14 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
-import android.graphics.Color;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
-import java.util.TimeZone;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -32,21 +27,18 @@ public class Event implements Parcelable {
   @PrimaryKey(autoGenerate = true)
   public int id;
   public int eventSetId;
-  @Expose
-  public long eventStartUTC;
-  @Expose
-  public long eventDurationMs;
-  @Expose
   public String name;
+  public long eventStartUTC;
+  public long eventDurationMs;
 
   // hex color string
   // color class is not well supported in sdk 24 :(
-  @Expose
   public String color;
 
   @Ignore
-  @Expose
   public int localId;
+  @Ignore
+  public boolean isMarkedForDeletion = false;
 
   public Event(){
     java.util.Calendar javaCal = java.util.Calendar.getInstance();
@@ -99,13 +91,26 @@ public class Event implements Parcelable {
     dest.writeString(color);
   }
 
-  public JSONObject getJson() {
-    Gson gson = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create();
-    String initialJson = gson.toJson(this);
+  public void importJson(JSONObject jObj) {
     try {
-      JSONObject jObj = new JSONObject(initialJson);
+      name = jObj.getString("name");
+      eventStartUTC = jObj.getLong("eventStartUTC");
+      eventDurationMs = jObj.getLong("eventDurationMs");
+      color = jObj.getString("color");
+      localId = jObj.getInt("localId");
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public JSONObject exportJson() {
+    try {
+      JSONObject jObj = new JSONObject();
+      jObj.put("name", name);
+      jObj.put("eventStartUTC", eventStartUTC);
+      jObj.put("eventDurationMs", eventDurationMs);
+      jObj.put("color", color);
+      jObj.put("localId", localId);
       return jObj;
     } catch (JSONException e) {
       e.printStackTrace();

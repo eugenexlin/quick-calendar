@@ -47,6 +47,7 @@ implements QuickDurationPicker.SaveDurationHandler {
 
   public interface EditCalendarNameListener {
     void saveEvent(Event event);
+    void deleteEvent(int localId);
     void finishDialog();
   }
 
@@ -156,6 +157,15 @@ implements QuickDurationPicker.SaveDurationHandler {
             getFragmentManager().popBackStack();
           }
           return true;
+        }
+        if (id == R.id.action_delete) {
+          mListener.deleteEvent(mEvent.localId);
+          Dialog dialog = getDialog();
+          if (dialog != null) {
+            dialog.dismiss();
+          } else {
+            getFragmentManager().popBackStack();
+          }
         }
         return true;
       }

@@ -45,13 +45,19 @@ public class CoreDataLayer {
   public static void saveEventSet(QuickCalendarDatabase db, EventSet eventSet) {
 
     if (eventSet.id == 0) {
-      long id = db.eventSetDao().insertEventSet(eventSet);
-      eventSet.id = (int) id;
+      if (!eventSet.isMarkedForDeletion) {
+        long id = db.eventSetDao().insertEventSet(eventSet);
+        eventSet.id = (int) id;
+      }
     } else{
-      db.eventSetDao().updateEventSet(eventSet);
+      if (eventSet.isMarkedForDeletion) {
+        db.eventSetDao().deleteEventSetById(eventSet.id);
+      } else {
+        db.eventSetDao().updateEventSet(eventSet);
+      }
     }
 
-    for (Event event : eventSet.getAllEvents()){
+    for (Event event : eventSet.getAllEvents(false)){
       event.eventSetId = eventSet.id;
       saveEvent(db, event);
     }
@@ -61,10 +67,16 @@ public class CoreDataLayer {
   public static void saveEvent(QuickCalendarDatabase db, Event event) {
 
     if (event.id == 0) {
-      long id = db.eventDao().insertEvent(event);
-      event.id = (int) id;
+      if (!event.isMarkedForDeletion) {
+        long id = db.eventDao().insertEvent(event);
+        event.id = (int) id;
+      }
     } else{
-      db.eventDao().updateEvent(event);
+      if (event.isMarkedForDeletion) {
+        db.eventDao().deleteEventById(event.id);
+      } else {
+        db.eventDao().updateEvent(event);
+      }
     }
 
   }

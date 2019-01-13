@@ -6,10 +6,6 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 
 import com.google.common.hash.Hashing;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,11 +20,8 @@ public class Calendar {
 
   @PrimaryKey (autoGenerate = true)
   public int id;
-  @Expose
   public String name;
-  @Expose
   public long lastAccess;
-  @Expose
   public String creatorIdentity;
 
   public int shareCode;
@@ -75,7 +68,7 @@ public class Calendar {
     }
     // if no id, assign one.
     if (eventSet.localId == 0){
-      eventSet.localId = claimNextId();
+      eventSet.localId = claimNextLocalId();
     }
     // now we see if this event id is already there. if so, save over it.
     if (eventSetHash.containsKey(eventSet.localId )){
@@ -86,7 +79,7 @@ public class Calendar {
     }
   }
 
-  private int claimNextId() {
+  private int claimNextLocalId() {
     int result;
     synchronized (nextEventSetIdLock){
       result = nextEventSetId;
@@ -111,17 +104,17 @@ public class Calendar {
     return result;
   }
 
-  public EventSet getEventSetById(int id){
+  public EventSet getEventSetByLocalId(int id){
     if (eventSetHash.containsKey(id)){
       return eventSetHash.get(id);
     }
     return getFirstEventSet();
   }
 
-  public JSONArray getAllEventSetsJson() {
+  public JSONArray exportAllEventSetsJson() {
     JSONArray array = new JSONArray();
     for (EventSet set : eventSetHash.values()){
-      array.put(set.getJson());
+      array.put(set.exportJson());
     }
     return array;
   }
@@ -143,14 +136,43 @@ public class Calendar {
             .toString();
   }
 
-  public String getFirebaseSerialization() {
-    Gson gson = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create();
-    String initialJson = gson.toJson(this);
+  public void importJson(JSONObject jObj) {
     try {
-      JSONObject jObj = new JSONObject(initialJson);
-      jObj.put("eventSets", getAllEventSetsJson());
+      name = jObj.getString("name");
+      lastAccess = jObj.getLong("lastAccess");
+      creatorIdentity = jObj.getString("creatorIdentity");
+      JSONArray jArr = jObj.getJSONArray("eventSets");
+      for (int i=0; i < jArr.length(); i++) {
+        JSONObject jEventSet = jArr.getJSONObject(i);
+        int localId = jEventSet.getInt("localId");
+        EventSet eventSet = getEventSetByLocalId(localId);
+        if (eventSet == null) {
+          eventSet = new EventSet();
+        }
+        eventSet.importJson(jEventSet);
+        saveEventSet(eventSet);
+      }
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void importFirebaseSerialization(String data) {
+    try {
+      JSONObject jObj = new JSONObject(data);
+      importJson(jObj);
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public String getFirebaseSerialization() {
+    try {
+      JSONObject jObj = new JSONObject();
+      jObj.put("name", name);
+      jObj.put("lastAccess", lastAccess);
+      jObj.put("creatorIdentity", creatorIdentity);
+      jObj.put("eventSets", exportAllEventSetsJson());
       return jObj.toString();
     } catch (JSONException e) {
       e.printStackTrace();

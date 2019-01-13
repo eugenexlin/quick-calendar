@@ -110,5 +110,6 @@
   <string name="menu_real_time_share">Real-time Share</string>
   <string name="menu_share_link">Share Link</string>
   <string name="menu_disable_share">Disable</string>
+  <string name="menu_delete_event">Delete Event</string>
 
 </resources>

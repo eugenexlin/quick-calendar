@@ -7,9 +7,6 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.djdenpa.quickcalendar.comparer.EventComparator;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
-import static com.google.gson.internal.$Gson$Types.arrayOf;
 
 // this is a single snapshot of possible event arrangements of one calendar.
 @Entity(foreignKeys = @ForeignKey(entity = Calendar.class,
@@ -33,13 +29,9 @@ import static com.google.gson.internal.$Gson$Types.arrayOf;
 public class EventSet {
 
   @PrimaryKey(autoGenerate = true)
-  @Expose
   public int id;
-  @Expose
   public int calendarId;
-  @Expose
   public String name;
-  @Expose
   public String creatorIdentity;
 
   // in this program, event id 0 means not yet defined
@@ -52,18 +44,12 @@ public class EventSet {
   private HashMap<Integer, Event> eventHash = new HashMap<>();
 
   @Ignore
-  @Expose
   public int localId;
+  @Ignore
+  public boolean isMarkedForDeletion = false;
 
   public EventSet(){
   }
-//
-//  protected EventSet(int id, int calendarId, String name, String creatorIdentity){
-//    this.id = id;
-//    this.calendarId = calendarId;
-//    this.name = name;
-//    this.creatorIdentity = creatorIdentity;
-//  }
 
   public void saveEvent(Event event) {
     // if they add an event with an id greater than the next event id,
@@ -75,7 +61,7 @@ public class EventSet {
     }
     // if no id, assign one.
     if (event.localId == 0){
-      event.localId = claimNextId();
+      event.localId = claimNextLocalId();
     }
     // now we see if this event id is already there. if so, save over it.
     if (eventHash.containsKey(event.localId )){
@@ -84,12 +70,28 @@ public class EventSet {
     } else {
       eventHash.put(event.localId, event);
     }
-
   }
 
-  public Collection<Event> getAllEvents() {
+  public boolean deleteEvent(int localId) {
+    if (eventHash.containsKey(localId)){
+      eventHash.get(localId).isMarkedForDeletion = true;
+      return true;
+    }
+    return false;
+  }
+  public Collection<Event> getAllEvents()
+  {
+    return getAllEvents(true);
+  }
+  // is filtered will remove events from the list if there is a good reason it should be hidden.
+  public Collection<Event> getAllEvents(boolean isFiltered) {
     ArrayList<Event> sorted = new ArrayList<>();
     for (Event event : eventHash.values()) {
+      if (isFiltered) {
+        if (event.isMarkedForDeletion) {
+          continue;
+        }
+      }
       sorted.add(event);
     }
     sorted.sort(new EventComparator());
@@ -104,7 +106,7 @@ public class EventSet {
     }
   }
 
-  public int claimNextId() {
+  public int claimNextLocalId() {
     int result;
     synchronized (nextLocalEventIdLock){
       result = nextLocalEventId;
@@ -229,17 +231,38 @@ public class EventSet {
   public JSONArray getAllEventsJson() {
     JSONArray array = new JSONArray();
     for (Event event : eventHash.values()){
-      array.put(event.getJson());
+      array.put(event.exportJson());
     }
     return array;
   }
-  public JSONObject getJson() {
-    Gson gson = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create();
-    String initialJson = gson.toJson(this);
+
+  public void importJson(JSONObject jObj) {
     try {
-      JSONObject jObj = new JSONObject(initialJson);
+      name = jObj.getString("name");
+      creatorIdentity = jObj.getString("creatorIdentity");
+      localId = jObj.getInt("localId");
+      JSONArray jArr = jObj.getJSONArray("events");
+      for (int i=0; i < jArr.length(); i++) {
+        JSONObject jEvent = jArr.getJSONObject(i);
+        int localId = jEvent.getInt("localId");
+        Event event = getEventByLocalId(localId);
+        if (event == null) {
+          event = new Event();
+        }
+        event.importJson(jEvent);
+        saveEvent(event);
+      }
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public JSONObject exportJson() {
+    try {
+      JSONObject jObj = new JSONObject();
+      jObj.put("name", name);
+      jObj.put("creatorIdentity", creatorIdentity);
+      jObj.put("localId", localId);
       jObj.put("events", getAllEventsJson());
       return jObj;
     } catch (JSONException e) {
