@@ -19,6 +19,7 @@ public class EditCalendarViewModel extends ViewModel {
   public String userName;
 
   private boolean isFirebaseShareOn = false;
+  private boolean hasImportedShare = false;
 
   public boolean getIsFirebaseShareOn(){
     return isFirebaseShareOn;
@@ -35,7 +36,7 @@ public class EditCalendarViewModel extends ViewModel {
   public void setEntireCalendar(Calendar calendar){
     activeCalendar.setValue(calendar);
     // re fetch the active event set
-    activeEventSet.setValue(null);
+    previousActiveEventSetLocalId = -1;
     setActiveEventSetLocalId(1);
     getActiveEventSet();
   }
@@ -75,6 +76,13 @@ public class EditCalendarViewModel extends ViewModel {
     Calendar calendar = getActiveCalendar().getValue();
     calendar.importFirebaseSerialization(data);
     activeCalendar.setValue(calendar);
+    // trigger data rebind also..
+    if (!hasImportedShare){
+      hasImportedShare = true;
+      previousActiveEventSetLocalId = -1;
+    }
+    EventSet eventset = getActiveEventSet().getValue();
+    activeEventSet.setValue(eventset);
   }
 
   public void saveEventToActiveSet(Event event) {
