@@ -61,6 +61,7 @@ public class CoreDataLayer {
       sharedCalendar.hash = hash;
     }
 
+    sharedCalendar.name = calendar.name;
     sharedCalendar.thumbnailId = thumbnailId;
     sharedCalendar.lastAccess = System.currentTimeMillis();
 

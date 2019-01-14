@@ -16,7 +16,7 @@ import java.util.List;
 public interface SharedCalendarDao {
 
   @Query("SELECT * FROM SharedCalendar ORDER BY lastAccess DESC")
-  LiveData<List<SharedCalendar>> getAllSharedCalendars();
+  LiveData<List<SharedCalendar>> loadAllSharedCalendars();
 
   @Query("SELECT * FROM SharedCalendar WHERE hash = :hash")
   SharedCalendar getSharedCalendar(String hash);

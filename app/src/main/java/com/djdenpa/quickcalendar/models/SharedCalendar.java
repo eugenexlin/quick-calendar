@@ -10,6 +10,7 @@ public class SharedCalendar {
   @NonNull
   @PrimaryKey
   public String hash;
+  public String name;
   public long lastAccess;
   public int thumbnailId;
 

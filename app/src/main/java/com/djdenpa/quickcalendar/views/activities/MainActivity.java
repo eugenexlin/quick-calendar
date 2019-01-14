@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
+import com.djdenpa.quickcalendar.models.Calendar;
+import com.djdenpa.quickcalendar.models.CalendarTile;
+import com.djdenpa.quickcalendar.models.SharedCalendar;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.utils.SharedPreferenceManager;
 import com.djdenpa.quickcalendar.views.fragments.CalendarTileListFragment;
@@ -25,6 +28,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.LinkedList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -190,11 +195,26 @@ this Firebase setting will only allow authenticated users
 
   private void BindCalendarData() {
     mRecentCalendarFragment.setLoading(true);
+    mRecentSharedCalendarFragment.setLoading(true);
     QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
       mDB.calendarDao().loadAllCalendars().observe(this, calendarList -> {
+        LinkedList<CalendarTile> list = new LinkedList<>();
+        for (Calendar calendar : calendarList) {
+          list.add(new CalendarTile(calendar));
+        }
         QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
-          mRecentCalendarFragment.setAdapterData(calendarList);
+          mRecentCalendarFragment.setAdapterData(list);
           mRecentCalendarFragment.setLoading(false);
+        });
+      });
+      mDB.sharedCalendarDao().loadAllSharedCalendars().observe(this, calendarList -> {
+        LinkedList<CalendarTile> list = new LinkedList<>();
+        for (SharedCalendar sharedCalendar : calendarList) {
+          list.add(new CalendarTile(sharedCalendar));
+        }
+        QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
+          mRecentSharedCalendarFragment.setAdapterData(list);
+          mRecentSharedCalendarFragment.setLoading(false);
         });
       });
     });

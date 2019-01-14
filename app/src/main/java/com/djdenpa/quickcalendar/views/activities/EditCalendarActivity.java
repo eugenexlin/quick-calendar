@@ -33,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class EditCalendarActivity extends AppCompatActivity implements EditCalendarFragment.MenuEnabledHandler {
 
   public static final String EXTRA_CALENDAR_ID = "EXTRA_CALENDAR_ID";
+  public static final String EXTRA_SHARE_HASH = "EXTRA_SHARE_HASH";
 
   EditCalendarFragment mEditCalendarFragment;
 
@@ -62,11 +63,18 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
         mCalendarId = intent.getIntExtra(EXTRA_CALENDAR_ID, 0);
       }
     }
+    String shareHash = "";
+    if (intent != null && intent.hasExtra(EXTRA_SHARE_HASH)) {
+      shareHash = intent.getStringExtra(EXTRA_SHARE_HASH);
+    }
     if (Intent.ACTION_VIEW.equals(intent.getAction())) {
       Uri uri = intent.getData();
-      String hash = uri.getQueryParameter("hash");
+      shareHash = uri.getQueryParameter("hash");
+    }
+    
+    if (!shareHash.equals("")){
       FirebaseDatabase database = FirebaseDatabase.getInstance();
-      DatabaseReference myRef = database.getReference("calendars/" + hash);
+      DatabaseReference myRef = database.getReference("calendars/" + shareHash);
       myRef.toString();
     }
 

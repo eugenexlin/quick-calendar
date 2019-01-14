@@ -36,17 +36,6 @@ public class MockCalendarDataGenerator {
 
   public Random rand = new Random();
 
-  public LinkedList<Calendar> getMockCalendars(){
-    LinkedList<Calendar> result = new LinkedList<>();
-    for (int i = 0; i < 1 + rand.nextInt(20); i++){
-      Calendar calendar = new Calendar();
-      calendar.name = "Test Calendar " + i;
-      calendar.id = i;
-      result.add(calendar);
-    }
-    return result;
-  }
-
   public Calendar getMockCalendar(){
     Calendar result = new Calendar();
 
@@ -60,6 +49,7 @@ public class MockCalendarDataGenerator {
     }
     return result;
   }
+
   public EventSet getMockEventSet(){
     EventSet result = new EventSet();
 

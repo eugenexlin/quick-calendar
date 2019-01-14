@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.Calendar;
+import com.djdenpa.quickcalendar.models.CalendarTile;
 import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.views.adapters.CalendarTileListItemAdapter;
@@ -80,16 +81,11 @@ public class CalendarTileListFragment extends Fragment {
     tvNoCalendarsSub.setText(message);
   }
 
-  public void bindTestData(){
-    MockCalendarDataGenerator junk = new MockCalendarDataGenerator();
-    setAdapterData(junk.getMockCalendars());
-  }
-
   public void setHeaderText(String text){
     tvTileHeader.setText(text);
   }
 
-  public void setAdapterData(List<Calendar> data) {
+  public void setAdapterData(List<CalendarTile> data) {
     mCalendarTilesAdapter.setData(data);
     mCalendarTilesAdapter.notifyDataSetChanged();
     if (data.size() <= 0 ) {

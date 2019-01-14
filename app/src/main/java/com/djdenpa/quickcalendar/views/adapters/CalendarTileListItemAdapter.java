@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 
 import com.djdenpa.quickcalendar.R;
 import com.djdenpa.quickcalendar.comparer.CalendarComparator;
+import com.djdenpa.quickcalendar.comparer.CalendarTileComparator;
 import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
 import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.CalendarThumbnail;
+import com.djdenpa.quickcalendar.models.CalendarTile;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.views.activities.EditCalendarActivity;
 
@@ -24,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.djdenpa.quickcalendar.views.activities.EditCalendarActivity.EXTRA_CALENDAR_ID;
+import static com.djdenpa.quickcalendar.views.activities.EditCalendarActivity.EXTRA_SHARE_HASH;
 
 public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTileListItemViewHolder> {
 
@@ -31,7 +34,7 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
 
   Context mContext;
 
-  public final LinkedList<Calendar> mCalendarData = new LinkedList<>();
+  public final LinkedList<CalendarTile> mCalendarData = new LinkedList<>();
 
   @NonNull
   @Override
@@ -47,11 +50,11 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
 
   @Override
   public void onBindViewHolder(@NonNull CalendarTileListItemViewHolder holder, int position) {
-    Calendar calendar = getItem(position);
-    holder.tvName.setText(calendar.name);
+    CalendarTile calendarTile = getItem(position);
+    holder.tvName.setText(calendarTile.name);
 
     QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
-      CalendarThumbnail thumb = mDB.calendarThumbnailDao().loadCalendarThumbnails(calendar.thumbnailId);
+      CalendarThumbnail thumb = mDB.calendarThumbnailDao().loadCalendarThumbnails(calendarTile.thumbnailId);
 
       if (thumb != null) {
         Drawable drawable;
@@ -64,11 +67,20 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
 
     });
 
-    holder.clTileItem.setOnClickListener(v -> {
-      Intent intent = new Intent(mContext,  EditCalendarActivity.class);
-      intent.putExtra(EXTRA_CALENDAR_ID, calendar.id);
-      mContext.startActivity(intent);
-    });
+    if (calendarTile.isShare) {
+      holder.clTileItem.setOnClickListener(v -> {
+        Intent intent = new Intent(mContext,  EditCalendarActivity.class);
+        intent.putExtra(EXTRA_SHARE_HASH, calendarTile.shareHash);
+        mContext.startActivity(intent);
+      });
+    } else {
+      // standard calendar load.
+      holder.clTileItem.setOnClickListener(v -> {
+        Intent intent = new Intent(mContext,  EditCalendarActivity.class);
+        intent.putExtra(EXTRA_CALENDAR_ID, calendarTile.calendarId);
+        mContext.startActivity(intent);
+      });
+    }
   }
 
   @Override
@@ -76,13 +88,13 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
     return mCalendarData.size();
   }
 
-  private Calendar getItem(int position) {
+  private CalendarTile getItem(int position) {
     return mCalendarData.get(position);
   }
 
-  private CalendarComparator calendarComparator = new CalendarComparator();
+  private CalendarTileComparator calendarComparator = new CalendarTileComparator();
 
-  public void setData(List<Calendar> data){
+  public void setData(List<CalendarTile> data){
     mCalendarData.clear();
 
     // MEMO TO ME, Collections.copy does not auto resize collection,
@@ -90,7 +102,7 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
     // not very friendly.
     // Collections.copy(mCalendarData, data);
 
-    for (Calendar c : data){
+    for (CalendarTile c : data){
       mCalendarData.add(c);
     }
     Collections.sort(mCalendarData, calendarComparator);
