@@ -93,10 +93,10 @@ public class Event implements Parcelable {
 
   public void importJson(JSONObject jObj) {
     try {
-      name = jObj.getString("name");
+      name = jObj.optString("name");
       eventStartUTC = jObj.getLong("eventStartUTC");
       eventDurationMs = jObj.getLong("eventDurationMs");
-      color = jObj.getString("color");
+      color = jObj.optString("color");
       localId = jObj.getInt("localId");
     } catch (JSONException e) {
       e.printStackTrace();

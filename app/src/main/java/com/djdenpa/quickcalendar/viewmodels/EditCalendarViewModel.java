@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.djdenpa.quickcalendar.models.Calendar;
+import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.models.EventSet;
 
 public class EditCalendarViewModel extends ViewModel {
@@ -17,7 +18,7 @@ public class EditCalendarViewModel extends ViewModel {
   public String idToken = "";
   public String userName;
 
-  public boolean isFirebaseShareOn = false;
+  private boolean isFirebaseShareOn = false;
 
   public boolean getIsFirebaseShareOn(){
     return isFirebaseShareOn;
@@ -35,6 +36,7 @@ public class EditCalendarViewModel extends ViewModel {
     activeCalendar.setValue(calendar);
     // re fetch the active event set
     activeEventSet.setValue(null);
+    setActiveEventSetLocalId(1);
     getActiveEventSet();
   }
 
@@ -55,6 +57,10 @@ public class EditCalendarViewModel extends ViewModel {
     return activeEventSet;
   }
 
+  public void setActiveEventSetLocalId(int id) {
+    activeEventSetLocalId = id;
+  }
+
   public void setCalendarName(String name){
     Calendar calendar = getActiveCalendar().getValue();
     String cleanedName = name.trim();
@@ -63,5 +69,23 @@ public class EditCalendarViewModel extends ViewModel {
     }
     calendar.name = cleanedName;
     activeCalendar.setValue(calendar);
+  }
+
+  public void setCalendarShareData(String data){
+    Calendar calendar = getActiveCalendar().getValue();
+    calendar.importFirebaseSerialization(data);
+    activeCalendar.setValue(calendar);
+  }
+
+  public void saveEventToActiveSet(Event event) {
+    EventSet eventset = getActiveEventSet().getValue();
+    eventset.saveEvent(event);
+    activeEventSet.setValue(eventset);
+  }
+  public boolean deleteEventFromActiveSet(int localId) {
+    EventSet eventset = getActiveEventSet().getValue();
+    boolean result = eventset.deleteEvent(localId);
+    activeEventSet.setValue(eventset);
+    return result;
   }
 }

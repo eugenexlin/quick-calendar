@@ -143,9 +143,9 @@ public class Calendar {
 
   public void importJson(JSONObject jObj) {
     try {
-      name = jObj.getString("name");
+      name = jObj.optString("name");
       lastAccess = jObj.getLong("lastAccess");
-      creatorIdentity = jObj.getString("creatorIdentity");
+      creatorIdentity = jObj.optString("creatorIdentity");
       JSONArray jArr = jObj.getJSONArray("eventSets");
       for (int i=0; i < jArr.length(); i++) {
         JSONObject jEventSet = jArr.getJSONObject(i);

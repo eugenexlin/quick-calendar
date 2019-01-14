@@ -26,8 +26,11 @@ import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.utils.SharedPreferenceManager;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class EditCalendarActivity extends AppCompatActivity implements EditCalendarFragment.MenuEnabledHandler {
@@ -45,6 +48,8 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
   private boolean mCanDelete = false;
 
   private EditCalendarViewModel mViewModel;
+
+  DatabaseReference mShareDbRef;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +76,23 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
       Uri uri = intent.getData();
       shareHash = uri.getQueryParameter("hash");
     }
-    
+
     if (!shareHash.equals("")){
       FirebaseDatabase database = FirebaseDatabase.getInstance();
-      DatabaseReference myRef = database.getReference("calendars/" + shareHash);
-      myRef.toString();
+      mShareDbRef = database.getReference("calendars/" + shareHash);
+      ValueEventListener postListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+          String data = (String) dataSnapshot.getValue();
+          mEditCalendarFragment.setShareData(data);
+        }
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+          Toast.makeText(getApplicationContext(), "Failed to get calendar data. " + databaseError.getMessage(),
+                  Toast.LENGTH_SHORT).show();
+        }
+      };
+      mShareDbRef.addValueEventListener(postListener);
     }
 
     mViewModel = ViewModelProviders.of(this).get(EditCalendarViewModel.class);

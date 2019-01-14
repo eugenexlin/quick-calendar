@@ -238,8 +238,8 @@ public class EventSet {
 
   public void importJson(JSONObject jObj) {
     try {
-      name = jObj.getString("name");
-      creatorIdentity = jObj.getString("creatorIdentity");
+      name = jObj.optString("name");
+      creatorIdentity = jObj.optString("creatorIdentity");
       localId = jObj.getInt("localId");
       JSONArray jArr = jObj.getJSONArray("events");
       for (int i=0; i < jArr.length(); i++) {

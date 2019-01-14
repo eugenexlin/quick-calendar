@@ -496,6 +496,7 @@ public class CalendarWeekAdapter
 
   public void setData(EventSet eventSet){
     mEventSet = eventSet;
+    notifyDataSetChanged();
   }
 
   public void setMidpointDateMillis(long millis){

@@ -28,6 +28,7 @@ import com.djdenpa.quickcalendar.models.CalendarThumbnail;
 import com.djdenpa.quickcalendar.models.DisplayMode;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.models.EventSet;
+import com.djdenpa.quickcalendar.models.SharedCalendar;
 import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.activities.EditCalendarActivity;
@@ -101,31 +102,31 @@ public class EditCalendarFragment extends Fragment
     mViewModel = ViewModelProviders.of(getActivity()).get(EditCalendarViewModel.class);
 
     mViewModel.getActiveCalendar().observe(this, calendar -> {
-      if (calendar.name.length() == 0){
+      if (calendar.name.length() == 0) {
         tvCalendarName.setText(getString(R.string.calendar_untitled_name));
       } else {
         tvCalendarName.setText(calendar.name);
       }
-      mViewModel.getActiveEventSet().observe(this, eventSet -> {
-        mAdapter.setData(eventSet);
-      });
       if (mMenuEnabledHandler != null) {
         mMenuEnabledHandler.toggleDeleteButton(mViewModel.activeCalendar.getValue().id != 0);
       }
 
-      QuickCalendarExecutors.getInstance().networkIO().execute(() -> pushToFirebase());
+      if (mViewModel.getIsFirebaseShareOn()) {
+        QuickCalendarExecutors.getInstance().networkIO().execute(() -> pushToFirebase());
+      }
+    });
+    mViewModel.getActiveEventSet().observe(this, eventSet -> {
+      mAdapter.setData(eventSet);
     });
 
   }
 
   public void pushToFirebase() {
     com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.getActiveCalendar().getValue();
-    Boolean isFirebaseShareOn = mViewModel.getIsFirebaseShareOn();
-    if (isFirebaseShareOn) {
-      FirebaseDatabase database = FirebaseDatabase.getInstance();
-      DatabaseReference myRef = database.getReference("calendars/" + calendar.getFirebaseHash());
-      myRef.setValue(calendar.getFirebaseSerialization());
-    }
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("calendars/" + calendar.getFirebaseHash());
+    myRef.setValue(calendar.getFirebaseSerialization());
+
   }
 
   public void setActivity(EditCalendarActivity activity) {
@@ -375,13 +376,11 @@ public class EditCalendarFragment extends Fragment
 
   @Override
   public void saveEvent(Event event) {
-    mViewModel.getActiveEventSet().getValue().saveEvent(event);
-    mAdapter.notifyDataSetChanged();
+    mViewModel.saveEventToActiveSet(event);
   }
 
   public void deleteEvent(int localId) {
-    if (mViewModel.getActiveEventSet().getValue().deleteEvent(localId)){
-      mAdapter.notifyDataSetChanged();
+    if (mViewModel.deleteEventFromActiveSet(localId)){
       Toast.makeText(getContext(), "Event Deleted", Toast.LENGTH_SHORT).show();
     }
   }
@@ -428,7 +427,7 @@ public class EditCalendarFragment extends Fragment
 
   public void initializeAdapterSettings(){
     //fetch earliest event, it will be base scroll
-    long earliestEventMillis = mViewModel.getActiveCalendar().getValue().getFirstEventSet().getEarliestMillisUTC();
+    long earliestEventMillis = mViewModel.getActiveEventSet().getValue().getEarliestMillisUTC();
     mAdapter.setMidpointDateMillis(earliestEventMillis);
     java.util.Calendar earliestEventCal = java.util.Calendar.getInstance();
     earliestEventCal.setTimeInMillis(earliestEventMillis);
@@ -455,6 +454,11 @@ public class EditCalendarFragment extends Fragment
 
   public void setEventSet(EventSet eventSet) {
     mAdapter.setTestEventSet(eventSet);
+    mAdapter.notifyDataSetChanged();
+  }
+
+  public void setShareData(String data){
+    mViewModel.setCalendarShareData(data);
     mAdapter.notifyDataSetChanged();
   }
 
