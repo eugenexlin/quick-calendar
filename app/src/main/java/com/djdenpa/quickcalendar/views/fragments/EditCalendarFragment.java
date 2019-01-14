@@ -503,47 +503,12 @@ public class EditCalendarFragment extends Fragment
       if (calendar.id == 0) {
         calendar.EnsureShareCodeInitialized();
       }
-      calendar.lastAccess = System.currentTimeMillis();
       CoreDataLayer.saveCalendar(mDB, calendar);
       QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
         mMenuEnabledHandler.toggleSaveButton(false);
         Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();
       });
-      updateThumbnail(calendar);
     });
   }
 
-  // call me from diskIO
-  public void updateThumbnail(com.djdenpa.quickcalendar.models.Calendar calendar) {
-    List<CalendarThumbnail> thumbnails = mDB.calendarThumbnailDao().loadCalendarThumbnails(calendar.id);
-    if (thumbnails.size() > 1) {
-      // just as safety... purge any dupe thumbnails for a certain calendarID
-      for (int i = 1; i < thumbnails.size(); i++){
-        mDB.calendarThumbnailDao().deleteCalendarThumbnail(thumbnails.get(i));
-      }
-    }
-
-    CalendarThumbnail thumb;
-    if (thumbnails.size() >= 1) {
-      thumb = thumbnails.get(0);
-      thumb.generateThumbnail(calendar);
-      mDB.calendarThumbnailDao().updateCalendarThumbnail(thumb);
-    }else {
-      thumb = new CalendarThumbnail();
-      thumb.generateThumbnail(calendar);
-      mDB.calendarThumbnailDao().insertCalendarThumbnail(thumb);
-    }
-    // test code to look at thumb
-//    Bitmap bitmap = thumb.getBitmap();
-//    BitmapDrawable bitDraw = new BitmapDrawable(getActivity().getResources(), bitmap);
-//    bitDraw.setAntiAlias(false);
-//    QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
-//      ivTest.setImageDrawable(bitDraw);
-//    });
-    // wipe existing thumbnails
-  }
-
-  public void publishToFirebase(){
-
-  }
 }

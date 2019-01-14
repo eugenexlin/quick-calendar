@@ -1,6 +1,7 @@
 package com.djdenpa.quickcalendar.models;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
@@ -15,6 +16,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
 @Entity
 public class Calendar {
 
@@ -23,6 +26,8 @@ public class Calendar {
   public String name;
   public long lastAccess;
   public String creatorIdentity;
+
+  public int thumbnailId;
 
   public int shareCode;
 

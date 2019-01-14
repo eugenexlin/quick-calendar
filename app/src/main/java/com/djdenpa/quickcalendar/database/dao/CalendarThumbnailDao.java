@@ -16,8 +16,8 @@ import java.util.List;
 @Dao
 public interface CalendarThumbnailDao {
 
-  @Query("SELECT * FROM CalendarThumbnail WHERE calendarId = :calendarId")
-  List<CalendarThumbnail> loadCalendarThumbnails(int calendarId);
+  @Query("SELECT * FROM CalendarThumbnail WHERE id = :id")
+  CalendarThumbnail loadCalendarThumbnails(int id);
 
   @Insert
   long insertCalendarThumbnail(CalendarThumbnail calendarThumbnail);

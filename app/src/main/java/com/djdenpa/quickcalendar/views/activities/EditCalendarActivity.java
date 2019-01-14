@@ -26,6 +26,8 @@ import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.utils.SharedPreferenceManager;
 import com.djdenpa.quickcalendar.viewmodels.EditCalendarViewModel;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class EditCalendarActivity extends AppCompatActivity implements EditCalendarFragment.MenuEnabledHandler {
@@ -63,7 +65,9 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     if (Intent.ACTION_VIEW.equals(intent.getAction())) {
       Uri uri = intent.getData();
       String hash = uri.getQueryParameter("hash");
-      Log.w("test", hash);
+      FirebaseDatabase database = FirebaseDatabase.getInstance();
+      DatabaseReference myRef = database.getReference("calendars/" + hash);
+      myRef.toString();
     }
 
     mViewModel = ViewModelProviders.of(this).get(EditCalendarViewModel.class);

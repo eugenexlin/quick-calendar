@@ -14,19 +14,22 @@ import com.djdenpa.quickcalendar.database.dao.CalendarDao;
 import com.djdenpa.quickcalendar.database.dao.CalendarThumbnailDao;
 import com.djdenpa.quickcalendar.database.dao.EventDao;
 import com.djdenpa.quickcalendar.database.dao.EventSetDao;
+import com.djdenpa.quickcalendar.database.dao.SharedCalendarDao;
 import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.CalendarThumbnail;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.models.EventSet;
+import com.djdenpa.quickcalendar.models.SharedCalendar;
 
 import static com.djdenpa.quickcalendar.database.Migrations.MIGRATION_1_2;
 
 @Database(entities = {
         Calendar.class,
+        SharedCalendar.class,
         EventSet.class,
         Event.class,
         CalendarThumbnail.class
-  }, version = 4, exportSchema = false)
+  }, version = 5, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class QuickCalendarDatabase extends RoomDatabase {
 
@@ -53,6 +56,7 @@ public abstract class QuickCalendarDatabase extends RoomDatabase {
   }
 
   public abstract CalendarDao calendarDao();
+  public abstract SharedCalendarDao sharedCalendarDao();
   public abstract EventSetDao eventSetDao();
   public abstract EventDao eventDao();
   public abstract CalendarThumbnailDao calendarThumbnailDao();

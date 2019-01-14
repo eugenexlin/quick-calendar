@@ -51,18 +51,14 @@ public class CalendarTileListItemAdapter extends RecyclerView.Adapter<CalendarTi
     holder.tvName.setText(calendar.name);
 
     QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
-      List<CalendarThumbnail> list = mDB.calendarThumbnailDao().loadCalendarThumbnails(calendar.id);
-      Drawable drawable;
+      CalendarThumbnail thumb = mDB.calendarThumbnailDao().loadCalendarThumbnails(calendar.thumbnailId);
 
-      if (list.size() >= 1) {
-        Bitmap bitmap = list.get(0).getBitmap();
+      if (thumb != null) {
+        Drawable drawable;
+        Bitmap bitmap = thumb.getBitmap();
         drawable = new BitmapDrawable(mContext.getResources(), bitmap);
         QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
           holder.ivThumbnail.setImageDrawable(drawable);
-        });
-      } else {
-        QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
-          holder.ivThumbnail.setImageDrawable(null);
         });
       }
 

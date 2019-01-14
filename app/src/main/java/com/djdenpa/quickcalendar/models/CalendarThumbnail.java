@@ -16,18 +16,12 @@ import java.util.List;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(foreignKeys = @ForeignKey(entity = Calendar.class,
-        parentColumns = "id",
-        childColumns = "calendarId",
-        onDelete = CASCADE),
-        indices = {@Index("calendarId")}
-)
+@Entity
 public class CalendarThumbnail {
 
   @PrimaryKey(autoGenerate = true)
   public int id;
 
-  public int calendarId;
   public int width;
   public int height;
   public byte[] data;
@@ -90,7 +84,6 @@ public class CalendarThumbnail {
     }
 
     data = result;
-    calendarId = calendar.id;
   }
 
   public Bitmap getBitmap() {

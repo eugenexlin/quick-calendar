@@ -4,8 +4,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.djdenpa.quickcalendar.models.Calendar;
+import com.djdenpa.quickcalendar.models.CalendarThumbnail;
 import com.djdenpa.quickcalendar.models.Event;
 import com.djdenpa.quickcalendar.models.EventSet;
+import com.djdenpa.quickcalendar.models.SharedCalendar;
 
 import java.util.List;
 
@@ -28,6 +30,11 @@ public class CoreDataLayer {
 
   public static void saveCalendar(QuickCalendarDatabase db, Calendar calendar) {
 
+    int thumbnailId = saveThumbnail(db, calendar);
+    calendar.thumbnailId = thumbnailId;
+
+    calendar.lastAccess = System.currentTimeMillis();
+
     if (calendar.id == 0) {
       long id = db.calendarDao().insertCalendar(calendar);
       calendar.id = (int) id;
@@ -40,6 +47,42 @@ public class CoreDataLayer {
       saveEventSet(db, eventSet);
     }
 
+  }
+
+  public static void saveSharedCalendar(QuickCalendarDatabase db, Calendar calendar, String hash) {
+
+    int thumbnailId = saveThumbnail(db, calendar);
+
+    boolean isNew = false;
+    SharedCalendar sharedCalendar = db.sharedCalendarDao().getSharedCalendar(hash);
+    if (sharedCalendar == null){
+      isNew = true;
+      sharedCalendar = new SharedCalendar();
+      sharedCalendar.hash = hash;
+    }
+
+    sharedCalendar.thumbnailId = thumbnailId;
+    sharedCalendar.lastAccess = System.currentTimeMillis();
+
+    if (isNew) {
+      db.sharedCalendarDao().insertSharedCalendar(sharedCalendar);
+    } else {
+      db.sharedCalendarDao().updateSharedCalendar(sharedCalendar);
+    }
+  }
+
+  // return thumbnail id
+  public static int saveThumbnail(QuickCalendarDatabase db, Calendar calendar) {
+    CalendarThumbnail thumbnail = new CalendarThumbnail();
+    thumbnail.generateThumbnail(calendar);
+    int thumbnailId = calendar.thumbnailId;
+    if (calendar.thumbnailId != 0) {
+      thumbnail.id = thumbnailId;
+      db.calendarThumbnailDao().updateCalendarThumbnail(thumbnail);
+    } else {
+      thumbnailId = (int) db.calendarThumbnailDao().insertCalendarThumbnail(thumbnail);
+    }
+    return thumbnailId;
   }
 
   public static void saveEventSet(QuickCalendarDatabase db, EventSet eventSet) {
