@@ -88,6 +88,7 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     // position = position in adapter
     // index is column of calender 0 to 6
     void handleTouchDate(int position, int index);
+    void handleReleaseDate(int position, int index);
   }
 
   public void setTouchHandler(TouchDateHandler handler) {
@@ -115,10 +116,13 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     clCalendarWeeks.setOnTouchListener(new View.OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
+        int index= (int) (event.getX()*7/clCalendarWeeks.getWidth());
         switch(event.getAction()) {
           case MotionEvent.ACTION_DOWN:
-            int index = (int) (event.getX()*7/clCalendarWeeks.getWidth());
             mTouchHandler.handleTouchDate(mCurrentPosition, index);
+            break;
+          case MotionEvent.ACTION_UP:
+            mTouchHandler.handleReleaseDate(mCurrentPosition, index);
             break;
         }
         return false;
@@ -206,6 +210,7 @@ public class CalendarWeekViewHolder extends RecyclerView.ViewHolder {
     }
     CalendarEventViewManager manager = new CalendarEventViewManager(context, holder);
     mEventViews.push(manager);
+//    manager.ivEventBlock.setOnClickListener(v -> mTouchHandler.handleTouchDate(-1, -1));
     manager.ivEventBlock.setOnTouchListener(new View.OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {

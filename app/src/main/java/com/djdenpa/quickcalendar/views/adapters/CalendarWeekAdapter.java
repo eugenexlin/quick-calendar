@@ -2,7 +2,6 @@ package com.djdenpa.quickcalendar.views.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -22,9 +21,7 @@ import com.djdenpa.quickcalendar.utils.EventCollisionInfo;
 import com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
-import java.util.TimeZone;
 
 /*
  I want something that scrolls forever, but also take advantage of the
@@ -559,8 +556,9 @@ public class CalendarWeekAdapter
     }
     setEventCursorLocalId(-1);
 
+    isConfirmingAlreadySelectedClick = false;
     if (mDateCursorPosition == position && mDateCursorIndex == index) {
-      // no change. do nothing;
+      isConfirmingAlreadySelectedClick = true;
       return;
     }
     mDateCursorPosition = position;
@@ -582,8 +580,27 @@ public class CalendarWeekAdapter
     resynchronizeAllDateNumberVisuals();
   }
 
+  //note that this is not set to the release position, but just to the current position.
+  private int previousReleasePosition = -1;
+  private int previousReleaseIndex = -1;
+  private boolean isConfirmingAlreadySelectedClick;
+  @Override
+  public void handleReleaseDate(int position, int index) {
+//    if (position == previousReleasePosition) {
+//      if (mDisplayMode == DisplayMode.ROW_PER_DAY || previousReleaseIndex == index){
+//        mCursorStateHandler.onCursorAlreadySelectedClick();
+//      }
+//    }
+    if (isConfirmingAlreadySelectedClick) {
+      mCursorStateHandler.onCursorAlreadySelectedClick();
+    }
+    previousReleasePosition = mDateCursorPosition;
+    previousReleaseIndex = mDateCursorIndex;
+  }
+
   public void clearCursor() {
     mDateCursorPosition = -1;
+    previousReleasePosition = -1;
     mCursorStateHandler.onSetCursorVisibility(false);
     resynchronizeAllDateNumberVisuals();
   }
@@ -628,6 +645,7 @@ public class CalendarWeekAdapter
 
   public interface CursorStateHandler {
     void onSetCursorVisibility(boolean isVisible);
+    void onCursorAlreadySelectedClick();
   }
   public void setCursorStateHandler(CursorStateHandler handler) {
     mCursorStateHandler = handler;

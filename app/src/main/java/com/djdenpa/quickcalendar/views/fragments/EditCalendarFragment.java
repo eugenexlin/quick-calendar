@@ -168,12 +168,7 @@ public class EditCalendarFragment extends Fragment
 
     fabAddEvent.setOnClickListener(v -> {
       fabAddEvent.setEnabled(false);
-
-      long timeUtc = mAdapter.getCursorDate().getTime().getTime();
-      Event event = new Event();
-      event.eventStartUTC = timeUtc;
-      event.eventDurationMs = 1000*60*60*24;
-      PromptEditEvent(event);
+      openEditOnCursor();
     });
 
     rvCalendarWeeks.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -199,6 +194,8 @@ public class EditCalendarFragment extends Fragment
 
     return rootView;
   }
+
+
 
   private void setWeekHeaderVisibilityBasedOnMode(){
     if (mAdapter.getDisplayMode() == DisplayMode.ROW_PER_WEEK) {
@@ -407,6 +404,19 @@ public class EditCalendarFragment extends Fragment
         fabAddEvent.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.crispy_hide));
       }
     }
+  }
+
+  @Override
+  public void onCursorAlreadySelectedClick() {
+    openEditOnCursor();
+  }
+
+  public void openEditOnCursor() {
+    long timeUtc = mAdapter.getCursorDate().getTime().getTime();
+    Event event = new Event();
+    event.eventStartUTC = timeUtc;
+    event.eventDurationMs = 1000*60*60*24;
+    PromptEditEvent(event);
   }
 
   public void deleteCalendar() {
