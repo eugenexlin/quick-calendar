@@ -8,6 +8,3 @@
 /build
 /captures
 .externalNativeBuild
-password.txt
-keystore.properties
-*.keystore

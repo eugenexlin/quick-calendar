@@ -49,7 +49,9 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
 
   private EditCalendarViewModel mViewModel;
 
-  DatabaseReference mShareDbRef;
+  private boolean isShareMode;
+  private String mShareHash = "";
+  private DatabaseReference mShareDbRef;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
 
     final Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     Intent intent = getIntent();
@@ -68,31 +71,12 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
         mCalendarId = intent.getIntExtra(EXTRA_CALENDAR_ID, 0);
       }
     }
-    String shareHash = "";
     if (intent != null && intent.hasExtra(EXTRA_SHARE_HASH)) {
-      shareHash = intent.getStringExtra(EXTRA_SHARE_HASH);
+      mShareHash = intent.getStringExtra(EXTRA_SHARE_HASH);
     }
     if (Intent.ACTION_VIEW.equals(intent.getAction())) {
       Uri uri = intent.getData();
-      shareHash = uri.getQueryParameter("hash");
-    }
-
-    if (!shareHash.equals("")){
-      FirebaseDatabase database = FirebaseDatabase.getInstance();
-      mShareDbRef = database.getReference("calendars/" + shareHash);
-      ValueEventListener postListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-          String data = (String) dataSnapshot.getValue();
-          mEditCalendarFragment.setShareData(data);
-        }
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-          Toast.makeText(getApplicationContext(), "Failed to get calendar data. " + databaseError.getMessage(),
-                  Toast.LENGTH_SHORT).show();
-        }
-      };
-      mShareDbRef.addValueEventListener(postListener);
+      mShareHash = uri.getQueryParameter("hash");
     }
 
     mViewModel = ViewModelProviders.of(this).get(EditCalendarViewModel.class);
@@ -247,7 +231,36 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
     FragmentManager fm = getSupportFragmentManager();
     mEditCalendarFragment = (EditCalendarFragment) fm.findFragmentById(R.id.edit_calendar_fragment);
     mEditCalendarFragment.setActivity(this);
+
+    if (!mShareHash.equals("")){
+      isShareMode = true;
+      mEditCalendarFragment.setHash(mShareHash);
+      FirebaseDatabase database = FirebaseDatabase.getInstance();
+      mShareDbRef = database.getReference("calendars/" + mShareHash);
+      ValueEventListener postListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+          String data = (String) dataSnapshot.getValue();
+          mEditCalendarFragment.setShareData(data);
+        }
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+          Toast.makeText(getApplicationContext(), "Failed to get calendar data. " + databaseError.getMessage(),
+                  Toast.LENGTH_SHORT).show();
+        }
+      };
+      mShareDbRef.addValueEventListener(postListener);
+    }
+
   }
 
+  @Override
+  protected void onPause() {
+    super.onPause();
+
+    if (isShareMode){
+      mEditCalendarFragment.saveSharedCalendar();
+    }
+  }
 }
 

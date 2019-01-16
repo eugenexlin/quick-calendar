@@ -26,6 +26,10 @@
               android:pathPrefix="/eugenexlin/quick-calendar" />
         <!-- this shall accept ?hash='hash'-->
       </intent-filter>
+
+      <meta-data
+          android:name="android.support.PARENT_ACTIVITY"
+          android:value=".views.activities.MainActivity" />
     </activity>
   </application>
 

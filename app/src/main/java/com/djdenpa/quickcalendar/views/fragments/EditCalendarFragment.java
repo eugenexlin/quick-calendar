@@ -117,6 +117,10 @@ public class EditCalendarFragment extends Fragment
     });
     mViewModel.getActiveEventSet().observe(this, eventSet -> {
       mAdapter.setData(eventSet);
+
+      if (mViewModel.getIsFirebaseShareOn()) {
+        QuickCalendarExecutors.getInstance().networkIO().execute(() -> pushToFirebase());
+      }
     });
 
   }
@@ -467,9 +471,14 @@ public class EditCalendarFragment extends Fragment
     mAdapter.notifyDataSetChanged();
   }
 
+  private int setShareDataCount = 0;
   public void setShareData(String data){
     mViewModel.setCalendarShareData(data);
     mAdapter.notifyDataSetChanged();
+    if (setShareDataCount <= 0) {
+      saveSharedCalendar();
+      setShareDataCount = 5;
+    }
   }
 
   public void enableFirebaseShare() {
@@ -493,6 +502,12 @@ public class EditCalendarFragment extends Fragment
     startActivity(Intent.createChooser(shareIntent, "choose one"));
   }
 
+  private String mShareHash;
+  public void setHash(String hash) {
+    toggleSaveButton(true);
+    mShareHash = hash;
+  }
+
   public interface MenuEnabledHandler {
     void toggleSaveButton(boolean isEnabled);
     void toggleDeleteButton(boolean isEnabled);
@@ -502,11 +517,6 @@ public class EditCalendarFragment extends Fragment
     saveCalendar(false);
   }
   public void saveCalendar(boolean startShare) {
-
-    // Write a message to the database
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("users/" + mViewModel.uid + "/message");
-    myRef.setValue(new Random().nextInt());
 
     QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
       // set last access to now
@@ -522,6 +532,13 @@ public class EditCalendarFragment extends Fragment
         mMenuEnabledHandler.toggleSaveButton(false);
         Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();
       });
+    });
+  }
+
+  public void saveSharedCalendar() {
+    QuickCalendarExecutors.getInstance().diskIO().execute(() -> {
+      com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.activeCalendar.getValue();
+      CoreDataLayer.saveSharedCalendar(mDB, calendar, mShareHash);
     });
   }
 
