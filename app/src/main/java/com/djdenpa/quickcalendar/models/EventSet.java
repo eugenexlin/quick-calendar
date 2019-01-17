@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -230,7 +231,7 @@ public class EventSet {
 
   public JSONArray getAllEventsJson() {
     JSONArray array = new JSONArray();
-    for (Event event : eventHash.values()){
+    for (Event event : getAllEvents()){
       array.put(event.exportJson());
     }
     return array;
@@ -242,15 +243,27 @@ public class EventSet {
       creatorIdentity = jObj.optString("creatorIdentity");
       localId = jObj.getInt("localId");
       JSONArray jArr = jObj.getJSONArray("events");
+
+      // check for events to delete.
+      HashSet<Integer> currentKeys = new HashSet<>(eventHash.keySet());
+
       for (int i=0; i < jArr.length(); i++) {
         JSONObject jEvent = jArr.getJSONObject(i);
         int localId = jEvent.getInt("localId");
         Event event = getEventByLocalId(localId);
+
         if (event == null) {
           event = new Event();
+        } else {
+          event.isMarkedForDeletion = false;
+          currentKeys.remove(localId);
         }
         event.importJson(jEvent);
         saveEvent(event);
+      }
+
+      for (Integer i : currentKeys) {
+        deleteEvent(i);
       }
     } catch (JSONException e) {
       e.printStackTrace();

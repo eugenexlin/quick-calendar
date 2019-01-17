@@ -14,6 +14,8 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Random;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
@@ -118,7 +120,7 @@ public class Calendar {
 
   public JSONArray exportAllEventSetsJson() {
     JSONArray array = new JSONArray();
-    for (EventSet set : eventSetHash.values()){
+    for (EventSet set : getAllEventSets()){
       array.put(set.exportJson());
     }
     return array;
@@ -147,15 +149,26 @@ public class Calendar {
       lastAccess = jObj.getLong("lastAccess");
       creatorIdentity = jObj.optString("creatorIdentity");
       JSONArray jArr = jObj.getJSONArray("eventSets");
+
+      // check for events to delete.
+      HashSet<Integer> currentKeys = new HashSet<>(eventSetHash.keySet());
+
       for (int i=0; i < jArr.length(); i++) {
         JSONObject jEventSet = jArr.getJSONObject(i);
         int localId = jEventSet.getInt("localId");
         EventSet eventSet = getEventSetByLocalId(localId);
         if (eventSet == null) {
           eventSet = new EventSet();
+        } else {
+          eventSet.isMarkedForDeletion = false;
+          currentKeys.remove(localId);
         }
         eventSet.importJson(jEventSet);
         saveEventSet(eventSet);
+      }
+
+      for (Integer i : currentKeys) {
+        // delete event set.
       }
     } catch (JSONException e) {
       e.printStackTrace();

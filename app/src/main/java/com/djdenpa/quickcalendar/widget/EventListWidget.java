@@ -19,8 +19,6 @@ public class EventListWidget extends AppWidgetProvider {
     // Construct the RemoteViews object
     RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.event_list_widget);
 
-    views.setTextViewText(R.id.lv_events, widgetText);
-
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views);
   }
