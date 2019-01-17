@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge>
+
+<!--
+NOTE
+lint wanted this frame layout to be converted into a <merge>
+and holy heck did that just mysteriously turn this app into a dysfunctional
+train wreck for ONLY THE NEXUS 5X EMULATOR.
+STRANGE. AVOID AT ALL COST.
+-->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
   <fragment
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:id="@+id/edit_calendar_fragment"
       android:name="com.djdenpa.quickcalendar.views.fragments.EditCalendarFragment"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
-</merge>
+
+</FrameLayout>

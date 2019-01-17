@@ -93,6 +93,12 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
         });
       });
     }
+
+    SharedPreferenceManager prefMan = new SharedPreferenceManager(this);
+    mViewModel.idToken = prefMan.getUserIdToken();
+    mViewModel.uid = prefMan.getUserId();
+    mViewModel.identity= prefMan.getUserEmail();
+    mViewModel.userName = prefMan.getUserName();
   }
 
   @Override
@@ -221,12 +227,6 @@ public class EditCalendarActivity extends AppCompatActivity implements EditCalen
   @Override
   protected void onStart() {
     super.onStart();
-
-    SharedPreferenceManager prefMan = new SharedPreferenceManager(this);
-    mViewModel.idToken = prefMan.getUserIdToken();
-    mViewModel.uid = prefMan.getUserId();
-    mViewModel.identity= prefMan.getUserEmail();
-    mViewModel.userName = prefMan.getUserName();
 
     FragmentManager fm = getSupportFragmentManager();
     mEditCalendarFragment = (EditCalendarFragment) fm.findFragmentById(R.id.edit_calendar_fragment);
