@@ -123,6 +123,7 @@
       android:visibility="gone"
       android:clickable="true"
       android:focusable="true"
+      android:contentDescription="@string/create_event_at_cursor_hint"
       />
 
 </android.support.design.widget.CoordinatorLayout>

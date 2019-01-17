@@ -580,27 +580,16 @@ public class CalendarWeekAdapter
     resynchronizeAllDateNumberVisuals();
   }
 
-  //note that this is not set to the release position, but just to the current position.
-  private int previousReleasePosition = -1;
-  private int previousReleaseIndex = -1;
   private boolean isConfirmingAlreadySelectedClick;
   @Override
   public void handleReleaseDate(int position, int index) {
-//    if (position == previousReleasePosition) {
-//      if (mDisplayMode == DisplayMode.ROW_PER_DAY || previousReleaseIndex == index){
-//        mCursorStateHandler.onCursorAlreadySelectedClick();
-//      }
-//    }
     if (isConfirmingAlreadySelectedClick) {
       mCursorStateHandler.onCursorAlreadySelectedClick();
     }
-    previousReleasePosition = mDateCursorPosition;
-    previousReleaseIndex = mDateCursorIndex;
   }
 
   public void clearCursor() {
     mDateCursorPosition = -1;
-    previousReleasePosition = -1;
     mCursorStateHandler.onSetCursorVisibility(false);
     resynchronizeAllDateNumberVisuals();
   }

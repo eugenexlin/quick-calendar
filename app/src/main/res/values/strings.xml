@@ -9,8 +9,8 @@
   <string name="calendar_tile_thumbnail">calendar tile thumbnail</string>
 
   <string name="calendar_untitled_name">Untitled Calendar</string>
-  <string name="cancel">cancel</string>
-  <string name="save">save</string>
+  <string name="cancel">Cancel</string>
+  <string name="save">Save</string>
   <string name="edit_calendar_name_title">Calendar Name</string>
 
   <string name="day_of_week_header_0">S</string>
@@ -81,9 +81,9 @@
   <string name="after_month">/</string>
   <string name="after_day"/>
   <string name="format_2_digit">%1$02d</string>
-  <string name="set_by_duration">SET BY DURATION</string>
-  <string name="set_button">SET</string>
-  <string name="cancel_button">CANCEL</string>
+  <string name="set_by_duration">Set by Duration</string>
+  <string name="set_button">Set</string>
+  <string name="cancel_button">Cancel</string>
   <string name="sign_out">Sign Out</string>
   <string name="disconnect">Disconnect</string>
   <string name="sign_in_please">Sign in to enable ownership enforcement and real time sharing.</string>
@@ -101,6 +101,13 @@
     <item>weeks</item>
   </string-array>
 
+
+  <string name="select_color_cancel">cancel select color</string>
+  <string name="select_color_save">save selected color</string>
+
+  <string name="set_duration_cancel">cancel set duration</string>
+  <string name="set_duration_save">save duration</string>
+
   <string name="google_client_id">586345749577-gdp597tkms81vuq8hgvljn5d9n53gtvd.apps.googleusercontent.com</string>
   <string name="prev">prev</string>
   <string name="next">next</string>
@@ -111,5 +118,13 @@
   <string name="menu_share_link">Share Link</string>
   <string name="menu_disable_share">Disable</string>
   <string name="menu_delete_event">Delete Event</string>
+  <string name="appwidget_text">EXAMPLE</string>
+  <string name="add_widget">Add widget</string>
+  <string name="selected_color">selected color</string>
+  <string name="current_color">current color</string>
+  <string name="color_hint">hex color code</string>
+  <string name="calendar_name_hint">calendar name</string>
+  <string name="create_event_at_cursor_hint">create event at cursor</string>
+  <string name="create_new_calendar_hint">create new calendar</string>
 
 </resources>

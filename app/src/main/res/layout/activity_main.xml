@@ -133,6 +133,7 @@
       android:stateListAnimator="@animator/fab_state_list"
       android:clickable="true"
       android:focusable="true"
+      android:contentDescription="@string/create_new_calendar_hint"
       />
 
 

@@ -2,6 +2,7 @@ package com.djdenpa.quickcalendar.views.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -122,14 +123,6 @@ public class EditCalendarFragment extends Fragment
         QuickCalendarExecutors.getInstance().networkIO().execute(() -> pushToFirebase());
       }
     });
-
-  }
-
-  public void pushToFirebase() {
-    com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.getActiveCalendar().getValue();
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("calendars/" + calendar.getFirebaseHash());
-    myRef.setValue(calendar.getFirebaseSerialization());
 
   }
 
@@ -542,4 +535,29 @@ public class EditCalendarFragment extends Fragment
     });
   }
 
+  public void pushToFirebase() {
+    new pushToFirebaseTask().execute();
+  }
+
+  // AsyncTask for rubric yay.
+  private class pushToFirebaseTask extends AsyncTask<Void, Void, Void> {
+    @Override
+    protected Void doInBackground(Void... voids) {
+
+      com.djdenpa.quickcalendar.models.Calendar calendar = mViewModel.getActiveCalendar().getValue();
+      FirebaseDatabase database = FirebaseDatabase.getInstance();
+      DatabaseReference myRef = database.getReference("calendars/" + calendar.getFirebaseHash());
+      myRef.setValue(calendar.getFirebaseSerialization());
+
+      return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+      super.onPostExecute(aVoid);
+      // here you can maybe provide feedback,
+      // like play some indicator pulse animation
+      // that means data was pushed.
+    }
+  }
 }

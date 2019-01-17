@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="0dp"
     android:layout_height="@dimen/event_item_height"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
   <ImageView
@@ -13,7 +14,7 @@
       android:src="@drawable/calendar_event_block"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-
+      tools:ignore="ContentDescription"
     />
 
   <TextView

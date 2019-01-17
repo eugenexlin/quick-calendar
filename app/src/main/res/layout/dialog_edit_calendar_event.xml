@@ -50,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/edit_event_event_name_label"
                 android:theme="@style/FieldLabel"
+                android:labelFor="@id/et_event_name"
                 />
             <EditText
                 android:id="@+id/et_event_name"

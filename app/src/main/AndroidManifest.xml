@@ -18,19 +18,32 @@
     </activity>
     <activity android:name=".views.activities.EditCalendarActivity">
       <intent-filter android:label="Quick Calendar Share">
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="https"
-              android:host="raw.githubusercontent.com"
-              android:pathPrefix="/eugenexlin/quick-calendar" />
-        <!-- this shall accept ?hash='hash'-->
+        <action android:name="android.intent.action.VIEW"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+
+        <data
+            android:host="raw.githubusercontent.com"
+            android:pathPrefix="/eugenexlin/quick-calendar"
+            android:scheme="https"/>
+        <!-- this shall accept ?hash='hash' -->
       </intent-filter>
 
       <meta-data
           android:name="android.support.PARENT_ACTIVITY"
-          android:value=".views.activities.MainActivity" />
+          android:value=".views.activities.MainActivity"/>
     </activity>
+
+    <receiver android:name=".widget.EventListWidget">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+      </intent-filter>
+
+      <meta-data
+          android:name="android.appwidget.provider"
+          android:resource="@xml/event_list_widget_info"/>
+    </receiver>
   </application>
 
 </manifest>

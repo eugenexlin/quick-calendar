@@ -31,6 +31,9 @@ public class EditCalendarViewModel extends ViewModel {
   public void init() {
     Calendar calendar = new Calendar();
     activeCalendar.setValue(calendar);
+    previousActiveEventSetLocalId = -1;
+    setActiveEventSetLocalId(1);
+    setIsFirebaseShareOn(false);
   }
 
   public void setEntireCalendar(Calendar calendar){

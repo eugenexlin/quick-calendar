@@ -21,6 +21,7 @@
         android:tint="@color/lighter_gray"
         android:clickable="true"
         android:focusable="true"
+        android:contentDescription="@string/current_color"
         />
     <EditText
         android:id="@+id/et_color"
@@ -30,6 +31,7 @@
         android:layout_gravity="center"
         android:inputType="text"
         android:maxLines="1"
+        android:hint="@string/color_hint"
         />
   </LinearLayout>
 
@@ -61,6 +63,7 @@
           android:tint="@color/lighter_gray"
           android:clickable="true"
           android:focusable="true"
+          android:contentDescription="@string/selected_color"
           />
 
       <EditText
@@ -71,6 +74,7 @@
           android:layout_gravity="center"
           android:inputType="text"
           android:maxLines="1"
+          android:hint="@string/color_hint"
           />
 
       <ImageButton
@@ -84,6 +88,7 @@
           android:layout_marginBottom="8dp"
           android:clickable="true"
           android:focusable="true"
+          android:contentDescription="@string/set_duration_cancel"
           />
       <ImageButton
           android:id="@+id/b_set"
@@ -96,6 +101,7 @@
           android:layout_marginBottom="8dp"
           android:clickable="true"
           android:focusable="true"
+          android:contentDescription="@string/set_duration_save"
           />
     </LinearLayout>
   </LinearLayout>

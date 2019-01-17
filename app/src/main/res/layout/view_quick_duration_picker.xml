@@ -40,6 +40,7 @@
       android:layout_marginBottom="8dp"
       android:clickable="true"
       android:focusable="true"
+      android:contentDescription="@string/select_color_cancel"
       />
   <ImageButton
       android:id="@+id/b_set"
@@ -52,6 +53,7 @@
       android:layout_marginBottom="8dp"
       android:clickable="true"
       android:focusable="true"
+      android:contentDescription="@string/select_color_save"
       />
 
 </LinearLayout>
