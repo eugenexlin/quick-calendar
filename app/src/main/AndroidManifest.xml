@@ -44,6 +44,8 @@
           android:name="android.appwidget.provider"
           android:resource="@xml/event_list_widget_info"/>
     </receiver>
+    <service android:name=".widget.EventListRemoteViewsService"
+             android:permission="android.permission.BIND_REMOTEVIEWS"></service>
   </application>
 
 </manifest>

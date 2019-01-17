@@ -4,7 +4,8 @@
                     android:initialLayout="@layout/event_list_widget"
                     android:minHeight="110dp"
                     android:minWidth="180dp"
-                    android:previewImage="@drawable/example_appwidget_preview"
+                    android:previewImage="@drawable/ic_calendar"
+
                     android:resizeMode="horizontal|vertical"
                     android:updatePeriodMillis="28800000"
                     android:widgetCategory="home_screen">

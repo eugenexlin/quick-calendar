@@ -21,6 +21,10 @@ public interface EventDao {
   @Query("SELECT * FROM Event")
   List<Event> loadAllEvents();
 
+
+  @Query("SELECT * FROM Event WHERE eventStartUTC > :utcTime ORDER BY eventStartUTC LIMIT 25")
+  List<Event> loadEventsAfter(long utcTime);
+
 //  @Query("SELECT * FROM Event WHERE id = :id")
 //  EventSet loadEvent(int id);
 

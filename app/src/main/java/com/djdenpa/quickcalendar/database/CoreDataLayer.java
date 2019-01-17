@@ -1,5 +1,6 @@
 package com.djdenpa.quickcalendar.database;
 
+import android.appwidget.AppWidgetManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,7 +47,6 @@ public class CoreDataLayer {
       eventSet.calendarId = calendar.id;
       saveEventSet(db, eventSet);
     }
-
   }
 
   public static void saveSharedCalendar(QuickCalendarDatabase db, Calendar calendar, String hash) {

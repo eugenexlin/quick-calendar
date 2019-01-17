@@ -1,6 +1,8 @@
 package com.djdenpa.quickcalendar.views.fragments;
 
+import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,6 +40,7 @@ import com.djdenpa.quickcalendar.views.dialogs.EditCalendarEventDialog;
 import com.djdenpa.quickcalendar.views.dialogs.EditCalendarNameDialog;
 import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListDialog;
 import com.djdenpa.quickcalendar.views.dialogs.GenericSingleSelectListTextMapper;
+import com.djdenpa.quickcalendar.widget.EventListWidget;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -521,6 +524,11 @@ public class EditCalendarFragment extends Fragment
         calendar.EnsureShareCodeInitialized();
       }
       CoreDataLayer.saveCalendar(mDB, calendar);
+
+      AppWidgetManager man = AppWidgetManager.getInstance(getContext());
+      int[] ids = man.getAppWidgetIds(new ComponentName(getContext(), EventListWidget.class));
+      man.notifyAppWidgetViewDataChanged(ids, R.id.lv_events);
+
       QuickCalendarExecutors.getInstance().mainThread().execute(() -> {
         mMenuEnabledHandler.toggleSaveButton(false);
         Toast.makeText(getContext(), "Calendar Saved", Toast.LENGTH_SHORT).show();

@@ -61,7 +61,7 @@
   <dimen name="date_circle_margin_top">3dp</dimen>
 
 
-  <dimen name="event_text_size">16dp</dimen>
+  <dimen name="event_text_size">16sp</dimen>
   <dimen name="event_item_height">36dp</dimen>
   <dimen name="event_item_margin">5dp</dimen>
 

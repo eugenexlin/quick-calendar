@@ -13,14 +13,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.djdenpa.quickcalendar.R;
-import com.djdenpa.quickcalendar.database.QuickCalendarDatabase;
-import com.djdenpa.quickcalendar.models.Calendar;
 import com.djdenpa.quickcalendar.models.CalendarTile;
-import com.djdenpa.quickcalendar.utils.MockCalendarDataGenerator;
-import com.djdenpa.quickcalendar.utils.QuickCalendarExecutors;
 import com.djdenpa.quickcalendar.views.adapters.CalendarTileListItemAdapter;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;

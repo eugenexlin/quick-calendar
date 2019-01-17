@@ -118,7 +118,6 @@
   <string name="menu_share_link">Share Link</string>
   <string name="menu_disable_share">Disable</string>
   <string name="menu_delete_event">Delete Event</string>
-  <string name="appwidget_text">EXAMPLE</string>
   <string name="add_widget">Add widget</string>
   <string name="selected_color">selected color</string>
   <string name="current_color">current color</string>
@@ -126,5 +125,9 @@
   <string name="calendar_name_hint">calendar name</string>
   <string name="create_event_at_cursor_hint">create event at cursor</string>
   <string name="create_new_calendar_hint">create new calendar</string>
+  <string name="upcoming_events">Upcoming Events</string>
+  <string name="widget_date_format">MMM d</string>
+  <string name="unnamed_event">Unnamed Event</string>
+  <string name="widget_time_format">h:mm a</string>
 
 </resources>
